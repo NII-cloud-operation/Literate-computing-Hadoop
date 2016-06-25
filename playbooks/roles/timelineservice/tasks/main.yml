@@ -1,0 +1,2 @@
+- include: install.yml tags=install,resourcemanager
+- include: config.yml tags=config,resourcemanager

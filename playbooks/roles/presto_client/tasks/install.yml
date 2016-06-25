@@ -1,0 +1,27 @@
+- name: check_presto_installed
+  stat: path={{ presto_client_install_path }}/presto-cli-{{ presto_version }}-executable.jar
+  register: check_presto_client_installed
+  
+- name: create_prseto_client_install_dir
+  sudo: yes
+  file: path={{ presto_client_install_path }} state=directory owner=presto group=presto mode=755
+  
+- name: download_presto_by_wget
+  sudo: yes
+  shell: wget --no-verbose {{ presto_client_download_url }}/presto-cli-{{ presto_version }}-executable.jar -O presto-cli-{{ presto_version }}-executable.jar chdir={{ presto_client_install_path }} creates={{ presto_client_install_path }}/presto-cli-{{ presto_version }}-executable.jar
+  when: not check_presto_client_installed.stat.exists
+  ignore_errors: yes
+  
+- name: md5sum_presto_client
+  shell: md5sum {{ presto_client_install_path }}/presto-cli-{{ presto_version }}-executable.jar
+  register: md5sum_presto_client
+  changed_when: false
+  always_run: true
+  
+- name: check_md5sum
+  fail: "md5 check sum is not match. {{ md5sum_presto_client.stdout }} should be {{ presto_client_md5sum }}"
+  when: not check_presto_client_installed.stat.exists and md5sum_presto_client.stdout.find('{{ presto_client_md5sum }}')
+
+- name: change_mode_presto_client
+  sudo: yes
+  file: path={{ presto_client_install_path }}/presto-cli-{{ presto_version }}-executable.jar owner=presto group=presto mode=755

@@ -1,0 +1,21 @@
+- name: create_hcatalog_conf_dir
+  sudo: yes
+  file: path=/etc/hive-hcatalog/conf state=directory owner=root group=root mode=755
+  
+- name: copy_conf_files
+  sudo: yes
+  template: src={{ item }}.j2 dest=/etc/hive-hcatalog/conf/{{ item }} owner=hive group=hadoop mode=755
+  with_items:
+  - hcat-env.sh
+
+- name: create_hcatalog_log_dir
+  sudo: yes
+  file: path={{ hcatalog_log_dir }} state=directory owner=hive group=hadoop mode=755
+
+- name: create_hcatalog_var_dir
+  sudo: yes
+  file: path=/usr/hdp/current/hive-webhcat/var state=directory owner=hive group=hive mode=775
+  
+- name: create_symbolic_link_to_log_dir
+  sudo: yes
+  file: path=/usr/hdp/current/hive-webhcat/var/log state=link src={{ hcatalog_log_dir }}

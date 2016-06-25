@@ -1,0 +1,6 @@
+## HDFSが利用可能(正常に読み書きできる)こと
+
+- hosts: hadoop_tez
+  roles:
+  - tez
+

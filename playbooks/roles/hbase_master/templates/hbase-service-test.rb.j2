@@ -1,0 +1,59 @@
+# This script should be called in hbase-shell.
+
+def is_table_present(name)
+  # command "exists" can do the same check,
+  # but as it doesn't return any result,
+  # we need this function in ruby scripts.
+  existing_tables = list
+  table_already_exists = existing_tables.find_index(name)
+  if table_already_exists == nil then
+    return false
+  end
+  return true
+end
+
+def delete_table_if_exists(name)
+  if is_table_present(name)
+    disable name
+    drop name
+  end
+end
+
+
+tablename = 'servicetesttable'
+
+print("*** Delete table for service test if already exists.\n")
+delete_table_if_exists(tablename)
+
+print("*** Create table.\n")
+create tablename, 'f1', 'f2'
+
+print("*** Verify table.\n")
+if not is_table_present(tablename)
+  print("*** Failure when create table.\n")
+  exit 1
+end
+
+print("*** Put data\n")
+put tablename, 'row1', 'f1:c1', 'value1'
+put tablename, 'row2', 'f1:c1', 'value2'
+put tablename, 'row2', 'f2:c2', 'value3'
+
+print("*** Count and verify data\n")
+num = count tablename
+
+if num != 2 then
+  print("*** Failure when put data.\n")
+  exit 1
+end
+
+print("*** Get data.\n")
+print("*** You can see the record data stored in servicetesttable.\n")
+get tablename, 'row2'
+
+print("*** Delete table.\n")
+delete_table_if_exists(tablename)
+
+print ("*** Service test finished successfully.\n")
+exit 0
+

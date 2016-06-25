@@ -1,0 +1,4 @@
+- hosts: hadoop_spark
+  roles:
+  - spark
+

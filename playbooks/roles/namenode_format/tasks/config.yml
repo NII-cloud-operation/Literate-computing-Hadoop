@@ -1,0 +1,15 @@
+- name: check_format_state
+  sudo: yes
+  stat: path={{ item }}/current
+  with_items: dfs_namenode_name_dirs
+
+- name: FORMAT_namenode
+  sudo: yes
+  sudo_user: hdfs
+  shell: hdfs namenode -format -force
+
+- name: FORMAT_ZKFC
+  sudo: yes
+  sudo_user: hdfs
+  shell: hdfs zkfc -formatZK -force
+  when: hadoop_namenode_servers|length > 1

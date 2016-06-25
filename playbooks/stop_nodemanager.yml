@@ -1,0 +1,7 @@
+## 前提1: YARN上でアプリケーションが動作していないこと
+
+- hosts: hadoop_slavenode
+  sudo: yes
+  tasks:
+    - name: stop_hadoop-yarn-nodemanager
+      service: name=hadoop-yarn-nodemanager state=stopped

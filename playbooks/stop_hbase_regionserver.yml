@@ -1,0 +1,8 @@
+## 前提1: Masterが停止していること
+## リージョンのスプリット等が発生するため、RegionServerから停止させてはならない
+
+- hosts: hadoop_hbase_regionserver
+  sudo: yes
+  tasks:
+    - name: stop_hbase-regionserver
+      service: name=hbase-regionserver state=stopped

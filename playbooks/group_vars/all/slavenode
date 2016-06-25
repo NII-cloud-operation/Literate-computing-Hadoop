@@ -1,0 +1,5 @@
+datanode_heap_size: ''
+datanode_java_opts: ''
+
+nodemanager_heap_size: ''
+nodemanager_java_opts: ''

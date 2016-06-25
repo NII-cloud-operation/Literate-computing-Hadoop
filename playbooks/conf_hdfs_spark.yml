@@ -1,0 +1,5 @@
+## 前提1: HDFSが利用可能(正常に読み書きできる)であること
+
+- hosts: hadoop_namenode_primary
+  roles:
+  - hdfs_spark

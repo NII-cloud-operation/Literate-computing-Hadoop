@@ -1,0 +1,4 @@
+- name: BootstrapStandby_namenode
+  sudo: yes
+  sudo_user: hdfs
+  shell: hdfs namenode -bootstrapstandby

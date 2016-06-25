@@ -1,0 +1,20 @@
+- name: create_hive_metastore_dir
+  sudo: yes
+  file: path={{ hive_metastore_dir }} state=directory owner=hive group=hadoop mode=777
+
+- name: create_hive_conf_dir
+  sudo: yes
+  file: path=/etc/hive/conf state=directory owner=root group=root mode=755
+
+- include: principal.yml
+  sudo: yes
+  vars: { kerberos_princ_username: hive, kerberos_princ_keytab_path: /etc/hive/conf/hive.keytab, kerberos_princ_keytab_owner: hive }
+  when: kerberos_realm is defined
+
+- name: copy_hive_conf
+  sudo: yes
+  template: src={{ item }}.j2 dest=/etc/hive/conf/{{ item }} owner=root group=root mode=755
+  with_items:
+  - hive-site.xml
+  - hive-log4j.properties
+  - hive-exec-log4j.properties

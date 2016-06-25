@@ -1,0 +1,4 @@
+- hosts: hadoop_hive
+  roles:
+  - hive
+

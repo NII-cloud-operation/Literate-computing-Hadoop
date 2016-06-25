@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+
+<property>
+  <name>ssl.server.truststore.location</name>
+  <value>{{ https_truststore_path }}</value>
+</property>
+
+<property>
+  <name>ssl.server.truststore.password</name>
+  <value>{{ https_truststore_pass }}</value>
+</property>
+
+<property>
+  <name>ssl.server.keystore.location</name>
+  <value>{{ https_keystore_path }}</value>
+</property>
+
+<property>
+  <name>ssl.server.keystore.password</name>
+  <value>{{ https_keystore_pass }}</value>
+</property>
+
+<property>
+  <name>ssl.server.keystore.keypassword</name>
+  <value>{{ https_privkey_pass }}</value>
+</property>
+
+</configuration>

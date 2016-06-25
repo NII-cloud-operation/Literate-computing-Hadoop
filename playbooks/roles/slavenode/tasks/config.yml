@@ -1,0 +1,59 @@
+- name: create_datanode_data_dir
+  sudo: yes
+  file: path={{ item }} state=directory owner=hdfs group=hadoop mode=700
+  with_items: dfs_datanode_data_dirs
+
+- name: fix_init_scripts_2.2
+  sudo: yes
+  template: src=init_{{ item }}_{{ hdp_version }}.j2 dest=/usr/hdp/{{ hdp_version }}/etc/rc.d/init.d/{{ item }} mode=755
+  with_items:
+  - hadoop-hdfs-datanode
+  - hadoop-yarn-nodemanager
+  when: hdp_version == '2.2.0.0-2041'
+
+- name: fix_init_scripts_2.3later
+  sudo: yes
+  template: src=init_{{ item.name }}_{{ hdp_version }}.j2 dest=/usr/hdp/{{ hdp_version }}/{{ item.path }}/etc/rc.d/init.d/{{ item.name }} mode=755
+  with_items:
+  - { name: hadoop-hdfs-datanode, path: hadoop-hdfs }
+  - { name: hadoop-yarn-nodemanager, path: hadoop-yarn }
+  when: hdp_version != '2.2.0.0-2041'
+  
+- name: create_symbolic_link_to/etc/init.d
+  sudo: yes
+  file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/etc/rc.d/init.d/{{ item }}
+  with_items:
+  - hadoop-hdfs-datanode
+  - hadoop-yarn-nodemanager
+  when: hdp_version == '2.2.0.0-2041'
+  
+- name: create_symbolic_link_to/etc/init.d
+  sudo: yes
+  file: path=/etc/init.d/{{ item.name }} state=link src=/usr/hdp/{{ hdp_version }}/{{ item.path }}/etc/rc.d/init.d/{{ item.name }}
+  with_items:
+  - { name: hadoop-hdfs-datanode, path: hadoop-hdfs }
+  - { name: hadoop-yarn-nodemanager, path: hadoop-yarn }
+  when: hdp_version != '2.2.0.0-2041'
+  
+- name: create_holder_directory_for_hadoop_tmp_dir
+  sudo: yes
+  file: path={{ hadoop_tmp_dir[0:hadoop_tmp_dir.rfind('/')] }} state=directory mode=755 owner=yarn group=yarn
+  
+- name: create_yarn_pid_dir
+  sudo: yes
+  file: path={{ yarn_pid_dir }} state=directory mode=755 owner=yarn group=yarn
+
+- name: create_hdfs_log_dir
+  sudo: yes
+  file: path={{ hdfs_log_dir }} state=directory mode=755 owner=hdfs group=hadoop 
+  
+- name: create_yarn_log_dir
+  sudo: yes
+  file: path={{ yarn_log_dir }} state=directory mode=755 owner=yarn group=hadoop
+
+- name: copy_defaults_file
+  sudo: yes
+  template: src=default_{{ item }}.j2 dest=/etc/default/{{ item }} mode=755 owner=root group=root
+  with_items:
+  - hadoop-hdfs-datanode
+  - hadoop-yarn-nodemanager

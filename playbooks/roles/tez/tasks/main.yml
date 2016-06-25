@@ -1,0 +1,2 @@
+- include: install.yml tags=install,tez
+- include: config.yml tags=config,tez

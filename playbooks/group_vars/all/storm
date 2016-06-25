@@ -1,0 +1,3 @@
+storm_group_id: '490'
+storm_user_id: '512'
+storm_worker_child_opts: '-Xmx768m'

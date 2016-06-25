@@ -1,0 +1,4 @@
+- hosts: hadoop_all
+  roles:
+  - base
+

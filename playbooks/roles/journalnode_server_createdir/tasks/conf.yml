@@ -1,0 +1,4 @@
+- name: create_journalnode_data_dir
+  sudo: yes
+  file: path={{ dfs_journalnode_edits_dir }}/{{ dfs_nameservices }}/current/paxos state=directory owner=hdfs group=hdfs mode=755
+  

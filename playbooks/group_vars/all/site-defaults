@@ -1,0 +1,73 @@
+# Java
+## 依存: jdk7_md5sum
+jdk7_version: '75'
+
+## 依存: jdk8_md5sum
+jdk8_version: '31'
+
+# HDP
+hdp_version: '2.2.0.0-2041'
+
+# Hadoop
+hadoop_conf_dir: '/etc/hadoop/conf'
+
+# HDFS
+dfs_nameservices: 'hdfs-cluster'
+hdfs_log_dir: '/var/log/hadoop-hdfs'
+hdfs_pid_dir: '/var/run/hadoop-hdfs'
+
+# YARN
+yarn_rm_cluster_id: 'yarn-cluster'
+yarn_log_dir: '/var/log/hadoop-yarn'
+yarn_pid_dir: '/var/run/hadoop-yarn'
+yarn_rm_webapp_port: '8088'
+
+# HBase
+hbase_log_dir: '/var/log/hbase'
+hbase_pid_dir: '/var/run/hbase'
+hbase_opts: '-XX:+UseConcMarkSweepGC'
+hbase_server_gc_opts: '-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps'
+hbase_client_gc_opts: ''
+
+# Presto
+presto_cluster_id: 'prestocluster'
+
+presto_data_dir: ''
+
+presto_hive_metastore_port: '9083'
+
+presto_http_port: '9090'
+
+presto_install_path: '/usr/local/lib'
+
+presto_log_dir: '/var/log/presto'
+
+## 依存: presto_version
+presto_md5sum: 'c0bc337c2fc15daa284bd8063cb31738'
+
+presto_pid_dir: '/var/run/presto'
+
+presto_task_max_memory: '1GB'
+
+presto_tmp_path: '/tmp'
+
+## 依存: presto_md5sum
+presto_version: '0.89'
+
+
+# Spark
+spark_event_log_dir: '/var/log/spark'
+
+## 依存: spark_version, spark_md5sum
+spark_hadoop_version: 'hadoop2.4'
+
+spark_install_path: '/usr/local/lib'
+
+spark_pid_dir: '/var/run/spark'
+
+## 依存: spark_hadoop_version, spark_md5sum
+spark_version: '1.2.0'
+
+
+# Tez
+tez_hdfs_dir: '/apps/tez'

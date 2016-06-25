@@ -1,0 +1,5 @@
+- name: install_hive_packages
+  sudo: yes
+  yum: name={{ item }} state=installed
+  with_items:
+  - hive

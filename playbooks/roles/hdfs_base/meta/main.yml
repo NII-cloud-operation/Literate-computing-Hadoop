@@ -1,0 +1,4 @@
+dependencies:
+  - {role: site-defaults}
+  - {role: java7}
+  

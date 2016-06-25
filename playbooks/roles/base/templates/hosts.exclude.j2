@@ -1,0 +1,6 @@
+{% if datanode_decommission_nodes is defined %}
+{% for server in datanode_decommission_nodes %}
+{{ server }}
+{% endfor %}
+{% endif %}
+

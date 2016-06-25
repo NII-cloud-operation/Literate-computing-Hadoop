@@ -1,0 +1,7 @@
+- include: install-tarball.yml tags=install,swimlane
+  when: hdp_version == '2.2.0.0-2041'
+
+- include: install-github.yml tags=install,swimlane
+  when: hdp_version != '2.2.0.0-2041'
+
+- include: conf.yml tags=conf,swimlane

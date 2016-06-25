@@ -1,0 +1,15 @@
+- name: set_nofile_soft_limit
+  sudo: yes
+  lineinfile: dest=/etc/security/limits.conf line="*    soft  nofile    {{ nofile_soft_limit }}" regexp="\* .*soft .*nofile .*"
+
+- name: set_nofile_hard_limit
+  sudo: yes
+  lineinfile: dest=/etc/security/limits.conf line="*    hard  nofile    {{ nofile_hard_limit }}" regexp="\* .*hard .*nofile .*"
+    
+- name: set_core_soft_limit
+  sudo: yes
+  lineinfile: dest=/etc/security/limits.conf line="*    soft  core      {{ core_soft_limit }}" regexp="\* .*soft .*core .*"
+
+- name: set_core_hard_limit
+  sudo: yes
+  lineinfile: dest=/etc/security/limits.conf line="*    hard  core      {{ core_hard_limit }}" regexp="\* .*hard .*core .*"

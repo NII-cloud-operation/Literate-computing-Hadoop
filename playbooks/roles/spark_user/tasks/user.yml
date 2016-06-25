@@ -1,0 +1,3 @@
+- name: create_spark_user
+  sudo: yes
+  user: name=spark createhome=no uid={{ spark_user_id }}

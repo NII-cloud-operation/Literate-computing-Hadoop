@@ -1,0 +1,8 @@
+Client {
+  com.sun.security.auth.module.Krb5LoginModule required
+  useKeyTab=true
+  keyTab="/etc/hadoop/conf/hdfs.keytab"
+  storeKey=true
+  useTicketCache=false
+  principal="hdfs/{{ ansible_fqdn }}@{{ kerberos_realm }}";
+};

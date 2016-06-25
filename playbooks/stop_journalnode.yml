@@ -1,0 +1,7 @@
+## 前提1: NameNode, ZKFC, DataNodeが全て停止していること
+
+- hosts: hadoop_journalnode
+  sudo: yes
+  tasks:
+    - name: stop_hadoop-hdfs-journalnode
+      service: name=hadoop-hdfs-journalnode state=stopped

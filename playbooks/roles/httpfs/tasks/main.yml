@@ -1,0 +1,2 @@
+- include: install.yml tags=install,httpfs
+- include: config.yml tags=config,httpfs

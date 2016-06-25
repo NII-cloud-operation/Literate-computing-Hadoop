@@ -1,0 +1,5 @@
+- name: install_storm_packages
+  sudo: yes
+  yum: name={{ item }} state=installed
+  with_items:
+  - storm

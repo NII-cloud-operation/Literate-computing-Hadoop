@@ -1,0 +1,1 @@
+hive_default_execution_engine: 'tez'

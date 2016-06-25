@@ -1,0 +1,14 @@
+- hosts: hadoop_hive
+  sudo: yes
+  sudo_user: hive
+  tasks:
+    - name: check_status_hcatalog
+      shell: '[ -s /usr/hdp/current/hive-webhcat/var/log/hcat.pid ] && [ -x /proc/$(cat /usr/hdp/current/hive-webhcat/var/log/hcat.pid) ]'
+      register: check_status_hcatalog
+      changed_when: false
+      failed_when: check_status_hcatalog.rc not in [0, 1]
+      always_run: true
+
+    - name: stop_hcatalog_server
+      shell: /usr/hdp/current/hive-webhcat/bin/hcat_server.sh stop
+      when: check_status_hcatalog.rc == 0

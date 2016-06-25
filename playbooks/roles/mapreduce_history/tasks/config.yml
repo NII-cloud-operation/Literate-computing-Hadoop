@@ -1,0 +1,33 @@
+- name: fix_init_scripts_2.2
+  sudo: yes
+  copy: src=init_{{ item }}_{{ hdp_version }} dest=/usr/hdp/{{ hdp_version }}/etc/rc.d/init.d/{{ item }} mode=755
+  with_items:
+  - hadoop-mapreduce-historyserver
+  when: hdp_version == '2.2.0.0-2041'
+  
+- name: create_symbolic_link_to/etc/init.d
+  sudo: yes
+  file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/etc/rc.d/init.d/{{ item }}
+  with_items:
+  - hadoop-mapreduce-historyserver
+  when: hdp_version == '2.2.0.0-2041'
+  
+- name: create_symbolic_link_to/etc/init.d
+  sudo: yes
+  file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/hadoop-mapreduce/etc/rc.d/init.d/{{ item }}
+  with_items:
+  - hadoop-mapreduce-historyserver
+  when: hdp_version != '2.2.0.0-2041'
+
+- name: create_symbolic_link_to/usr/hdp/current/hadoop-mapreduce
+  sudo: yes
+  file: path=/usr/hdp/current/hadoop-mapreduce state=link src=/usr/hdp/{{ hdp_version }}/hadoop-mapreduce
+  when: hdp_version != '2.2.0.0-2041'
+
+- name: create_pid_dir
+  sudo: yes
+  file: path={{ mapred_pid_dir }} state=directory mode=775 owner=mapred group=mapred
+  
+- name: create_log_dir
+  sudo: yes
+  file: path={{ mapred_log_dir }} state=directory mode=755 owner=mapred group=hadoop 

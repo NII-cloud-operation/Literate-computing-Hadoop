@@ -1,0 +1,23 @@
+- include: principal.yml
+  vars: { kerberos_princ_username: hdfs, kerberos_princ_keytab_path: /etc/hadoop/conf/hdfs-unmerged.keytab, kerberos_princ_keytab_owner: hdfs }
+
+- include: principal.yml
+  vars: { kerberos_princ_username: mapred, kerberos_princ_keytab_path: /etc/hadoop/conf/mapred-unmerged.keytab, kerberos_princ_keytab_owner: mapred }
+  
+- include: principal.yml
+  vars: { kerberos_princ_username: yarn, kerberos_princ_keytab_path: /etc/hadoop/conf/yarn-unmerged.keytab, kerberos_princ_keytab_owner: yarn }
+  
+- include: principal.yml
+  vars: { kerberos_princ_username: HTTP, kerberos_princ_keytab_path: /etc/hadoop/conf/http.keytab, kerberos_princ_keytab_owner: hdfs }
+
+- include: keytab.yml
+  vars: { kerberos_princ_src_keytab_1: /etc/hadoop/conf/hdfs-unmerged.keytab, kerberos_princ_src_keytab_2: /etc/hadoop/conf/http.keytab, kerberos_princ_dest_keytab: /etc/hadoop/conf/hdfs.keytab, kerberos_princ_keytab_owner: hdfs }
+
+- include: keytab.yml
+  vars: { kerberos_princ_src_keytab_1: /etc/hadoop/conf/mapred-unmerged.keytab, kerberos_princ_src_keytab_2: /etc/hadoop/conf/http.keytab, kerberos_princ_dest_keytab: /etc/hadoop/conf/mapred.keytab, kerberos_princ_keytab_owner: mapred }
+
+- include: keytab.yml
+  vars: { kerberos_princ_src_keytab_1: /etc/hadoop/conf/yarn-unmerged.keytab, kerberos_princ_src_keytab_2: /etc/hadoop/conf/http.keytab, kerberos_princ_dest_keytab: /etc/hadoop/conf/yarn.keytab, kerberos_princ_keytab_owner: yarn }
+
+
+

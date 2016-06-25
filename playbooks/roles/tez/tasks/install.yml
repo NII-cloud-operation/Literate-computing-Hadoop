@@ -1,0 +1,34 @@
+- name: install_tez_packages
+  sudo: yes
+  yum: name={{ item }} state=installed
+  with_items:
+  - tez
+
+- name: check_tez_packages_on_HDFS
+  sudo: yes
+  sudo_user: hdfs
+  shell: hdfs dfs -ls {{ tez_hdfs_dir }}/tez.tar.gz
+  register: check_tez_installed_on_hdfs
+  ignore_errors: yes
+  changed_when: false
+  always_run: true
+  
+- name: copy_tez_packages_to_HDFS
+  sudo: yes
+  sudo_user: hdfs
+  shell: hdfs dfs -copyFromLocal /usr/hdp/current/tez-client/lib/tez.tar.gz {{ tez_hdfs_dir }}
+  register: copy_tez_packages_to_HDFS
+  when: check_tez_installed_on_hdfs.rc != 0
+  
+- name: change_owner_of_tez_packages
+  sudo: yes
+  sudo_user: hdfs
+  shell: hdfs dfs -chown -R hdfs:hadoop {{ tez_hdfs_dir }}
+  when: check_tez_installed_on_hdfs.rc != 0
+  
+- name: change_mode_of_tez_packages
+  sudo: yes
+  sudo_user: hdfs
+  shell: hdfs dfs -chmod -R 555 {{ tez_hdfs_dir }}
+  when: check_tez_installed_on_hdfs.rc != 0
+  

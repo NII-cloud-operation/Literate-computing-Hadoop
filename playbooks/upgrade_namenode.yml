@@ -1,0 +1,9 @@
+- hosts: hadoop_namenode
+  sudo: yes
+  tasks:
+    - name: start_hadoop-hdfs-zkfc
+      service: name=hadoop-hdfs-zkfc state=started
+      when: hadoop_namenode_servers|length > 1
+  
+    - name: start_hadoop-hdfs-namenode
+      command: /etc/init.d/hadoop-hdfs-namenode upgrade

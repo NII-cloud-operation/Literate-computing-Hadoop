@@ -1,0 +1,7 @@
+## 前提1: NameNodeの少なくとも片系が起動して、Activeとなっていること
+
+- hosts: hadoop_slavenode
+  sudo: yes
+  tasks:
+    - name: start_hadoop-hdfs-datanode
+      service: name=hadoop-hdfs-datanode state=started

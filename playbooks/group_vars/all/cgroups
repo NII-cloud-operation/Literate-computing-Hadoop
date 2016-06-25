@@ -1,0 +1,99 @@
+cgroups_root_dir: 'resource'
+cgroups_root_group_name: 'hadoop'
+
+cgroups_scripts_dir: '/var/local/cgroups'
+
+cgroups_configure:
+  - group: 'hadoop'
+    params:
+  
+  - group: 'hadoop/zookeeper'
+    params:
+  
+  - group: 'hadoop/zookeeper/zookeeper-server'
+    params: 
+
+  - group: 'hadoop/hdfs'
+    params:
+  
+  - group: 'hadoop/hdfs/namenode'
+    params:
+  
+  - group: 'hadoop/hdfs/datanode'
+    params:
+  
+  - group: 'hadoop/hdfs/journalnode'
+    params:
+ 
+  - group: 'hadoop/hdfs/zkfc'
+    params:
+  
+  - group: 'hadoop/hbase'
+    params:
+  
+  - group: 'hadoop/hbase/hbase_master'
+    params:
+  
+  - group: 'hadoop/hbase/hbase_regionserver'
+    params:
+  
+  - group: 'hadoop/yarn'
+    params:
+  
+  - group: 'hadoop/yarn/resourcemanager'
+    params:
+  
+  - group: 'hadoop/yarn/nodemanager'
+    params:
+  
+  - group: 'hadoop/mapreduce'
+    params:
+  
+  - group: 'hadoop/mapreduce/historyserver'
+    params:
+  
+  - group: 'hadoop/hive'
+    params:
+  
+  - group: 'hadoop/hive/hcatalog'
+    params:
+  
+  - group: 'hadoop/spark'
+    params:
+  
+  - group: 'hadoop/spark/historyserver'
+    params:
+  
+  - group: 'hadoop/presto'
+    params:
+  
+  - group: 'hadoop/presto/presto_server'
+    params:
+  
+  - group: 'hadoop/presto/postgresql'
+    params:
+  
+  - group: 'hadoop/presto/prestogres'
+    params:
+  
+  - group: 'hadoop/storm'
+    params:
+  
+  - group: 'hadoop/storm/nimbus'
+    params:
+  
+  - group: 'hadoop/storm/supervisor'
+    params:
+  
+  - group: 'hadoop/storm/ui'
+    params:
+  
+  - group: 'hadoop/hue'
+    params:
+  
+  - group: 'hadoop/hue/hue'
+    params:
+  
+  - group: 'hadoop/hue/httpfs'
+    params:
+  

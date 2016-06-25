@@ -1,0 +1,5 @@
+- hosts: hadoop_zookeeperserver
+  sudo: yes
+  tasks:
+    - name: start_zookeeper-server
+      service: name=zookeeper-server state=started

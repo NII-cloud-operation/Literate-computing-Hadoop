@@ -1,0 +1,7 @@
+## 前提1: HBase上でクエリ等の処理が動作していないこと
+
+- hosts: hadoop_hbase_master
+  sudo: yes
+  tasks:
+    - name: stop_hbase-master
+      service: name=hbase-master state=stopped

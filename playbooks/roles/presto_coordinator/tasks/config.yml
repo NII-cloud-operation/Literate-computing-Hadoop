@@ -1,0 +1,58 @@
+- name: create_presto_conf_dir
+  sudo: yes
+  file: path=/etc/presto/conf state=directory owner=root group=root mode=755
+  
+- name: create_symbolic_link_to_presto_conf_dir
+  sudo: yes
+  file: path={{ presto_install_path }}/presto-server-{{ presto_version }}/etc state=link src=/etc/presto/conf
+  
+- name: copy_presto_conf_files
+  sudo: yes
+  template: src={{ item }}.j2 dest=/etc/presto/conf/{{ item }} owner=root group=root mode=755
+  with_items:
+  - node.properties
+  - config.properties
+  - jvm.config
+  - log.properties
+  
+- name: create_catalog_dir
+  sudo: yes
+  file: path=/etc/presto/conf/catalog state=directory owner=root group=root mode=755
+  
+- name: create_presto_data_dir
+  sudo: yes
+  file: path={{ presto_data_dir }} state=directory owner=presto group=hadoop mode=755
+  
+- name: create_presto_log_dir
+  sudo: yes
+  file: path={{ presto_log_dir }} state=directory owner=presto group=hadoop mode=755
+
+- name: create_presto_var_dir
+  sudo: yes
+  file: path={{ presto_data_dir }}/var state=directory
+  
+- name: create_symbolic_link_to_presto_log_dir
+  sudo: yes
+  file: path={{ presto_data_dir }}/var/log state=link src={{ presto_log_dir }}
+
+- name: create_presto_pid_dir
+  sudo: yes
+  file: path={{ presto_pid_dir }} state=directory owner=presto group=presto mode=755
+  
+- name: create_symbolic_link_to_presto_pid_dir
+  sudo: yes
+  file: path={{ presto_data_dir }}/var/run state=link src={{ presto_pid_dir }}
+
+- name: copy_launcher_script
+  sudo: yes
+  template: src={{ item }}.j2 dest={{ presto_install_path }}/presto-server-{{ presto_version }}/bin/{{ item }} owner=root group=root mode=755
+  with_items:
+  - launcher
+  
+- name: set_PRESTO_HOME
+  sudo: yes
+  template: src=presto.sh.j2 dest=/etc/profile.d/presto.sh owner=root group=root mode=644
+    
+- name: copy_sudoers_conf_of_PRESTO_HOME
+  sudo: yes
+  copy: src=env_keep_prestohome dest=/etc/sudoers.d mode=440 owner=root

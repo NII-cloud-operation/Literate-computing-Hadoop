@@ -1,0 +1,7 @@
+- name: install_slavenode_packages
+  sudo: yes
+  yum: name={{ item }} state=installed
+  with_items:
+  - hadoop-hdfs-datanode
+  - hadoop-yarn-nodemanager
+  - hadoop-mapreduce

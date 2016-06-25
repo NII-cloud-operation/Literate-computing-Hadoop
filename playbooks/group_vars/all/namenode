@@ -1,0 +1,5 @@
+namenode_heap_size: ''
+namenode_java_opts: ''
+
+zkfc_heap_size: ''
+zkfc_java_opts: ''

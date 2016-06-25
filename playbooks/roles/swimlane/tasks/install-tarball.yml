@@ -1,0 +1,28 @@
+- name: check_swimlane_installed
+  stat: path={{ swimlane_install_path }}/apache-tez-{{ swimlane_tez_version }}-src
+  register: check_swimlane_installed
+  
+- name: download_tez_file
+  shell: wget --no-verbose {{ swimlane_download_url }}/apache-tez-{{ swimlane_tez_version }}-src.tar.gz -O apache-tez-{{ swimlane_tez_version }}-src.tar.gz chdir={{ swimlane_tmp_path }}
+  when: not check_swimlane_installed.stat.exists
+  ignore_errors: yes
+  
+- name: md5sum_swimlane
+  shell: md5sum {{ swimlane_tmp_path }}/apache-tez-{{ swimlane_tez_version }}-src.tar.gz
+  register: md5sum_swimlane
+  when: not check_swimlane_installed.stat.exists
+  changed_when: false
+  always_run: true
+  
+- name: check_md5sum_swimlane
+  fail: "md5 check sum is not match. {{ md5sum_swimlane.stdout }} should be {{ swimlane_md5sum }}"
+  when: not check_swimlane_installed.stat.exists and md5sum_swimlane.stdout.find('{{ swimlane_md5sum }}')
+  
+- name: umcompressed_swimlane_file
+  sudo: yes
+  shell: tar zxf {{ swimlane_tmp_path }}/apache-tez-{{ swimlane_tez_version }}-src.tar.gz -C {{ swimlane_install_path }}
+  when: not check_swimlane_installed.stat.exists
+
+- name: install_httpd
+  sudo: yes
+  yum: name=httpd state=installed

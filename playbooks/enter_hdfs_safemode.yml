@@ -1,0 +1,9 @@
+## 前提1: HDFSへのアクセス(読み書き)が行われていないこと
+
+- hosts: hadoop_namenode
+  sudo: yes
+  sudo_user: hdfs
+  tasks:
+    - name: HDFS_enter_safemode
+      shell: hdfs dfsadmin -safemode enter
+      

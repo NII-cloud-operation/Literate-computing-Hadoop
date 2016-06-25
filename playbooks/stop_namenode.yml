@@ -1,0 +1,21 @@
+## 前提1: HDFSがsafemodeになっていること
+#- hosts: hadoop_namenode_primary
+#  sudo: yes
+#  sudo_user: hdfs
+#  tasks:
+#    - name: enter_safemode
+#      shell: hdfs dfsadmin -safemode enter
+#      register: enter_safemode
+#
+#    - name: check_status
+#      fail: msg="fail to enter safemode ..."
+#      when: enter_safemode.rc != 0
+
+- hosts: hadoop_namenode
+  sudo: yes
+  tasks:
+    - name: stop_hadoop-hdfs-zkfc
+      service: name=hadoop-hdfs-zkfc state=stopped
+  
+    - name: stop_hadoop-hdfs-namenode
+      service: name=hadoop-hdfs-namenode state=stopped

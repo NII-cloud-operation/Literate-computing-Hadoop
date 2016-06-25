@@ -1,0 +1,97 @@
+# yum repository
+#   hdp.repo.j2
+base_hdp_hdp_baseurl: 'http://share/archive/hdp2.2/centos6/2.x/HDP-2.2.0.0'
+
+base_hdp_hdp_gpgcheck: '1'
+
+base_hdp_hdp_gpgkeyurl: 'http://share/archive/hdp2.2/centos6/2.x/rpm-gpg-key/RPM-GPG-KEY-Jenkins'
+
+base_hdp_util_baseurl: 'http://share/archive/hdp2.2/centos6/2.x/HDP-UTILS-1.1.0.20'
+
+base_hdp_util_gpgcheck: '1'
+
+base_hdp_util_gpgkeyurl: 'http://share/archive/hdp2.2/centos6/2.x/rpm-gpg-key/RPM-GPG-KEY-Jenkins'
+
+# Hadoop Configuration
+hadoop_tmp_dir: '/hadoop/tmp/hadoop-${user.name}'
+
+net_topology_script_file_name: ''
+
+fs_trash_interval: '0'
+
+dfs_namenode_heartbeat_recheck_interval: '300000'
+
+io_file_buffer_size: '4096'
+
+# HDFS
+namenode_rpc_port: '8020'
+
+namenode_http_port: '50070'
+
+namenode_https_port: '50470'
+
+datanode_https_port: '50470'
+
+dfs_datanode_balance_bandwidthPerSec: '1048576'
+
+dfs_namenode_safemode_extension: '10000'
+
+dfs_namenode_checkpoint_period: '1800'
+
+dfs_namenode_handler_count: '32'
+
+dfs_datanode_handler_count: '10'
+
+dfs_datanode_max_transfer_threads: '4098'
+
+dfs_datanode_du_reserved: '0'
+
+dfs_namenode_checkpoint_txns: '400000'
+
+dfs_replication: '2'
+
+# YARN
+yarn_app_log_dir: '/var/log/yarn'
+
+yarn_rm_rpc_port: '8032'
+
+yarn_rm_scheduler_port: '8030'
+
+yarn_rm_admin_port: '8033'
+
+yarn_rm_resource_tracker_port: '8031'
+
+# MapReduce
+## 依存: mapreduce_am_resource_mb
+mapreduce_am_resource_mb: '1024'
+
+## 依存: mapreduce_am_resource_mb
+mapreduce_am_command_opts: '-Xmx768m'
+
+mapreduce_map_cpu_vcores: '1'
+
+## 依存: mapreduce_map_java_opts
+mapreduce_map_memory_mb: '1024'
+
+## 依存: mapreduce_map_memory_mb
+mapreduce_map_java_opts: '-Xmx768m'
+
+mapreduce_reduce_cpu_vcores: '1'
+
+## 依存: mapreduce_reduce_java_opts
+mapreduce_reduce_memory_mb: '1024'
+
+## 依存: mapreduce_reduce_memory_mb
+mapreduce_reduce_java_opts: '-Xmx768m'
+
+# hadoop-env
+hdfs_ident_string: 'hdfs'
+yarn_ident_string: 'yarn'
+tez_conf_dir: '/etc/tez/conf'
+
+# mapred-env
+job_historyserver_heapsize: '1000'
+mapred_root_logger: 'INFO,RFA'
+mapred_log_dir: '/var/log/hadoop-mapreduce'
+mapred_pid_dir: '/var/run/hadoop-mapreduce'
+mapred_ident_string: 'mapred'

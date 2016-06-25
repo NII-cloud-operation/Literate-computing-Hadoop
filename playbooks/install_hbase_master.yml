@@ -1,0 +1,4 @@
+- hosts: hadoop_hbase_master
+  roles:
+  - hbase_master
+

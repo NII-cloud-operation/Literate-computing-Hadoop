@@ -1,0 +1,12 @@
+## 前提1: NameNode(Primary側)のフォーマット、同期(Backup側)が完了していること
+## 前提2: ZooKeeperとJournalNodeがそれぞれ過半数以上起動していること
+
+- hosts: hadoop_namenode
+  sudo: yes
+  tasks:
+    - name: start_hadoop-hdfs-zkfc
+      service: name=hadoop-hdfs-zkfc state=started
+      when: hadoop_namenode_servers|length > 1
+  
+    - name: start_hadoop-hdfs-namenode
+      service: name=hadoop-hdfs-namenode state=started

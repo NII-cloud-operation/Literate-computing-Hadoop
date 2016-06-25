@@ -1,0 +1,2 @@
+Defaults   env_keep += "PRESTO_HOME"
+Defaults   env_keep += "PRESTO_PID_DIR"

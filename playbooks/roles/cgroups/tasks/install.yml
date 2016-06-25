@@ -1,0 +1,8 @@
+- name: install_cgroups
+  sudo: yes
+  yum: name={{ item }} state=installed
+  register: result_install_cgroups
+  with_items:
+    - libcgroup
+    - libcgroup-devel
+

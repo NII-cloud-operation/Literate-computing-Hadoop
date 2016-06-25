@@ -1,0 +1,5 @@
+dependencies:
+  - {role: site-defaults}
+  - {role: java8}
+  - {role: presto_user}
+  

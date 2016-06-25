@@ -1,0 +1,31 @@
+- name: create_hadoop_conf_dir
+  sudo: yes
+  file: path={{ hadoop_conf_dir }} state=directory owner=root group=root mode=755
+
+- name: copy_conf_files
+  sudo: yes
+  template: src={{ item }}.j2 dest=/etc/hadoop/conf/{{ item }}
+  with_items:
+  - core-site.xml
+  - hdfs-site.xml
+  - yarn-site.xml
+  - mapred-site.xml
+  - hadoop-env.sh
+  - yarn-env.sh
+  - mapred-env.sh
+  - hadoop-metrics.properties
+  - hadoop-metrics2.properties
+  - log4j.properties
+  - capacity-scheduler.xml
+  - hosts.exclude
+  - hosts.list
+  
+- name: copy_secure_conf_files
+  sudo: yes
+  template: src={{ item }}.j2 dest=/etc/hadoop/conf/{{ item }}
+  with_items:
+  - ssl-server.xml
+  - ssl-client.xml
+  - zk-acl.txt
+  - container-executor.cfg
+  when: kerberos_realm is defined

@@ -1,0 +1,90 @@
+#!/bin/bash
+
+# Verify if user is hdfs.
+if [ "$USER" != "hdfs" ]; then
+  echo "Run hdfs-balander.sh as hdfs user."
+  exit 1
+fi
+
+# Determine PID and LOG directory path.
+CONF_DIR="/etc/hadoop/conf"
+. $CONF_DIR/hadoop-env.sh
+PIDFILE="$HADOOP_PID_DIR/hadoop-hdfs-balancer.pid"
+LOGFILE="$HADOOP_LOG_DIR/hadoop-hdfs-balancer.log"
+PREVPID=-1
+
+# return 1 if balancer is not running.
+# return 0 if balancer is running.
+function isRunning(){
+  # Check if another balancer is running.
+  if [ -f $PIDFILE ]; then
+    PREVPID=$(cat $PIDFILE)
+    kill -s 0 $PREVPID >/dev/null 2>&1
+    if [ $? -eq 0 ]; then
+      return 0
+    fi
+  fi
+  return 1
+}
+
+function start(){
+  # Check if another balancer is running.
+  isRunning
+  if [ $? -eq 0 ]; then
+    echo "HDFS balancer is already running (PID:$PREVPID)"
+    exit 1
+  fi
+
+  # Start balancer
+  nohup hdfs balancer >>$LOGFILE 2>&1 &
+  PID=$!
+  echo $PID > $PIDFILE
+
+  # Output start message.
+  echo "HDFS balancer started (PID:$PID)"
+  echo "HDFS balancer started (PID:$PID) at $(date)" >$LOGFILE
+}
+
+function stop(){
+  # Check if another balancer is running.
+  isRunning
+  if [ $? -ne 0 ]; then
+    echo "no HDFS balancer to stop"
+    exit 1
+  fi
+
+  # kill
+  kill $PREVPID
+
+  # Output kill message.
+  echo "Killed HDFS balancer (PID:$PREVPID)"
+  echo "Killed HDFS balancer (PID:$PREVPID) at $(date)" >>$LOGFILE
+}
+
+function status(){
+  # Check if another balancer is running.
+  isRunning
+  if [ $? -eq 0 ]; then
+    echo "HDFS balancer is running (PID:$PREVPID)"
+    exit 0
+  else
+    echo "HDFS balancer is not running"
+    exit 3
+  fi
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    status
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|status}"
+    exit 2
+    ;;
+esac

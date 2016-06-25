@@ -1,0 +1,44 @@
+- name: create_httpfs_temp_dir
+  sudo: yes
+  file: path={{ httpfs_temp_dir }} state=directory owner=httpfs group=hadoop mode=775
+
+- name: create_symbolic_link_to_libexec
+  sudo: yes
+  file: path=/usr/hdp/{{ hdp_version }}/hadoop-httpfs/libexec state=link src=/usr/hdp/{{ hdp_version }}/hadoop/libexec 
+
+- name: fix_launcher_script
+  sudo: yes
+  template: src=httpfs.sh.j2 dest=/usr/hdp/{{ hdp_version }}/hadoop-httpfs/sbin/httpfs.sh owner=root group=root mode=755
+
+- name: fix_etc_default
+  sudo: yes
+  template: src=hadoop-httpfs-default.j2 dest=/usr/hdp/{{ hdp_version }}/etc/default/hadoop-httpfs
+
+- name: create_symbolic_link_to_/etc/default
+  sudo: yes
+  file: path=/etc/default/hadoop-httpfs state=link src=/usr/hdp/{{ hdp_version }}/etc/default/hadoop-httpfs
+
+- name: create_httpfs_conf_dir
+  sudo: yes
+  file: path=/etc/hadoop-httpfs/conf state=directory owner=root group=root mode=755
+  
+- name: copy_httpfs_conf_file
+  sudo: yes
+  template: src={{ item }}.j2 dest=/etc/hadoop-httpfs/conf/{{ item }} owner=root group=root mode=755
+  with_items:
+  - httpfs-site.xml
+  - httpfs-env.sh
+  - httpfs-log4j.properties
+  - httpfs-signature.secret
+
+- name: fix_init_scripts
+  sudo: yes
+  template: src={{ item }}.j2 dest=/usr/hdp/{{ hdp_version }}/etc/rc.d/init.d/{{ item }} mode=755
+  with_items:
+  - hadoop-httpfs
+  
+- name: create_symbolic_link_to/etc/init.d
+  sudo: yes
+  file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/etc/rc.d/init.d/{{ item }}
+  with_items:
+  - hadoop-httpfs

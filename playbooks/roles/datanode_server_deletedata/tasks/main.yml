@@ -1,0 +1,2 @@
+- include: delete.yml tags=delete,datanode
+

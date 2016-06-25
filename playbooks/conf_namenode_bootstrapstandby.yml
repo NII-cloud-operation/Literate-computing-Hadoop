@@ -1,0 +1,7 @@
+## 前提1: NameNode(Primary側)が起動していること
+## 前提2: NameNode(Backup側)が起動していないこと
+
+- hosts: hadoop_namenode
+  roles:
+  - namenode_bootstrapstandby
+

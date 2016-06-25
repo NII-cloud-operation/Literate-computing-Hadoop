@@ -1,0 +1,3 @@
+
+#  zookeeper_log_dir: '/var/log/zookeeper'
+#  zookeeper_pid_dir: '/var/run/zookeeper'

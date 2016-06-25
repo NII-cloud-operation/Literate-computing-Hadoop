@@ -1,0 +1,4 @@
+- hosts: hadoop_mapreduce_historyserver
+  roles:
+  - mapreduce_history
+

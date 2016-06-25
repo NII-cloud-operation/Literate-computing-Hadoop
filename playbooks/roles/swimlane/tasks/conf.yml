@@ -1,0 +1,8 @@
+- name: check_swimlane_installed
+  sudo: yes
+  file: path={{ swimlane_install_path }}/apache-tez-{{ swimlane_tez_version }}-src/tez-tools/swimlanes state=directory mode=777 owner=yarn group=hadoop
+  
+- name: create_swimlanes_directory
+  sudo: yes
+  file: path=/var/www/html/swimlanes state=directory owner=yarn group=hadoop
+  

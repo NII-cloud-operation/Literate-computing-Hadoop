@@ -1,0 +1,23 @@
+- name: check_presto_installed
+  stat: path={{ presto_install_path }}/presto-server-{{ presto_version }}
+  register: check_presto_installed
+  
+- name: download_presto_by_wget
+  shell: wget --no-verbose {{ presto_server_download_url }}/presto-server-{{ presto_version }}.tar.gz -O presto-server-{{ presto_version }}.tar.gz chdir={{ presto_tmp_path }}
+  when: not check_presto_installed.stat.exists
+  ignore_errors: yes
+  
+- name: md5sum_presto
+  shell: md5sum {{ presto_tmp_path }}/presto-server-{{ presto_version }}.tar.gz
+  register: md5sum_presto
+  changed_when: false
+  always_run: true
+  
+- name: check_md5sum
+  fail: "md5 check sum is not match. {{ md5sum_presto.stdout }} should be {{ presto_md5sum }}"
+  when: not check_presto_installed.stat.exists and md5sum_presto.stdout.find('{{ presto_md5sum }}')
+
+- name: umcompressed_presto.tar.gz_file
+  sudo: yes
+  shell: tar zxvf {{ presto_tmp_path }}/presto-server-{{ presto_version}}.tar.gz -C {{ presto_install_path }}
+  when: not check_presto_installed.stat.exists

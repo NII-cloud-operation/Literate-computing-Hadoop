@@ -1,0 +1,2 @@
+- include: install.yml tags=install,pig
+- include: config.yml tags=config,pig

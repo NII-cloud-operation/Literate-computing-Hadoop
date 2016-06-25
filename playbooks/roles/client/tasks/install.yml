@@ -1,0 +1,6 @@
+- name: install_hadoop-client_packages
+  sudo: yes
+  yum: name={{ item }} state=installed
+  with_items:
+  - hadoop-client
+  - hadoop-mapreduce

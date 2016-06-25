@@ -1,0 +1,7 @@
+- include: repo.yml tags=repo,base
+#- include: install.yml tags=install,cdh5_base
+- include: conf.yml tags=conf,base
+
+- include: kerberos.yml tags=conf,base
+  become: yes
+  when: kerberos_realm is defined

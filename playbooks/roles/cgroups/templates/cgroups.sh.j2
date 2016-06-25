@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# return code list
+RETURN_SUCCESS=0
+RETURN_ILLEGAL_ARGUMENTS=1
+RETURN_USER_NOT_ROOT=2
+RETURN_DIRECTORY_NOT_EXIST=3
+RETURN_PID_NOT_EXIST=4
+RETURN_CGROUPS_REGIST_FAILED=5
+RETURN_GROUP_NOT_DEFINED=6
+RETURN_PROCESS_NOT_DEFINED=7
+
+# argument check
+if [ $# -ne 3 ]; then
+  echo "Usage: $0 <group_dir_name> <group_process_dir> <pid>" 1>&2
+  exit ${RETURN_ELLEGAL_ARGUMENTS}
+fi
+
+if [ $(id -u) -ne 0 ]; then
+  echo "This script requires root privileges." 1>&2
+  exit ${RETURN_USER_NOT_ROOT}
+fi
+
+# variables
+PID=${3}
+CGROUPS_GROUP_NAME=${1}
+CGROUPS_PROCESS_NAME=${2}
+
+for resource in "blkio" "cpu" "cpuacct" "cpuset" "devices" "freezer" "memory" "net_cls";
+do
+  CGROUPS_ROOT_DIR=/cgroup/${resource}
+  CGROUPS_HADOOP_DIR=${CGROUPS_ROOT_DIR}/{{ cgroups_root_group_name }}
+  CGROUPS_GROUP_DIR=${CGROUPS_HADOOP_DIR}/${CGROUPS_GROUP_NAME}
+  CGROUPS_PROCESS_DIR=${CGROUPS_GROUP_DIR}/${CGROUPS_PROCESS_NAME}
+  CGROUPS_SCRIPTS_DIR={{ cgroups_scripts_dir }}
+  
+  # cgroups directory check
+  if [ ! -e ${CGROUPS_HADOOP_DIR} ]; then
+    continue
+  fi
+  
+  if [ ! -e ${CGROUPS_GROUP_DIR} ]; then
+    continue
+  fi
+  
+  if [ ! -e ${CGROUPS_PROCESS_DIR} ]; then
+    continue
+  fi
+  
+  # pid exist check
+  kill -0 ${PID} > /dev/null 2>&1
+  if [ $? -ne 0 ]; then
+    echo "Process ${PID} is not found." 2>&1
+    continue
+  fi
+  
+  # register pid to cgroups
+  echo ${PID} >> ${CGROUPS_PROCESS_DIR}/tasks
+  if [ $? -eq 0 ]; then
+    echo "Process ${PID} is registered to cgroups hadoop/${CGROUPS_GROUP_NAME}/${CGROUPS_PROCESS_NAME}"
+  else 
+    echo "Failed to register Process ${PID} to hadoop/${CGROUPS_GROUP_NAME}/${CGROUPS_PROCESS_NAME}"
+    continue
+  fi
+done
+

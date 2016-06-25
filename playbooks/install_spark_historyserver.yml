@@ -1,0 +1,4 @@
+- hosts: hadoop_spark_history
+  roles:
+  - spark_history
+

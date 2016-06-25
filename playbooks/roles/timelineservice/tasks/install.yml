@@ -1,0 +1,5 @@
+- name: install_timelineserver_packages
+  sudo: yes
+  yum: name={{ item }} state=installed
+  with_items:
+  - hadoop-yarn-timelineserver

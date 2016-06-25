@@ -1,0 +1,9 @@
+## 前提1: ZooKeeperが起動していること
+## 前提2: HDFSが利用可能(正常に読み書きできる)であること
+## 前提3: 利用予定のRegionServerが全台起動していること
+
+- hosts: hadoop_hbase_master
+  sudo: yes
+  tasks:
+    - name: start_hbase-master
+      service: name=hbase-master state=started

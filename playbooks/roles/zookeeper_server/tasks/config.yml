@@ -1,0 +1,78 @@
+- name: create_config_dir
+  sudo: yes
+  file: path=/etc/zookeeper/conf state=directory mode=755
+
+- include: principal.yml
+  sudo: yes
+  vars: { kerberos_princ_username: zookeeper, kerberos_princ_keytab_path: /etc/zookeeper/conf/zookeeper.keytab, kerberos_princ_keytab_owner: zookeeper }
+  when: kerberos_realm is defined
+
+- name: copy_jaas_conf
+  sudo: yes
+  template: src=jaas.conf.j2 dest=/etc/zookeeper/conf/jaas.conf
+  when: kerberos_realm is defined
+
+- name: copy_config_files
+  sudo: yes
+  template: src={{ item }}.j2 dest=/etc/zookeeper/conf/{{ item }}
+  with_items:
+  - zoo.cfg
+  - log4j.properties
+  
+- name: create_zookeeper_data_dir
+  sudo: yes
+  file: path={{ zookeeper_data_dir }} state=directory owner=zookeeper group=hadoop mode=755
+  when: hdp_version == '2.2.0.0-2041'
+
+- name: create_zookeeper_data_dir
+  sudo: yes
+  file: path={{ zookeeper_data_dir }} state=directory owner=zookeeper group=zookeeper mode=755
+  when: hdp_version != '2.2.0.0-2041'
+
+- name: copy_myid_file
+  sudo: yes
+  template: src=myid.j2 dest={{zookeeper_data_dir}}/myid
+
+- name: create_symbolic_link_to_/usr/bin
+  sudo: yes
+  file: path=/usr/bin/{{ item }} state=link src=/usr/hdp/current/zookeeper-client/bin/{{ item }}
+  with_items:
+  - zookeeper-server
+  - zookeeper-client
+
+- name: fix_init_scripts
+  sudo: yes
+  template: src={{ item }}.j2 dest=/usr/hdp/{{ hdp_version }}/etc/rc.d/init.d/{{ item }} mode=755
+  with_items:
+  - zookeeper-server
+  when: hdp_version == '2.2.0.0-2041'
+  
+- name: create_symbolic_link_to_/etc/init.d
+  sudo: yes
+  file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/etc/rc.d/init.d/{{ item }}
+  with_items:
+  - zookeeper-server
+  when: hdp_version == '2.2.0.0-2041'
+  
+- name: create_symbolic_link_to_/etc/init.d
+  sudo: yes
+  file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/zookeeper/etc/rc.d/init.d/{{ item }}
+  with_items:
+  - zookeeper-server
+  when: hdp_version != '2.2.0.0-2041'
+ 
+- name: copy_zookeeper-env.sh
+  sudo: yes
+  template: src={{ item }}.j2 dest=/etc/zookeeper/conf/{{ item }}
+  with_items:
+  - zookeeper-env.sh
+
+- name: create_zookeeper_log_dir
+  sudo: yes
+  file: path={{ zookeeper_log_dir }} state=directory owner=zookeeper group=hadoop mode=755
+  when: hdp_version == '2.2.0.0-2041'
+
+- name: create_zookeeper_log_dir
+  sudo: yes
+  file: path={{ zookeeper_log_dir }} state=directory owner=zookeeper group=zookeeper mode=755
+  when: hdp_version != '2.2.0.0-2041'

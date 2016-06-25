@@ -1,0 +1,14 @@
+- name: check keytab
+  stat: path={{ kerberos_princ_dest_keytab }}
+  register: kerberos_princ_dest_keytab_stat
+
+- name: prepare_script
+  template: src=merge-keytabs.ktutil.j2 dest=/home/ansible/merge-keytabs.ktutil
+  when: kerberos_princ_dest_keytab_stat.stat.exists == False
+
+- name: run_script
+  shell: ktutil </home/ansible/merge-keytabs.ktutil
+  when: kerberos_princ_dest_keytab_stat.stat.exists == False
+
+- name: Modify permissions of keytab
+  file: path={{ kerberos_princ_dest_keytab }} owner={{ kerberos_princ_keytab_owner }} group=hadoop mode=0400

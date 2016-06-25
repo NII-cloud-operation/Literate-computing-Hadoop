@@ -1,0 +1,7 @@
+## 前提1: ResourceManagerの少なくとも片系が起動して、Activeとなっていること
+
+- hosts: hadoop_slavenode
+  sudo: yes
+  tasks:
+    - name: start_hadoop-yarn-nodemanager
+      service: name=hadoop-yarn-nodemanager state=started

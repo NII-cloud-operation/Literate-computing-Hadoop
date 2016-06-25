@@ -1,0 +1,4 @@
+jdk7_tmppath: '/tmp'
+
+# 依存: jdk7_version
+jdk7_md5sum: '53b8513548ae527d79899902524a06e1'

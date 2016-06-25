@@ -1,0 +1,3 @@
+- name: set_transparent_hugepage
+  sudo: yes
+  lineinfile: dest=/etc/rc.local line="echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag" regexp="echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag"

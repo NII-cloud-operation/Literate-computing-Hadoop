@@ -1,0 +1,13 @@
+zookeeper_log_dir: '/var/log/zookeeper'
+zookeeper_pid_dir: '/var/run/zookeeper'
+
+zookeeper_heap_size: ''
+zookeeper_jvm_flags: ''
+
+zookeeper_max_client_connections: '50'
+zookeeper_tick_time: '2000'
+zookeeper_init_limit: '10'
+zookeeper_sync_limit: '5'
+zookeeper_client_port: '2181'
+
+zookeeper_server_jvm_opt: ''

@@ -1,0 +1,26 @@
+- name: Check principal
+  command: kadmin -q "getprinc {{ kerberos_princ_username }}/{{ ansible_fqdn }}" -p {{ kerberos_admin_principal }} -k -t {{ kerberos_admin_keytab }}
+  register: target_principals
+  changed_when: target_principals.stderr.find('Principal does not exist') != -1
+
+- name: Add principal
+  command: kadmin -q "addprinc -randkey {{ kerberos_princ_username }}/{{ ansible_fqdn }}" -p {{ kerberos_admin_principal }} -k -t {{ kerberos_admin_keytab }}
+  when: target_principals is defined and target_principals.stderr.find('Principal does not exist') != -1
+    
+- name: Check keytab
+  command: klist -k {{ kerberos_princ_keytab_path }}
+  register: target_keytabs
+  changed_when: target_keytabs.rc != 0 or target_keytabs.stdout.find(kerberos_princ_username + '/' + ansible_fqdn) == -1
+  ignore_errors: yes
+
+- name: Prepare keytab
+  command: kadmin -q "ktadd -k {{ kerberos_princ_keytab_path }} {{ kerberos_princ_username }}/{{ ansible_fqdn }}" -p {{ kerberos_admin_principal }} -k -t {{ kerberos_admin_keytab }}
+  when: target_keytabs is defined and target_keytabs.rc != 0 or target_keytabs.stdout.find(kerberos_princ_username + '/' + ansible_fqdn) == -1
+  
+- name: Check keytab
+  stat: path={{ kerberos_princ_keytab_path }}
+  register: target_keytab_stat
+
+- name: Modify permissions of keytab
+  file: path={{ kerberos_princ_keytab_path }} owner={{ kerberos_princ_keytab_owner }} group=hadoop mode=0400
+  when: target_keytab_stat.stat.md5 is defined

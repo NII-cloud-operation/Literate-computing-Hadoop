@@ -1,0 +1,4 @@
+- hosts: hadoop_hbase_regionserver
+  roles:
+  - hbase_regionserver
+

@@ -1,0 +1,4 @@
+- hosts: hadoop_journalnode
+  roles:
+  - journalnode
+

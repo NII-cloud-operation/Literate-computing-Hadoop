@@ -1,0 +1,7 @@
+## 前提1: NameNode, ZKFCが停止していること
+
+- hosts: hadoop_slavenode
+  sudo: yes
+  tasks:
+    - name: stop_hadoop-hdfs-datanode
+      service: name=hadoop-hdfs-datanode state=stopped

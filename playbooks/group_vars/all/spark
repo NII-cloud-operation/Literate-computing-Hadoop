@@ -1,0 +1,4 @@
+spark_md5sum: '303624669c204ca78188e647ea0d899e'
+spark_tmp_path: '/tmp'
+spark_history_server_port: '18080'
+spark_scheduler_mode: 'FAIR'

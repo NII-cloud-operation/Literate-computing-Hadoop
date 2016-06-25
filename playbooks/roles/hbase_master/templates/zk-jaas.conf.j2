@@ -1,0 +1,7 @@
+Client {
+  com.sun.security.auth.module.Krb5LoginModule required
+  useKeyTab=true
+  useTicketCache=false
+  keyTab="/etc/hbase/conf/hbase.keytab"
+  principal="hbase/{{ ansible_fqdn }}@{{ kerberos_realm }}";
+};

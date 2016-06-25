@@ -1,0 +1,3 @@
+
+#  httpfs_log_dir: '/var/log/hadoop-httpfs'
+#  httpfs_port: '14000'

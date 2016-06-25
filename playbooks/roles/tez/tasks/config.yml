@@ -1,0 +1,10 @@
+- name: create_tez_conf_dir
+  sudo: yes
+  file: path=/etc/tez/conf state=directory owner=root group=hadoop mode=755
+
+- name: copy_tez_conf
+  sudo: yes
+  template: src={{ item }}.j2 dest=/etc/tez/conf/{{ item }} owner=root group=hadoop mode=755
+  with_items:
+  - tez-site.xml
+  

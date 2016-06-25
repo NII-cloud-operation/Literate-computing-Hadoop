@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+
+{% if kerberos_realm is defined %}
+<property>
+  <name>dfs.block.access.token.enable</name>
+  <value>true</value>
+</property>
+
+<property>
+  <name>dfs.namenode.keytab.file</name>
+  <value>/etc/hadoop/conf/hdfs.keytab</value>
+</property>
+<property>
+  <name>dfs.namenode.kerberos.principal</name>
+  <value>hdfs/_HOST@{{ kerberos_realm }}</value>
+</property>
+<property>
+  <name>dfs.namenode.kerberos.https.principal</name>
+  <value>HTTP/_HOST@{{ kerberos_realm }}</value>
+</property>
+
+<property>
+  <name>dfs.http.policy</name>
+  <value>HTTPS_ONLY</value>
+</property>
+
+<property>
+  <name>dfs.https.port</name>
+  <value>{{ namenode_https_port }}</value>
+</property>
+
+{% for host in hadoop_namenode_servers %}
+<property>
+  <name>dfs.namenode.https-address.{{ dfs_nameservices }}.{{ host }}</name>
+  <value>{{ host }}:{{ namenode_https_port }}</value>
+</property>
+{% endfor %}
+
+<property>
+  <name>dfs.datanode.data.dir.perm</name>
+  <value>700</value> 
+</property>
+<property>
+  <name>dfs.datanode.address</name>
+  <value>0.0.0.0:1004</value>
+</property>
+<property>
+  <name>dfs.datanode.http.address</name>
+  <value>0.0.0.0:1006</value>
+</property>
+<property>
+  <name>dfs.datanode.https.address</name>
+  <value>0.0.0.0:{{ datanode_https_port }}</value>
+</property>
+<property>
+  <name>dfs.datanode.keytab.file</name>
+  <value>/etc/hadoop/conf/hdfs.keytab</value>
+</property>
+<property>
+  <name>dfs.datanode.kerberos.principal</name>
+  <value>hdfs/_HOST@{{ kerberos_realm }}</value>
+</property>
+<property>
+  <name>dfs.datanode.kerberos.https.principal</name>
+  <value>HTTP/_HOST@{{ kerberos_realm }}</value>
+</property>
+<property>
+  <name>dfs.encrypt.data.transfer</name>
+  <value>false</value>
+</property>
+
+<property>
+  <name>dfs.web.authentication.kerberos.principal</name>
+  <value>HTTP/_HOST@{{ kerberos_realm }}</value>
+</property>
+<property>
+  <name>dfs.web.authentication.kerberos.keytab</name>
+  <value>/etc/hadoop/conf/hdfs.keytab</value>
+</property>
+
+<property>
+  <name>dfs.journalnode.keytab.file</name>
+  <value>/etc/hadoop/conf/hdfs.keytab</value>
+</property>
+<property>
+  <name>dfs.journalnode.kerberos.principal</name>
+  <value>hdfs/_HOST@{{ kerberos_realm }}</value>
+</property>
+<property>
+  <name>dfs.journalnode.kerberos.internal.spnego.principal</name>
+  <value>HTTP/_HOST@{{ kerberos_realm }}</value>
+</property>
+
+<property>
+  <name>ha.zookeeper.acl</name>
+  <value>@/etc/hadoop/conf/zk-acl.txt</value>
+</property>
+{% endif %}
+
+<property>
+  <name>dfs.nameservices</name>
+  <value>{{ dfs_nameservices }}</value>
+</property>
+
+<property>
+  <name>dfs.ha.namenodes.{{ dfs_nameservices }}</name>
+  <value>{{ hadoop_namenode_servers | join(',') }}</value>
+</property>
+
+{% for host in hadoop_namenode_servers %}
+<property>
+  <name>dfs.namenode.rpc-address.{{ dfs_nameservices }}.{{ host }}</name>
+  <value>{{ host }}:{{ namenode_rpc_port }}</value>
+</property>
+{% endfor %}
+
+{% if kerberos_realm is not defined %}
+{% for host in hadoop_namenode_servers %}
+<property>
+  <name>dfs.namenode.http-address.{{ dfs_nameservices }}.{{ host }}</name>
+  <value>{{ host }}:{{ namenode_http_port }}</value>
+</property>
+{% endfor %}
+{% endif %}
+
+<property>
+  <name>dfs.namenode.name.dir</name>
+  <value>{{ dfs_namenode_name_dirs | join(',') }}</value>
+</property>
+
+<property>
+  <name>dfs.datanode.data.dir</name>
+  <value>{{ dfs_datanode_data_dirs | join(',') }}</value>
+</property>
+
+<property>
+  <name>dfs.replication</name>
+  <value>{{ dfs_replication }}</value>
+</property>
+
+<property>
+  <name>dfs.hosts</name>
+  <value>{{ hadoop_conf_dir }}/hosts.list</value>
+</property>
+
+<property>
+  <name>dfs.hosts.exclude</name>
+  <value>{{ hadoop_conf_dir }}/hosts.exclude</value>
+</property>
+
+{% if hadoop_journalnode_servers is defined %}
+<property>
+  <name>dfs.namenode.shared.edits.dir</name>
+  <value>qjournal://{{ hadoop_journalnode_servers | join(':8485;') }}:8485/{{ dfs_nameservices }}</value>
+</property>
+
+<property>
+  <name>dfs.journalnode.edits.dir</name>
+  <value>{{ dfs_journalnode_edits_dir }}</value>
+</property>
+{% endif %}
+
+<property>
+  <name>dfs.client.failover.proxy.provider.hdfs-cluster</name>
+  <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+</property>
+
+<property>
+  <name>dfs.namenode.safemode.extension</name>
+  <value>{{ dfs_namenode_safemode_extension }}</value>
+</property>
+
+<property>
+  <name>dfs.namenode.checkpoint.period</name>
+  <value>{{ dfs_namenode_checkpoint_period }}</value>
+</property>
+
+<property>
+  <name>dfs.namenode.handler.count</name>
+  <value>{{ dfs_namenode_handler_count }}</value>
+</property>
+
+<property>
+  <name>dfs.datanode.handler.count</name>
+  <value>{{ dfs_datanode_handler_count }}</value>
+</property>
+
+<property>
+  <name>dfs.datanode.max.transfer.threads</name>
+  <value>{{ dfs_datanode_max_transfer_threads }}</value>
+</property>
+
+<property>
+  <name>dfs.datanode.du.reserved</name>
+  <value>{{ dfs_datanode_du_reserved }}</value>
+</property>
+
+<property>
+  <name>dfs.namenode.checkpoints.txns</name>
+  <value>{{ dfs_namenode_checkpoint_txns }}</value>
+</property>
+
+<property>
+  <name>dfs.ha.automatic-failover.enabled</name>
+  <value>true</value>
+</property>
+
+<property>
+  <name>dfs.ha.fencing.methods</name>
+  <value>sshfence</value>
+</property>
+
+<property>
+  <name>dfs.ha.fencing.ssh.private-key-files</name>
+  <value>/var/lib/hadoop-hdfs/.ssh/id_rsa</value>
+</property>
+
+<property>
+  <name>dfs.ha.zkfc.port</name>
+  <value>8019</value>
+</property>
+
+<property>
+  <name>dfs.webhdfs.enabled</name>
+  <value>true</value>
+</property>
+
+<property>
+  <name>dfs.datanode.balance.bandwidthPerSec</name>
+  <value>{{ dfs_datanode_balance_bandwidthPerSec }}</value>
+</property>
+
+</configuration>

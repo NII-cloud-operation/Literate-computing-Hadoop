@@ -1,0 +1,4 @@
+- name: delete zookeeper data directory
+  file: path={{ item }} state=absent
+  with_items:
+    - "{{ zookeeper_data_dir }}"

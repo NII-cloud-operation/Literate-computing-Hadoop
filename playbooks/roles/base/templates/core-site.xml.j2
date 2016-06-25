@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+
+{% if kerberos_realm is defined %}
+<property>
+  <name>hadoop.security.authentication</name>
+  <value>kerberos</value>
+</property>
+
+<property>
+  <name>hadoop.security.authorization</name>
+  <value>true</value>
+</property>
+{% endif %}
+
+<property>
+  <name>fs.defaultFS</name>
+  <value>hdfs://{{ dfs_nameservices }}</value>
+</property>
+
+<property>
+  <name>hadoop.tmp.dir</name>
+  <value>{{ hadoop_tmp_dir }}</value>
+</property>
+
+<property>
+  <name>net.topology.script.file.name</name>
+  <value>{{ net_topology_script_file_name }}</value>
+</property>
+
+<property>
+  <name>fs.trash.interval</name>
+  <value>{{ fs_trash_interval }}</value>
+</property>
+
+<property>
+  <name>dfs.namenode.heartbeat.recheck-interval</name>
+  <value>{{ dfs_namenode_heartbeat_recheck_interval }}</value>
+</property>
+
+<property>
+  <name>io.file.buffer.size</name>
+  <value>{{ io_file_buffer_size }}</value>
+</property>
+
+<property>
+  <name>ha.zookeeper.quorum</name>
+  <value>{{ zookeeper_servers | join(':2181,') }}:2181</value>
+</property>
+
+<property>
+  <name>hadoop.proxyuser.hue.hosts</name>
+  <value>*</value>
+</property>
+
+<property>
+  <name>hadoop.proxyuser.hue.groups</name>
+  <value>*</value>
+</property>
+
+<property>
+  <name>hadoop.proxyuser.hcat.hosts</name>
+  <value>*</value>
+</property>
+
+<property>
+  <name>hadoop.proxyuser.hcat.groups</name>
+  <value>*</value>
+</property>
+
+<property>
+  <name>hadoop.proxyuser.httpfs.hosts</name>
+  <value>*</value>
+</property>
+
+<property>
+  <name>hadoop.proxyuser.httpfs.groups</name>
+  <value>*</value>
+</property>
+
+<property>
+  <name>hadoop.proxyuser.hdfs.hosts</name>
+  <value>*</value>
+</property>
+
+<property>
+  <name>hadoop.proxyuser.hdfs.groups</name>
+  <value>*</value>
+</property>
+
+</configuration>

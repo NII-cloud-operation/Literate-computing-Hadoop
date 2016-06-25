@@ -1,0 +1,4 @@
+- hosts: hadoop_zookeeperserver
+  roles:
+  - zookeeper_server
+

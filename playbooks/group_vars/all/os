@@ -1,0 +1,8 @@
+nofile_soft_limit: '65536'
+nofile_hard_limit: '65536'
+core_soft_limit: 'unlimited'
+core_hard_limit: 'unlimited'
+
+ipv4_ip_local_port_range_min: '32768'
+ipv4_ip_local_port_range_max: '65000'
+net_core_somaxconn: '256'
