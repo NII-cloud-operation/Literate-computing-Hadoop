@@ -1,6 +1,6 @@
-- include: install-tarball.yml tags=install,spark
+- include: install-tarball.yml
   when: hdp_version == '2.2.0.0-2041'
-- include: install.yml tags=install,spark
+- include: install.yml
   when: hdp_version != '2.2.0.0-2041'
 
-- include: config.yml tags=config,spark
+- include: config.yml

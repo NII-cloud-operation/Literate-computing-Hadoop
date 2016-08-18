@@ -1,1 +1,1 @@
-- include: config.yml tags=config,namenode_bootstrapstandby
+- include: config.yml

@@ -1,2 +1,2 @@
-- include: install.yml tags=install,zookeeper
-- include: config.yml tags=config,zookeeper
+- include: install.yml
+- include: config.yml

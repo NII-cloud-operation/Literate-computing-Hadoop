@@ -1,2 +1,2 @@
-- include: install.yml tags=install,hive
-- include: config.yml tags=config,hive
+- include: install.yml
+- include: config.yml

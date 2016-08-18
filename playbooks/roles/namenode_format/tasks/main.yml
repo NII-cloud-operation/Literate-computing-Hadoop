@@ -1,1 +1,1 @@
-- include: config.yml tags=config,namenode_format
+- include: config.yml

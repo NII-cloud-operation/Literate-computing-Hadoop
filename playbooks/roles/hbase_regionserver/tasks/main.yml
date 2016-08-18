@@ -1,2 +1,2 @@
-- include: install.yml tags=install,hbase_master
-- include: config.yml tags=config,hbase_master
+- include: install.yml
+- include: config.yml

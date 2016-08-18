@@ -1,2 +1,2 @@
-- include: install.yml tags=install,pig
-- include: config.yml tags=config,pig
+- include: install.yml
+- include: config.yml
