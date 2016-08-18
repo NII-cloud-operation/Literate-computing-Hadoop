@@ -1,3 +1,0 @@
-- hosts: hadoop_swimlane
-  roles:
-  - swimlane
