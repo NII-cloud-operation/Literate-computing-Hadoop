@@ -1,6 +1,6 @@
 - name: fix_init_scripts
   become: yes
-  lineinfile: dest=/usr/hdp/{{ hdp_version }}/hadoop-yarn/etc/rc.d/init.d/{{ item }} insertafter='^\.\s+\/lib\/lsb\/init-functions' line='. /etc/default/{{ item }}'
+  lineinfile: dest=/usr/hdp/{{ hdp_version }}/hadoop-mapreduce/etc/rc.d/init.d/{{ item }} insertafter='^\.\s+\/lib\/lsb\/init-functions' line='. /etc/default/{{ item }}'
   with_items:
   - hadoop-mapreduce-historyserver
  
