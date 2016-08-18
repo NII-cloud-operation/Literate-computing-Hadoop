@@ -1,5 +1,5 @@
 - name: check_journalnode_edits_dirs
-  sudo: yes
+  become: yes
   shell: ls {{ dfs_journalnode_edits_dir }}/*
   register: check_journalnode_edits_dirs
   ignore_errors: true
@@ -7,11 +7,11 @@
   always_run: true
 
 - name: delete_journalnode_edits_dirs
-  sudo: yes
+  become: yes
   file: path={{ dfs_journalnode_edits_dir }} state=absent
   when: check_journalnode_edits_dirs.rc == 0
   
 - name: recreate_journalnode_edits_dirs
-  sudo: yes
+  become: yes
   file: path={{ dfs_journalnode_edits_dir }} state=directory mode=700 owner=hdfs group=hadoop
   when: check_journalnode_edits_dirs.rc == 0

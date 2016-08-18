@@ -19,10 +19,10 @@
   when: not check_swimlane_installed.stat.exists and md5sum_swimlane.stdout.find('{{ swimlane_md5sum }}')
   
 - name: umcompressed_swimlane_file
-  sudo: yes
+  become: yes
   shell: tar zxf {{ swimlane_tmp_path }}/apache-tez-{{ swimlane_tez_version }}-src.tar.gz -C {{ swimlane_install_path }}
   when: not check_swimlane_installed.stat.exists
 
 - name: install_httpd
-  sudo: yes
+  become: yes
   yum: name=httpd state=installed

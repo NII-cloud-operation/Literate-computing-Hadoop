@@ -18,6 +18,6 @@
   when: not check_presto_installed.stat.exists and md5sum_presto.stdout.find('{{ presto_md5sum }}')
 
 - name: umcompressed_presto.tar.gz_file
-  sudo: yes
+  become: yes
   shell: tar zxvf {{ presto_tmp_path }}/presto-server-{{ presto_version}}.tar.gz -C {{ presto_install_path }}
   when: not check_presto_installed.stat.exists

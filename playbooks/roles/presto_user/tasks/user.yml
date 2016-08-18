@@ -1,3 +1,3 @@
 - name: create_presto_user
-  sudo: yes
+  become: yes
   user: name=presto createhome=no uid={{ presto_user_id }}

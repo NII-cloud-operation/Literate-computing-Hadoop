@@ -5,29 +5,29 @@
   - hadoop-yarn-timelineserver
   
 - name: create_symbolic_link_to/etc/init.d
-  sudo: yes
+  become: yes
   file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/hadoop-yarn/etc/rc.d/init.d/{{ item }}
   with_items:
   - hadoop-yarn-timelineserver
 
 - name: create_symbolic_link_to/usr/hdp/current/hadoop-yarn
-  sudo: yes
+  become: yes
   file: path=/usr/hdp/current/hadoop-yarn state=link src=/usr/hdp/{{ hdp_version }}/hadoop-yarn
 
 - name: create_yarn_pid_dir
-  sudo: yes
+  become: yes
   file: path={{ yarn_pid_dir }} state=directory mode=755 owner=yarn group=yarn
   
 - name: create_yarn_log_dir
-  sudo: yes
+  become: yes
   file: path={{ yarn_log_dir }} state=directory mode=755 owner=yarn group=hadoop
   
 - name: create_timeline_dir
-  sudo: yes
+  become: yes
   file: path={{ hadoop_tmp_dir[0:hadoop_tmp_dir.rfind('/')] }}/hadoop-yarn/yarn/timeline state=directory mode=755 owner=yarn group=yarn
 
 - name: copy_default_file
-  sudo: yes
+  become: yes
   template: src=default_{{ item }}.j2 dest=/etc/default/{{ item }} mode=755 owner=root group=root 
   with_items:
   - hadoop-yarn-timelineserver

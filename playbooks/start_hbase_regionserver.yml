@@ -2,7 +2,7 @@
 ## 前提2: HDFSが利用可能(正常に読み書きできる)であること
 
 - hosts: hadoop_hbase_regionserver
-  sudo: yes
+  become: yes
   tasks:
     - name: start_hbase-regionserver
       service: name=hbase-regionserver state=started

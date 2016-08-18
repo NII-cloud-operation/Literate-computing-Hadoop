@@ -1,9 +1,9 @@
 - name: create_hue_data_dir
-  sudo: yes
+  become: yes
   file: path={{ hue_data_dir }} state=directory owner=hue group=hadoop mode=755
 
 - name: copy_hue_conf
-  sudo: yes
+  become: yes
   template: src={{ item }}.j2 dest=/etc/hue/conf/{{ item }} owner=root group=root mode=755
   with_items:
   - hue.ini
@@ -15,8 +15,8 @@
   register: check_hue_db_stat
 
 - name: sync_db_for_hue
-  sudo: yes
-  sudo_user: hue
+  become: yes
+  become_user: hue
   shell: /usr/lib/hue/build/env/bin/hue syncdb --noinput
   when: not check_hue_db_stat.stat.exists
 

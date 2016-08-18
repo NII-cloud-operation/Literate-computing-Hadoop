@@ -1,5 +1,5 @@
 - name: create_namenode_data_dir
-  sudo: yes
+  become: yes
   file: path={{ item }} state=directory owner=hdfs group=hadoop mode=700
   with_items: dfs_namenode_name_dirs
 
@@ -11,41 +11,41 @@
   - hadoop-hdfs-zkfc
 
 - name: create_symbolic_link_to/etc/init.d
-  sudo: yes
+  become: yes
   file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/hadoop-hdfs/etc/rc.d/init.d/{{ item }}
   with_items:
   - hadoop-hdfs-namenode
   - hadoop-hdfs-zkfc
 
 - name: create_symbolic_link_to/usr/hdp/current/hadoop
-  sudo: yes
+  become: yes
   file: path=/usr/hdp/current/hadoop state=link src=/etc/hadoop
 
 - name: create_symbolic_link_to/usr/hdp/current/hadoop-hdfs-zkfc
-  sudo: yes
+  become: yes
   file: path=/usr/hdp/current/hadoop-hdfs-zkfc state=link src=/usr/hdp/{{ hdp_version }}/hadoop-hdfs
 
 - name: deploy kick script for balancer.
-  sudo: yes
+  become: yes
   template: src={{ item }}.j2 dest=/usr/local/bin/{{ item }} mode=755
   with_items:
   - hdfs-balancer.sh
 
 - name: create_hdfs_log_dir
-  sudo: yes
+  become: yes
   file: path={{ hdfs_log_dir }} state=directory mode=755 owner=hdfs group=hadoop 
 
 - name: create_hdfs_pid_dir
-  sudo: yes
+  become: yes
   file: path={{ hdfs_pid_dir }} state=directory mode=755 owner=hdfs group=hdfs
 
 - name: create_jaas_conf
-  sudo: yes
+  become: yes
   template: src=jaas-hdfs.conf.j2 dest=/etc/hadoop/conf/jaas-hdfs.conf owner=hdfs group=hdfs
   when: kerberos_realm is defined
 
 - name: copy_defaults_file
-  sudo: yes
+  become: yes
   template: src=default_{{ item }}.j2 dest=/etc/default/{{ item }} mode=755 owner=hdfs group=hdfs
   with_items:
   - hadoop-hdfs-zkfc

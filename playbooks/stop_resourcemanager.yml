@@ -1,7 +1,7 @@
 ## 前提1: YARN上でアプリケーションが動作していないこと
 
 - hosts: hadoop_resourcemanager
-  sudo: yes
+  become: yes
   tasks:
     - name: stop_hadoop-yarn-resourcemanager
       service: name=hadoop-yarn-resourcemanager state=stopped

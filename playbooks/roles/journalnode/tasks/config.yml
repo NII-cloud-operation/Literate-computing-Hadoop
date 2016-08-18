@@ -1,5 +1,5 @@
 - name: create_journalnode_data_dir
-  sudo: yes
+  become: yes
   file: path={{ dfs_journalnode_edits_dir }} state=directory owner=hdfs group=hadoop mode=700
 
 - name: fix_init_scripts
@@ -9,17 +9,17 @@
   - hadoop-hdfs-journalnode
   
 - name: create_symbolic_link_to/etc/init.d
-  sudo: yes
+  become: yes
   file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/hadoop-hdfs/etc/rc.d/init.d/{{ item }}
   with_items:
   - hadoop-hdfs-journalnode
   
 - name: create_hdfs_log_dir
-  sudo: yes
+  become: yes
   file: path={{ hdfs_log_dir }} state=directory mode=755 owner=hdfs group=hadoop 
 
 - name: copy_journalnode_defaults_file
-  sudo: yes
+  become: yes
   template: src=default_{{ item }}.j2 dest=/etc/default/{{ item }} mode=755 owner=hdfs group=hdfs
   with_items:
   - hadoop-hdfs-journalnode

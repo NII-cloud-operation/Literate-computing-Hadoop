@@ -2,7 +2,7 @@
 ## 前提2: ZooKeeperとJournalNodeがそれぞれ過半数以上起動していること
 
 - hosts: hadoop_namenode
-  sudo: yes
+  become: yes
   tasks:
     - name: start_hadoop-hdfs-zkfc
       service: name=hadoop-hdfs-zkfc state=started

@@ -1,5 +1,5 @@
 - name: copy_presto_catalog_file
-  sudo: yes
+  become: yes
   template: src={{ item }}.j2 dest=/etc/presto/conf/catalog/{{ item }} 
   with_items:
   - hive.properties

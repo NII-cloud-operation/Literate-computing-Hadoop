@@ -1,6 +1,6 @@
 - name: check_hdfs_root_permission
-  sudo: yes
-  sudo_user: hdfs
+  become: yes
+  become_user: hdfs
   shell: echo "$(hdfs dfs -ls -d /)" | grep "drwxrwxrwx"
   register: check_hdfs_root_permission
   changed_when: false
@@ -8,14 +8,14 @@
   always_run: yes
 
 - name: chmod_hdfs_root
-  sudo: yes
-  sudo_user: hdfs
+  become: yes
+  become_user: hdfs
   shell: hdfs dfs -chmod 777 /
   when: check_hdfs_root_permission.rc != 0
 
 - name: check_exists_hfds_dir
-  sudo: yes
-  sudo_user: hdfs
+  become: yes
+  become_user: hdfs
   shell: hdfs dfs -ls {{ item.path }}
   register: check_exists_hdfs_dir
   changed_when: false
@@ -26,22 +26,22 @@
     - {path: '/user', mode: '1777', owner: 'hdfs', group: 'hadoop'}
     
 - name: create_hdfs_dir
-  sudo: yes
-  sudo_user: hdfs
+  become: yes
+  become_user: hdfs
   shell: hdfs dfs -mkdir -p {{ item.item.path }}
   when: item.rc != 0
   with_items: check_exists_hdfs_dir.results
   
 - name: change_owner_and_group_of_hdfs_dir
-  sudo: yes
-  sudo_user: hdfs
+  become: yes
+  become_user: hdfs
   shell: hdfs dfs -chown -R {{ item.item.owner }}:{{ item.item.group }} {{ item.item.path }}
   when: item.rc != 0
   with_items: check_exists_hdfs_dir.results
 
 - name: change_mode_of_hdfs_dir
-  sudo: yes
-  sudo_user: hdfs
+  become: yes
+  become_user: hdfs
   shell: hdfs dfs -chmod -R {{ item.item.mode }} {{ item.item.path }}
   when: item.rc != 0
   with_items: check_exists_hdfs_dir.results

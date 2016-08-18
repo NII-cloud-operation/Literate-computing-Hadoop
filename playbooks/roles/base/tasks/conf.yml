@@ -1,9 +1,9 @@
 - name: create_hadoop_conf_dir
-  sudo: yes
+  become: yes
   file: path={{ hadoop_conf_dir }} state=directory owner=root group=root mode=755
 
 - name: copy_conf_files
-  sudo: yes
+  become: yes
   template: src={{ item }}.j2 dest=/etc/hadoop/conf/{{ item }}
   with_items:
   - core-site.xml
@@ -21,7 +21,7 @@
   - hosts.list
   
 - name: copy_secure_conf_files
-  sudo: yes
+  become: yes
   template: src={{ item }}.j2 dest=/etc/hadoop/conf/{{ item }}
   with_items:
   - ssl-server.xml

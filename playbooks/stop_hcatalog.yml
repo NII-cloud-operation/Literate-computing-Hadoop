@@ -1,6 +1,6 @@
 - hosts: hadoop_hive
-  sudo: yes
-  sudo_user: hive
+  become: yes
+  become_user: hive
   tasks:
     - name: check_status_hcatalog
       shell: '[ -s /usr/hdp/current/hive-webhcat/var/log/hcat.pid ] && [ -x /proc/$(cat /usr/hdp/current/hive-webhcat/var/log/hcat.pid) ]'

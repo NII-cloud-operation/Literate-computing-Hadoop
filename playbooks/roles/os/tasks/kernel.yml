@@ -1,7 +1,7 @@
 - name: set_local_port_range
-  sudo: yes
+  become: yes
   lineinfile: dest=/etc/sysctl.conf line="net.ipv4.ip_local_port_range = {{ ipv4_ip_local_port_range_min }} {{ ipv4_ip_local_port_range_max }}" regexp="net.ipv4.ip_local_port_range"
     
 - name: set_somaxconn
-  sudo: yes
+  become: yes
   lineinfile: dest=/etc/sysctl.conf line="net.core.somaxconn = {{ net_core_somaxconn }}" regexp="net.core.somaxconn"
