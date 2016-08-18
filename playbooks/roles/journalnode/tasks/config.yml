@@ -2,33 +2,17 @@
   sudo: yes
   file: path={{ dfs_journalnode_edits_dir }} state=directory owner=hdfs group=hadoop mode=700
 
-- name: fix_init_scripts_2.2
-  sudo: yes
-  template: src=init_{{ item }}_{{ hdp_version }}.j2 dest=/usr/hdp/{{ hdp_version }}/etc/rc.d/init.d/{{ item }} mode=755
+- name: fix_init_scripts
+  become: yes
+  lineinfile: dest=/usr/hdp/{{ hdp_version }}/hadoop-hdfs/etc/rc.d/init.d/{{ item }} insertafter='^\.\s+\/lib\/lsb\/init-functions' line='. /etc/default/{{ item }}'
   with_items:
   - hadoop-hdfs-journalnode
-  when: hdp_version == '2.2.0.0-2041'
-
-- name: fix_init_scripts_2.3later
-  sudo: yes
-  template: src=init_{{ item }}_{{ hdp_version }}.j2 dest=/usr/hdp/{{ hdp_version }}/hadoop-hdfs/etc/rc.d/init.d/{{ item }} mode=755
-  with_items:
-  - hadoop-hdfs-journalnode
-  when: hdp_version != '2.2.0.0-2041'
-  
-- name: create_symbolic_link_to/etc/init.d
-  sudo: yes
-  file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/etc/rc.d/init.d/{{ item }}
-  with_items:
-  - hadoop-hdfs-journalnode
-  when: hdp_version == '2.2.0.0-2041'
   
 - name: create_symbolic_link_to/etc/init.d
   sudo: yes
   file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/hadoop-hdfs/etc/rc.d/init.d/{{ item }}
   with_items:
   - hadoop-hdfs-journalnode
-  when: hdp_version != '2.2.0.0-2041'
   
 - name: create_hdfs_log_dir
   sudo: yes
@@ -39,3 +23,4 @@
   template: src=default_{{ item }}.j2 dest=/etc/default/{{ item }} mode=755 owner=hdfs group=hdfs
   with_items:
   - hadoop-hdfs-journalnode
+
