@@ -1,11 +1,11 @@
 - hosts: hadoop_swimlane
   tasks:
     - name: start_httpd
-      sudo: yes
+      become: yes
       service: name=httpd state=started
 
     - name: delete_swimlane_old_output
-      sudo: yes
+      become: yes
       file: path={{ item }}/{{ yarn_application_id }}.svg state=absent
       with_items:
       - "{{ swimlane_httpd_path}}/{{ swimlane_httpd_prefix }}"
@@ -17,9 +17,9 @@
         chdir: "{{ swimlane_install_path }}/apache-tez-{{ swimlane_tez_version }}-src/tez-tools/swimlanes/"
   
     - name: move_to_httpd_path
-      sudo: yes
+      become: yes
       shell: mv {{ swimlane_install_path }}/apache-tez-{{ swimlane_tez_version }}-src/tez-tools/swimlanes/{{ yarn_application_id }}.svg {{ swimlane_httpd_path }}/{{ swimlane_httpd_prefix }}
     
     - name: show_http_url
-      sudo: yes
+      become: yes
       debug: msg=http://{{ inventory_hostname }}/{{ swimlane_httpd_prefix }}/{{ yarn_application_id }}.svg

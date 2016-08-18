@@ -1,5 +1,5 @@
 - name: check_datanode_data_dirs
-  sudo: yes
+  become: yes
   shell: ls {{ item }}/*
   with_items: dfs_datanode_data_dirs
   register: check_datanode_data_dirs
@@ -8,13 +8,13 @@
   always_run: true
 
 - name: delete_datanode_data_dirs
-  sudo: yes
+  become: yes
   file: path={{ item.item }} state=absent
   with_items: check_datanode_data_dirs.results
   when: item.rc == 0
   
 - name: recreate_datanode_data_dirs
-  sudo: yes
+  become: yes
   file: path={{ item.item }} state=directory mode=755 owner=hdfs group=hadoop
   with_items: check_datanode_data_dirs.results
   when: item.rc == 0

@@ -1,1 +1,1 @@
-- include: delete.yml tags=delete,zookeeper
+- include: delete.yml

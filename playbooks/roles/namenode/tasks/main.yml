@@ -1,2 +1,2 @@
-- include: install.yml tags=install,namenode
-- include: config.yml tags=config,namenode
+- include: install.yml
+- include: config.yml

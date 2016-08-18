@@ -1,5 +1,5 @@
 - hosts: hadoop_mapreduce_historyserver
-  sudo: yes
+  become: yes
   tasks:
     - name: start_mapreduce-historyserver
       service: name=hadoop-mapreduce-historyserver state=started

@@ -3,11 +3,11 @@
   register: check_presto_client_installed
   
 - name: create_prseto_client_install_dir
-  sudo: yes
+  become: yes
   file: path={{ presto_client_install_path }} state=directory owner=presto group=presto mode=755
   
 - name: download_presto_by_wget
-  sudo: yes
+  become: yes
   shell: wget --no-verbose {{ presto_client_download_url }}/presto-cli-{{ presto_version }}-executable.jar -O presto-cli-{{ presto_version }}-executable.jar chdir={{ presto_client_install_path }} creates={{ presto_client_install_path }}/presto-cli-{{ presto_version }}-executable.jar
   when: not check_presto_client_installed.stat.exists
   ignore_errors: yes
@@ -23,5 +23,5 @@
   when: not check_presto_client_installed.stat.exists and md5sum_presto_client.stdout.find('{{ presto_client_md5sum }}')
 
 - name: change_mode_presto_client
-  sudo: yes
+  become: yes
   file: path={{ presto_client_install_path }}/presto-cli-{{ presto_version }}-executable.jar owner=presto group=presto mode=755

@@ -1,5 +1,5 @@
 - hosts: hadoop_timelineservice
-  sudo: yes
+  become: yes
   tasks:
     - name: start_hadoop-yarn-timelineserver
       service: name=hadoop-yarn-timelineserver state=started

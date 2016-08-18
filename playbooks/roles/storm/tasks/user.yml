@@ -1,7 +1,7 @@
 - name: create_storm_group
-  sudo: yes
+  become: yes
   group: name=storm gid={{ storm_group_id }}
 
 - name: create_storm_user
-  sudo: yes
+  become: yes
   user: name=storm createhome=no uid={{ storm_user_id }} group=storm groups=storm

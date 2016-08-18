@@ -1,2 +1,2 @@
-- include: install.yml tags=install,journalnode
-- include: config.yml tags=config,journalnode
+- include: install.yml
+- include: config.yml

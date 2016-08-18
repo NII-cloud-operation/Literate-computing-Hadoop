@@ -1,19 +1,19 @@
 - name: create_hbase_conf_dir
-  sudo: yes
+  become: yes
   file: path=/etc/hbase/conf state=directory owner=root group=root mode=755
 
 - include: principal.yml
-  sudo: yes
+  become: yes
   vars: { kerberos_princ_username: hbase, kerberos_princ_keytab_path: /etc/hbase/conf/hbase.keytab, kerberos_princ_keytab_owner: hbase }
   when: kerberos_realm is defined
 
 - name: copy_jaas_conf
-  sudo: yes
+  become: yes
   template: src=zk-jaas.conf.j2 dest=/etc/hbase/conf/zk-jaas.conf
   when: kerberos_realm is defined
 
 - name: copy_hbase_conf_files
-  sudo: yes
+  become: yes
   template: src={{ item }}.j2 dest=/etc/hbase/conf/{{ item }} owner=hbase group=hadoop mode=755
   with_items:
   - hbase-site.xml
@@ -24,7 +24,7 @@
   - hadoop-metrics2-hbase.properties
   
 - name: copy_hbase_default_file
-  sudo: yes
+  become: yes
   template: src={{ item }}.j2 dest=/etc/default/{{ item }} owner=hbase group=hadoop mode=755
   with_items:
   - hbase-master
@@ -40,17 +40,17 @@
   lineinfile: dest=/usr/hdp/{{ hdp_version }}/hbase/etc/rc.d/init.d/hbase-master regexp='^export\s+HBASE_HOME=' state=absent
 
 - name: create_symbolic_link_to/etc/init.d
-  sudo: yes
+  become: yes
   file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/hbase/etc/rc.d/init.d/{{ item }}
   with_items:
   - hbase-master
   
 - name: create_hbase_log_dir
-  sudo: yes
+  become: yes
   file: path={{ hbase_log_dir }} state=directory mode=755 owner=hbase group=hadoop 
 
 - name: deploy_service_test_script
-  sudo: yes
+  become: yes
   template: src={{ item }}.j2 dest=/usr/local/bin/{{ item }} owner=hbase group=hadoop mode=644
   with_items:
     - hbase-service-test.rb

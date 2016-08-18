@@ -1,19 +1,19 @@
 - name: create_direcoty_cgroups_scripts
-  sudo: yes
+  become: yes
   file: path={{ cgroups_scripts_dir }} state=directory owner=root group=root mode=755
 
 - name: copy_cgroups_scripts
-  sudo: yes
+  become: yes
   template: src={{ item }}.j2 dest={{ cgroups_scripts_dir }}/{{ item }} owner=root group=root mode=755
   with_items:
     - cgroups.sh
 
 - name: copy_cgconfig.conf
-  sudo: yes
+  become: yes
   template: src=cgconfig.conf.j2 dest=/etc/cgconfig.conf owner=root group=root mode=644
 
 - name: check_chkconfig_cgconfig
-  sudo: yes
+  become: yes
   shell: chkconfig --list | grep cgconfig | grep on
   ignore_errors: true
   register: check_chkconfig_cgconfig
@@ -21,16 +21,16 @@
   always_run: true
   
 - name: set_on_to_cgconfig_of_chkconfig
-  sudo: yes
+  become: yes
   shell: chkconfig cgconfig on
   when: check_chkconfig_cgconfig.rc != 0
   
 - name: started_cgconfig
-  sudo: yes
+  become: yes
   service: name=cgconfig state=started
 
 - name: reboot
-  sudo: yes
+  become: yes
   command: shutdown -r now
   when: result_install_cgroups.changed
 
@@ -44,5 +44,5 @@
   when: result_install_cgroups.changed
   
 - name: started_cgconfig
-  sudo: yes
+  become: yes
   service: name=cgconfig state=started

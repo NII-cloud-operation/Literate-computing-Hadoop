@@ -1,7 +1,7 @@
 ## 前提1: Zookeeperを利用するサービス(HDFS, YARN, HBase)が全て停止していること
 
 - hosts: hadoop_zookeeperserver
-  sudo: yes
+  become: yes
   tasks:
     - name: stop_zookeeper-server
       service: name=zookeeper-server state=stopped

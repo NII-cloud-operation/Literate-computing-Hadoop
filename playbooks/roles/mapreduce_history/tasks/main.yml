@@ -1,2 +1,2 @@
-- include: install.yml tags=install,mapreduce_history
-- include: config.yml tags=config,mapreduce_history
+- include: install.yml
+- include: config.yml

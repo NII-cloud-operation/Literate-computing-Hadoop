@@ -1,5 +1,5 @@
 - hosts: hadoop_journalnode
-  sudo: yes
+  become: yes
   tasks:
     - name: start_hadoop-hdfs-journalnode
       service: name=hadoop-hdfs-journalnode state=started

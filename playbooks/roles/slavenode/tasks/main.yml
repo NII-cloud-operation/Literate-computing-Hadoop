@@ -1,2 +1,2 @@
-- include: install.yml tags=install,slavenode
-- include: config.yml tags=config,slavenode
+- include: install.yml
+- include: config.yml

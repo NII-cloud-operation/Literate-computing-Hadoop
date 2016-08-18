@@ -1,5 +1,5 @@
 - name: copy_pig_conf
-  sudo: yes
+  become: yes
   template: src={{ item }}.j2 dest=/etc/pig/conf/{{ item }} owner=root group=root mode=755
   with_items:
   - pig.properties

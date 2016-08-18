@@ -1,8 +1,8 @@
 ## 前提1: HDFSが利用可能(正常に読み書きできる)であること
 
 - hosts: hadoop_spark_history
-  sudo: yes
-  sudo_user: spark
+  become: yes
+  become_user: spark
   tasks:
     - name: check_status_spark_history_server
       shell: '[ -s ${SPARK_PID_DIR}/spark-spark-org.apache.spark.deploy.history.HistoryServer-1.pid ] && [ -x /proc/$(cat ${SPARK_PID_DIR}/spark-spark-org.apache.spark.deploy.history.HistoryServer-1.pid ) ]'

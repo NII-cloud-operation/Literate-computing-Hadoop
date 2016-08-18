@@ -1,5 +1,5 @@
 - name: install_pig_packages
-  sudo: yes
+  become: yes
   yum: name={{ item }} state=installed
   with_items:
   - pig

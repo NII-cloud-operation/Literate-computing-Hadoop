@@ -1,5 +1,5 @@
 - name: check_jdk8_installed
-  sudo: yes
+  become: yes
   shell: rpm -qa | grep -e "jdk.*-1.8.0_{{ jdk8_version }}-fcs.x86_64"
   ignore_errors: yes
   changed_when: false
@@ -26,6 +26,6 @@
   when: check_jdk8_installed.rc != 0 and md5sum_of_jdk.stdout.find('{{ jdk8_md5sum }}')
 
 - name: install_oraclejdk
-  sudo: yes
+  become: yes
   yum: name={{ jdk8_tmppath }}/jdk-8u{{ jdk8_version }}-linux-x64.rpm state=installed
   when: check_jdk8_installed.rc != 0
