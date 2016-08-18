@@ -1,23 +1,14 @@
-- name: fix_init_scripts_2.2
+- name: fix_init_scripts
   become: yes
-  copy: src=init_{{ item }}_{{ hdp_version }} dest=/usr/hdp/{{ hdp_version }}/etc/rc.d/init.d/{{ item }} mode=755
+  lineinfile: dest=/usr/hdp/{{ hdp_version }}/hadoop-yarn/etc/rc.d/init.d/{{ item }} insertafter='^\.\s+\/lib\/lsb\/init-functions' line='. /etc/default/{{ item }}'
   with_items:
   - hadoop-mapreduce-historyserver
-  when: hdp_version == '2.2.0.0-2041'
-  
-- name: create_symbolic_link_to/etc/init.d
-  become: yes
-  file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/etc/rc.d/init.d/{{ item }}
-  with_items:
-  - hadoop-mapreduce-historyserver
-  when: hdp_version == '2.2.0.0-2041'
-  
+ 
 - name: create_symbolic_link_to/etc/init.d
   become: yes
   file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/hadoop-mapreduce/etc/rc.d/init.d/{{ item }}
   with_items:
   - hadoop-mapreduce-historyserver
-  when: hdp_version != '2.2.0.0-2041'
 
 - name: create_symbolic_link_to/usr/hdp/current/hadoop-mapreduce
   become: yes
@@ -30,4 +21,10 @@
   
 - name: create_log_dir
   become: yes
-  file: path={{ mapred_log_dir }} state=directory mode=755 owner=mapred group=hadoop 
+  file: path={{ mapred_log_dir }} state=directory mode=755 owner=mapred group=hadoop
+
+- name: copy_default_file
+  become: yes
+  template: src=default_{{ item }}.j2 dest=/etc/default/{{ item }} mode=755 owner=root group=root 
+  with_items:
+  - hadoop-mapreduce-historyserver
