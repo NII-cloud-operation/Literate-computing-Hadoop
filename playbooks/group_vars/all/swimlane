@@ -1,6 +1,0 @@
-swimlane_httpd_path: '/var/www/html'
-swimlane_httpd_prefix: 'swimlanes'
-swimlane_install_path: '/usr/local/lib'
-swimlane_tez_version: '0.5.2'
-swimlane_tmp_path: '/tmp'
-swimlane_md5sum: '137a9c516bbc5aa1b78792192e015961'
