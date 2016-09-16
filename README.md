@@ -64,7 +64,7 @@ Hadoopのように複数ノードからなるクラスタを構築・運用す�
 ここで生成されるパラメータは、以降の手順のNotebookで設定ファイル生成の際に利用されます。
 
 
-[![Structure](images/structure.svg)](http://interactive.blockdiag.com/?compression=deflate&encoding=base64&src=eJyFk0FPhDAQhe_7K-peuLCoN5MVExMvXtRkvenGFDpAQ2lJO0tEs__dFkxoEOp5Zt57-V4mEyqvGacl-d4QUimDJslNR95MRVtIpUI47u0kOgBekEfZgUSl-3f5ZCeZUnU0TO-l4ZkAUmp1aj86qk1kJZDmNbB4LvUArVB9Y5UmGW__79KLoP3iUsUKszMcIflsRJwkiedK5rbPLWiKXMmAq7ezZjoxut0FsLijXkDKFKJNI2gGItVQgP6HJ9ndrfAcNRrFeNEfV7G7VGvwvBRxoQRz5Xgpg_W4WGHdk1ko2FtzCkuNjdclSMcebDCJhn9Ben0VKs6prdQ1i7Pg6SAFjyML6XJEHU2Jbn6pDboD9OFtCBmPtq9Ul4Dk0BuEZrsfRgv2bnDenH8AoFQymA)
+[![Structure](images/structure.png)](http://interactive.blockdiag.com/?compression=deflate&encoding=base64&src=eJyFk0FPhDAQhe_7K-peuLCoN5MVExMvXtRkvenGFDpAQ2lJO0tEs__dFkxoEOp5Zt57-V4mEyqvGacl-d4QUimDJslNR95MRVtIpUI47u0kOgBekEfZgUSl-3f5ZCeZUnU0TO-l4ZkAUmp1aj86qk1kJZDmNbB4LvUArVB9Y5UmGW__79KLoP3iUsUKszMcIflsRJwkiedK5rbPLWiKXMmAq7ezZjoxut0FsLijXkDKFKJNI2gGItVQgP6HJ9ndrfAcNRrFeNEfV7G7VGvwvBRxoQRz5Xgpg_W4WGHdk1ko2FtzCkuNjdclSMcebDCJhn9Ben0VKs6prdQ1i7Pg6SAFjyML6XJEHU2Jbn6pDboD9OFtCBmPtq9Ul4Dk0BuEZrsfRgv2bnDenH8AoFQymA)
 
 ここで定義されるパラメータには、以下のようなものがあります。
 
