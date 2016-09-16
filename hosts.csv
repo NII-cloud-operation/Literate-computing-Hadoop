@@ -1,0 +1,3 @@
+Cluster,Type,Name,Internal IP,Service IP,VCPUs,Memory(MiB),DFS Volumes,YARN VCPUs,YARN Total Memory(MB),Ganglia,ZooKeeper,JournalNode,NameNode,DataNode,ResourceManager,NodeManager,TimelineService,MapReduce HistoryServer,HBase Master,HBase RegionServer,Tez,Hive,Pig,Client,Spark,Spark HistoryServer,KDC Master,KDC Slave,Docker
+TestCluster01,testbaremetal,test01,,xxx.xxx.xxx.64,12,98304,1,6,32768,x,x,,x,x,x,x,x,x,x,x,x,x,x,x,x,x,,,
+TestCluster02,testbaremetal,test02,,xxx.xxx.xxx.65,12,98304,1,6,32768,x,x,,x,x,x,x,x,x,x,x,x,x,x,x,x,x,,,
