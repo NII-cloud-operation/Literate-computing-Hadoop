@@ -1,5 +1,9 @@
 - name: Modify keytab permissions for hdfs
   file: path=/etc/hadoop/conf/hdfs.keytab owner=hdfs group=hadoop mode=0400
+  notify: Modify http keytab permissions
+
+- name: Modify http keytab permissions
+  file: path=/etc/hadoop/conf/http.keytab owner=hdfs group=hadoop mode=0400
 
 - name: Modify keytab permissions for mapred
   file: path=/etc/hadoop/conf/mapred.keytab owner=mapred group=hadoop mode=0400
