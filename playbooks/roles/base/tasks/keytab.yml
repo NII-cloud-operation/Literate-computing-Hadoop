@@ -9,6 +9,4 @@
 - name: run_script
   shell: ktutil </home/ansible/merge-keytabs.ktutil
   when: kerberos_princ_dest_keytab_stat.stat.exists == False
-
-- name: Modify permissions of keytab
-  file: path={{ kerberos_princ_dest_keytab }} owner={{ kerberos_princ_keytab_owner }} group=hadoop mode=0400
+  notify: "Modify keytab permissions for {{ kerberos_princ_keytab_owner }}"
