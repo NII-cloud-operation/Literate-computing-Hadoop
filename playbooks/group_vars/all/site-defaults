@@ -3,7 +3,7 @@
 jdk7_version: '75'
 
 ## 依存: jdk8_md5sum
-jdk8_version: '31'
+jdk8_version: '112'
 
 # HDP
 hdp_version: '2.2.0.0-2041'
