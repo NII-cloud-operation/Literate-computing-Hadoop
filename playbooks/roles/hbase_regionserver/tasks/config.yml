@@ -3,7 +3,6 @@
   file: path=/etc/hbase/conf state=directory owner=root group=root mode=755  
 
 - include: principal.yml
-  become: yes
   vars: { kerberos_princ_username: hbase, kerberos_princ_keytab_path: /etc/hbase/conf/hbase.keytab, kerberos_princ_keytab_owner: hbase }
   when: kerberos_realm is defined
 

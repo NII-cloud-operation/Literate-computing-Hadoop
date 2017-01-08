@@ -7,7 +7,6 @@
   file: path=/etc/hive/conf state=directory owner=root group=root mode=755
 
 - include: principal.yml
-  become: yes
   vars: { kerberos_princ_username: hive, kerberos_princ_keytab_path: /etc/hive/conf/hive.keytab, kerberos_princ_keytab_owner: hive }
   when: kerberos_realm is defined
 
