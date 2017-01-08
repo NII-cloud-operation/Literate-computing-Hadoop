@@ -1,7 +1,7 @@
 - name: check_format_state
   become: yes
   stat: path={{ item }}/current
-  with_items: dfs_namenode_name_dirs
+  with_items: "{{ dfs_namenode_name_dirs }}"
 
 - name: FORMAT_namenode
   become: yes

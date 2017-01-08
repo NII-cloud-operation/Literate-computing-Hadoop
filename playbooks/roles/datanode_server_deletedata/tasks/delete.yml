@@ -1,7 +1,7 @@
 - name: check_datanode_data_dirs
   become: yes
   shell: ls {{ item }}/*
-  with_items: dfs_datanode_data_dirs
+  with_items: "{{ dfs_datanode_data_dirs }}"
   register: check_datanode_data_dirs
   changed_when: false
   failed_when: false
@@ -10,11 +10,11 @@
 - name: delete_datanode_data_dirs
   become: yes
   file: path={{ item.item }} state=absent
-  with_items: check_datanode_data_dirs.results
+  with_items: "{{ check_datanode_data_dirs.results }}"
   when: item.rc == 0
   
 - name: recreate_datanode_data_dirs
   become: yes
   file: path={{ item.item }} state=directory mode=755 owner=hdfs group=hadoop
-  with_items: check_datanode_data_dirs.results
+  with_items: "{{ check_datanode_data_dirs.results }}"
   when: item.rc == 0

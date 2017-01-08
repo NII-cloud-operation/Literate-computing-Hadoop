@@ -1,10 +1,10 @@
 - name: create_settings_cgroups_group_settings
   become: yes
   template: src=settings.sh.j2 dest={{ cgroups_scripts_dir }}/settings/group/{{ item.group }} owner=root group=root mode=755
-  with_items: cgroups_group_settings
+  with_items: "{{ cgroups_group_settings }}"
 
 - name: create_settings_cgroups_process_settings
   become: yes
   template: src=settings.sh.j2 dest={{ cgroups_scripts_dir }}/settings/process/{{ item.process }} owner=root group=root mode=755
-  with_items: cgroups_process_settings
+  with_items: "{{ cgroups_process_settings }}"
 

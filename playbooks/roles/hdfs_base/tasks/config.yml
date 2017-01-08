@@ -30,19 +30,19 @@
   become_user: hdfs
   shell: hdfs dfs -mkdir -p {{ item.item.path }}
   when: item.rc != 0
-  with_items: check_exists_hdfs_dir.results
+  with_items: "{{ check_exists_hdfs_dir.results }}"
   
 - name: change_owner_and_group_of_hdfs_dir
   become: yes
   become_user: hdfs
   shell: hdfs dfs -chown -R {{ item.item.owner }}:{{ item.item.group }} {{ item.item.path }}
   when: item.rc != 0
-  with_items: check_exists_hdfs_dir.results
+  with_items: "{{ check_exists_hdfs_dir.results }}"
 
 - name: change_mode_of_hdfs_dir
   become: yes
   become_user: hdfs
   shell: hdfs dfs -chmod -R {{ item.item.mode }} {{ item.item.path }}
   when: item.rc != 0
-  with_items: check_exists_hdfs_dir.results
+  with_items: "{{ check_exists_hdfs_dir.results }}"
 
