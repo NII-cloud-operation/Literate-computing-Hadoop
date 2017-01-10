@@ -1,10 +1,14 @@
 # Default system properties included when running spark-submit.
 # This is useful for setting default environmental settings.
 
+{% if hadoop_namenode_servers is defined %}
 spark.eventLog.enabled  true
 spark.eventLog.dir      hdfs://{{ dfs_nameservices }}{{ spark_event_log_dir }}
 spark.history.fs.logDirectory  hdfs://{{ dfs_nameservices }}{{ spark_event_log_dir }}
+{% endif %}
+{% if spark_history_server_host is defined %}
 spark.yarn.historyServer.address {{ spark_history_server_host }}:{{ spark_history_server_port }}
+{% endif %}
 spark.scheduler.mode {{ spark_scheduler_mode }}
 
 {% if kerberos_realm is defined %}
