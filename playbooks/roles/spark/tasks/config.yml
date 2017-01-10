@@ -12,7 +12,6 @@
   when: hdp_version == '2.2.0.0-2041'
 
 - include: principal.yml
-  become: yes
   vars: { kerberos_princ_username: spark, kerberos_princ_keytab_path: /etc/spark/conf/spark.keytab, kerberos_princ_keytab_owner: spark }
   when: kerberos_realm is defined
 
