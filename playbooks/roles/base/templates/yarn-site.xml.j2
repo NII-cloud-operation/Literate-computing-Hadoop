@@ -57,6 +57,12 @@
 </property>
 {% endfor %}
 {% endif %}
+{% if hadoop_resourcemanager_servers | length == 1 %}
+<property>
+  <name>yarn.resourcemanager.hostname</name>
+  <value>{{ hadoop_resourcemanager_servers[0] }}</value>
+</property>
+{% endif %}
 
 <property>
   <name>yarn.resourcemanager.cluster-id</name>
@@ -272,4 +278,3 @@
 </property>
 
 </configuration>
-
