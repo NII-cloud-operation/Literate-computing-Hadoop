@@ -14,5 +14,5 @@ spark.scheduler.mode {{ spark_scheduler_mode }}
 {% if kerberos_realm is defined %}
 spark.history.kerberos.enabled   true
 spark.history.kerberos.principal spark/{{ ansible_fqdn }}@{{ kerberos_realm }}
-spark.history.kerberos.keytab    /etc/spark/conf/spark.keytab
+spark.history.kerberos.keytab    /etc/spark2/conf/spark.keytab
 {% endif %}

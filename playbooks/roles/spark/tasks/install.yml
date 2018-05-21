@@ -2,6 +2,5 @@
   become: yes
   yum: name={{ item }} state=installed
   with_items:
-  - spark
-  - spark-python
-
+  - spark2
+  - spark2-python
