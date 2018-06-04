@@ -1,25 +1,16 @@
 - name: create_spark_log_dir
   become: yes
   file: path={{ spark_log_dir }} state=directory owner=spark group=hadoop mode=755
-    
-- name: create_symbolic_link_to_spark_log_dir
-  become: yes
-  file: path={{ spark_install_path }}/spark-{{ spark_version }}-bin-{{ spark_hadoop_version }}/logs state=link src={{ spark_log_dir }}
-  register: md5sum_spark
-  when: hdp_version == '2.2.0.0-2041'
-    
+
 - name: remove_spark_log_dir
   become: yes
-  file: path=/usr/hdp/{{ hdp_version }}/spark/logs state=absent
-  when: hdp_version != '2.2.0.0-2041'
-    
+  file: path=/usr/hdp/{{ hdp_version }}/spark2/logs state=absent
+
 - name: create_symbolic_link_to_spark_log_dir
   become: yes
-  file: path=/usr/hdp/{{ hdp_version }}/spark/logs state=link src={{ spark_log_dir }}
+  file: path=/usr/hdp/{{ hdp_version }}/spark2/logs state=link src={{ spark_log_dir }}
   register: md5sum_spark
-  when: hdp_version != '2.2.0.0-2041'
 
 - name: create_spark_pid_dir
   become: yes
   file: path={{ spark_pid_dir }} state=directory owner=spark group=spark mode=775
-  when: hdp_version == '2.2.0.0-2041'

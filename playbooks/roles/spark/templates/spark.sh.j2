@@ -1,6 +1,2 @@
-{% if hdp_version == '2.2.0.0-2041' %}
-export SPARK_HOME={{ spark_install_path }}/spark-{{ spark_version }}-bin-{{ spark_hadoop_version }}
-{% else %}
-export SPARK_HOME=/usr/hdp/{{ hdp_version }}/spark
-{% endif %}
+export SPARK_HOME=/usr/hdp/{{ hdp_version }}/spark2
 export SPARK_PID_DIR={{ spark_pid_dir }}

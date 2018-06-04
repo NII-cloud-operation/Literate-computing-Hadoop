@@ -12,7 +12,7 @@
       always_run: true
 
     - name: start_spark_history_server
-      shell: \{{ ansible_env['SPARK_HOME'] }}/sbin/start-history-server.sh
+      shell: /usr/hdp/current/spark2-historyserver/sbin/start-history-server.sh
       when: check_status_spark_history_server.rc != 0
       # Spark history serverは、PIDファイルが存在するがそのPIDのプロセスが存在しない、という状態でも問題なく起動できる。
       # そのため、上記チェックスクリプト実行後、PIDファイルが存在したら消す、というような処理を行う必要はない。

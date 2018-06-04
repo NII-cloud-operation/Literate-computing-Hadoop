@@ -1,23 +1,18 @@
 - name: set_SPARK_HOME
   become: yes
   template: src=spark.sh.j2 dest=/etc/profile.d/spark.sh owner=root group=root mode=644
-  
+
 - name: create_spark_conf_dir
   become: yes
-  file: path=/etc/spark/ state=directory owner=root group=root mode=755
-  
-- name: create_symbolic_link_to_spark_conf_dir
-  become: yes
-  file: path=/etc/spark/conf state=link src={{ spark_install_path }}/spark-{{ spark_version }}-bin-{{ spark_hadoop_version }}/conf
-  when: hdp_version == '2.2.0.0-2041'
+  file: path=/etc/spark2/ state=directory owner=root group=root mode=755
 
 - include: principal.yml
-  vars: { kerberos_princ_username: spark, kerberos_princ_keytab_path: /etc/spark/conf/spark.keytab, kerberos_princ_keytab_owner: spark }
+  vars: { kerberos_princ_username: spark, kerberos_princ_keytab_path: /etc/spark2/conf/spark.keytab, kerberos_princ_keytab_owner: spark }
   when: kerberos_realm is defined
 
 - name: copy_spark_conf_files
   become: yes
-  template: src={{ item }}.j2 dest=/etc/spark/conf/{{ item }} owner=root group=root mode=755
+  template: src={{ item }}.j2 dest=/etc/spark2/conf/{{ item }} owner=root group=root mode=755
   with_items:
   - spark-defaults.conf
   - spark-env.sh

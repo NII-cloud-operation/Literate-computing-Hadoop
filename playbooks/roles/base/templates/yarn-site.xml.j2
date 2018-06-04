@@ -57,6 +57,12 @@
 </property>
 {% endfor %}
 {% endif %}
+{% if hadoop_resourcemanager_servers | length == 1 %}
+<property>
+  <name>yarn.resourcemanager.hostname</name>
+  <value>{{ hadoop_resourcemanager_servers[0] }}</value>
+</property>
+{% endif %}
 
 <property>
   <name>yarn.resourcemanager.cluster-id</name>
@@ -271,5 +277,9 @@
   <value>0.0.0.0:45454</value>
 </property>
 
-</configuration>
+<property>
+  <name>yarn.nodemanager.vmem-pmem-ratio</name>
+  <value>5</value>
+</property>
 
+</configuration>
