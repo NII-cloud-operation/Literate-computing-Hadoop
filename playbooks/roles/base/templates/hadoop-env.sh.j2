@@ -22,7 +22,7 @@
 # remote nodes.
 
 # The java implementation to use.
-export JAVA_HOME=/usr/java/jdk1.7.0_{{ jdk7_version }}
+export JAVA_HOME=/usr/java/jdk1.8.0_{{ jdk8_version }}
 
 # The jsvc implementation to use. Jsvc is required to run secure datanodes
 # that bind to privileged ports to provide authentication of data transfer
@@ -88,7 +88,7 @@ export JAVA_HOME=/usr/java/jdk1.7.0_{{ jdk7_version }}
 ###
 
 # The directory where pid files are stored. /tmp by default.
-# NOTE: this should be set to a directory that can only be written to by 
+# NOTE: this should be set to a directory that can only be written to by
 #       the user that will run the hadoop daemons.  Otherwise there is the
 #       potential for a symlink attack.
 #export HADOOP_PID_DIR=${HADOOP_PID_DIR}

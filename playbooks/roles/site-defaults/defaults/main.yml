@@ -1,29 +1,28 @@
 
 #  # Java
-#  jdk7_version: '75'
 #  jdk8_version: '31'
-# 
+#
 #  # HDP
 #  hdp_version: '2.2.0.0-2041'
-# 
+#
 #  # Hadoop
 #  hadoop_conf_dir: '/etc/hadoop/conf'
-# 
+#
 #  # HDFS
 #  dfs_nameservices: 'hdfs-cluster'
 #  hdfs_log_dir: '/var/log/hadoop-hdfs'
 #  hdfs_pid_dir: '/var/run/hadoop-hdfs'
-# 
+#
 #  # YARN
 #  yarn_rm_cluster_id: 'yarn-cluster'
 #  yarn_log_dir: '/var/log/hadoop-yarn'
 #  yarn_pid_dir: '/var/run/hadoop-yarn'
 #  yarn_rm_webapp_port: '8088'
-# 
+#
 #  # HBase
 #  hbase_log_dir: '/var/log/hbase'
 #  hbase_pid_dir: '/var/run/hbase'
-# 
+#
 #  # Presto
 #  presto_cluster_id: 'prestocluster'
 #  presto_data_dir: ''
@@ -36,13 +35,13 @@
 #  presto_task_max_memory: '1GB'
 #  presto_tmp_path: '/tmp'
 #  presto_version: '0.89'
-# 
+#
 #  # Spark
 #  spark_event_log_dir: '/var/log/spark'
 #  spark_hadoop_version: 'hadoop2.4'
 #  spark_install_path: '/usr/local/lib'
 #  spark_pid_dir: '/var/run/spark'
 #  spark_version: '1.2.0'
-# 
+#
 #  # Tez
 #  tez_hdfs_dir: '/apps/tez'
