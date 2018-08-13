@@ -293,12 +293,12 @@
 
     # Path to Hue's Kerberos keytab file
 
-  {% if kerberos_realm is defined %}
+{% if kerberos_realm is defined %}
     hue_keytab=/etc/hue/conf/hue.keytab
 
     # Kerberos principal name for Hue
     hue_principal=hue/{{ hue_server }}@{{ kerberos_realm }}
-  {% endif %}
+{% endif %}
 
     # Path to kinit
     ## kinit_path=/usr/bin/kinit
@@ -332,9 +332,9 @@
 
       logical_name={{ dfs_nameservices }}
 
-  {% if kerberos_realm is defined %}
+{% if kerberos_realm is defined %}
       security_enabled=true
-  {% endif %}
+{% endif %}
 
   [[yarn_clusters]]
 
@@ -342,9 +342,9 @@
       # Whether to submit jobs to this cluster
       submit_to=true
 
-  {% if kerberos_realm is defined %}
+{% if kerberos_realm is defined %}
       security_enabled=true
-  {% endif %}
+{% endif %}
 
       # Resource Manager logical name (required for HA)
       logical_name={{ yarn_rm_cluster_id }}
@@ -452,16 +452,18 @@
 
   [[ssl]]
     # SSL communication enabled for this server.
-    ## enabled=false
+{% if kerberos_realm is defined %}
+    enabled=true
 
     # Path to Certificate Authority certificates.
-    ## cacerts=/etc/hue/cacerts.pem
+    cacerts=/etc/hue/conf/hue_truststore.pem
 
     # Path to the private key file.
-    ## key=/etc/hue/key.pem
+    key=/etc/hue/conf/private_keystore.pem
 
     # Path to the public certificate file.
-    ## cert=/etc/hue/cert.pem
+    cert=/etc/hue/conf/cert.pem
+{% endif %}
 
     # Choose whether Hue should validate certificates received from the server.
     ## validate=true
