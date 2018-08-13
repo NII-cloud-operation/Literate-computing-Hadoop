@@ -290,10 +290,13 @@
   [[kerberos]]
 
     # Path to Hue's Kerberos keytab file
-    ## hue_keytab=/etc/security/keytabs/hue.service.keytab
+
+    {% if kerberos_realm is defined %}
+    hue_keytab=/etc/hue/conf/hue.keytab
 
     # Kerberos principal name for Hue
-    ## hue_principal=hue/FQDN@REALM
+    hue_principal=hue/{{ hue_server }}@{{ kerberos_realm }}
+    {% endif %}
 
     # Path to kinit
     ## kinit_path=/usr/bin/kinit
@@ -327,8 +330,9 @@
 
       logical_name={{ dfs_nameservices }}
 
-      ## security_enabled=true
-
+      {% if kerberos_realm is defined %}
+      security_enabled=true
+      {% endif %}
 
   [[yarn_clusters]]
 
