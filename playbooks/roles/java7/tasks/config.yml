@@ -1,7 +1,0 @@
-- name: copy_bash_profile
-  become: yes
-  copy: src=java.sh dest=/etc/profile.d/
-
-- name: copy_sudoers_conf_of_JAVA_HOME
-  become: yes
-  copy: src=env_keep_javahome dest=/etc/sudoers.d mode=440 owner=root

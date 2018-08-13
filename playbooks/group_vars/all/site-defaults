@@ -1,7 +1,4 @@
 # Java
-## 依存: jdk7_md5sum
-jdk7_version: '75'
-
 ## 依存: jdk8_md5sum
 jdk8_version: '112'
 
