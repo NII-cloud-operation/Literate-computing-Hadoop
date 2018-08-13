@@ -64,7 +64,9 @@
   ## enable_server=yes
 
   # Number of threads used by the CherryPy web server
-  ## cherrypy_server_threads=10
+{% if hue_cherrypy_server_threads is defined %}
+  cherrypy_server_threads={{ hue_cherrypy_server_threads }}
+{% endif %}
 
   # Filename of SSL Certificate
   ## ssl_certificate=
@@ -291,12 +293,12 @@
 
     # Path to Hue's Kerberos keytab file
 
-    {% if kerberos_realm is defined %}
+  {% if kerberos_realm is defined %}
     hue_keytab=/etc/hue/conf/hue.keytab
 
     # Kerberos principal name for Hue
     hue_principal=hue/{{ hue_server }}@{{ kerberos_realm }}
-    {% endif %}
+  {% endif %}
 
     # Path to kinit
     ## kinit_path=/usr/bin/kinit
@@ -330,9 +332,9 @@
 
       logical_name={{ dfs_nameservices }}
 
-      {% if kerberos_realm is defined %}
+  {% if kerberos_realm is defined %}
       security_enabled=true
-      {% endif %}
+  {% endif %}
 
   [[yarn_clusters]]
 
@@ -340,7 +342,9 @@
       # Whether to submit jobs to this cluster
       submit_to=true
 
-      ## security_enabled=false
+  {% if kerberos_realm is defined %}
+      security_enabled=true
+  {% endif %}
 
       # Resource Manager logical name (required for HA)
       logical_name={{ yarn_rm_cluster_id }}
