@@ -328,7 +328,11 @@
       # Use WebHdfs/HttpFs as the communication mechanism. To fallback to
       # using the Thrift plugin (used in Hue 1.x), this must be uncommented
       # and explicitly set to the empty value.
+{% if kerberos_realm is defined %}
+      webhdfs_url=https://{{ webhdfs_host }}:{{ webhdfs_port }}/webhdfs/v1/
+{% else %}
       webhdfs_url=http://{{ webhdfs_host }}:{{ webhdfs_port }}/webhdfs/v1/
+{% endif %}
 
       logical_name={{ dfs_nameservices }}
 
@@ -350,16 +354,32 @@
       logical_name={{ yarn_rm_cluster_id }}
 
       # URL of the ResourceManager webapp address (yarn.resourcemanager.webapp.address)
+{% if kerberos_realm is defined %}
       resourcemanager_api_url=http://{{ hadoop_resourcemanager_servers[0] }}:{{ yarn_rm_webapp_port }}
+{% else %}
+      resourcemanager_api_url=https://{{ hadoop_resourcemanager_servers[0] }}:{{ yarn_rm_webapp_port }}
+{% endif %}
 
       # URL of Yarn RPC adress (yarn.resourcemanager.address)
+{% if kerberos_realm is defined %}
+      resourcemanager_rpc_url=https://{{ hadoop_resourcemanager_servers[0] }}:8032
+{% else %}
       resourcemanager_rpc_url=http://{{ hadoop_resourcemanager_servers[0] }}:8050
+{% endif %}
 
       # URL of the ProxyServer API
+{% if kerberos_realm is defined %}
+      proxy_api_url=https://{{ hadoop_resourcemanager_servers[0] }}:{{ yarn_rm_webapp_port }}
+{% else %}
       proxy_api_url=http://{{ hadoop_resourcemanager_servers[0] }}:{{ yarn_rm_webapp_port }}
+{% endif %}
 
       # URL of the HistoryServer API
+{% if kerberos_realm is defined %}
+      history_server_api_url=https://{{ mapreduce_historyserver_address }}:19888
+{% else %}
       history_server_api_url=http://{{ mapreduce_historyserver_address }}:19888
+{% endif %}
 
       # URL of the NodeManager API
       #node_manager_api_url=http://localhost:8042
