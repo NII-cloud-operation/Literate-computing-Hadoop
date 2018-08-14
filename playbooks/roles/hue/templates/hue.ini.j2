@@ -355,9 +355,9 @@
 
       # URL of the ResourceManager webapp address (yarn.resourcemanager.webapp.address)
 {% if kerberos_realm is defined %}
-      resourcemanager_api_url=http://{{ hadoop_resourcemanager_servers[0] }}:{{ yarn_rm_webapp_port }}
-{% else %}
       resourcemanager_api_url=https://{{ hadoop_resourcemanager_servers[0] }}:{{ yarn_rm_webapp_port }}
+{% else %}
+      resourcemanager_api_url=http://{{ hadoop_resourcemanager_servers[0] }}:{{ yarn_rm_webapp_port }}
 {% endif %}
 
       # URL of Yarn RPC adress (yarn.resourcemanager.address)
@@ -390,7 +390,11 @@
 {% if hadoop_resourcemanager_servers|length > 1 -%}
     [[[ha]]]
       # Enter the host on which you are running the failover Resource Manager
+{% if kerberos_realm is defined %}
+        resourcemanager_api_url=https://{{ hadoop_resourcemanager_servers[1] }}:{{ yarn_rm_webapp_port }}
+{% else %}
         resourcemanager_api_url=http://{{ hadoop_resourcemanager_servers[1] }}:{{ yarn_rm_webapp_port }}
+{% endif %}
         logical_name={{ yarn_rm_cluster_id }}
         submit_to=True
 {% endif %}
