@@ -469,7 +469,7 @@
     ## validate=true
 
 
-
+{% if hue_jobsub_enabled is defined and hue_jobsub_enabled %}
 ###########################################################################
 # Settings to configure Job Designer
 ###########################################################################
@@ -483,7 +483,7 @@
 
   # Location on local FS where sample data is stored
   ## sample_data_dir=...thirdparty/sample_data
-
+{% endif %}
 
 ###########################################################################
 # Settings to configure Job Browser
@@ -505,13 +505,16 @@
   default_username=hue
   default_user_password=1111
 
-
+{% if hue_hcatalog_enabled is defined and hue_hcatalog_enabled %}
 [hcatalog]
   templeton_url=http://localhost:50111/templeton/v1/
   security_enabled=false
+{% endif %}
 
 [about]
   tutorials_installed=false
 
+{% if hue_pig_enabled is defined and hue_pig_enabled %}
 [pig]
   udf_path="/tmp/udfs"
+{% endif %}
