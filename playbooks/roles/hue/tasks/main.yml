@@ -1,2 +1,6 @@
 - include: install.yml
 - include: config.yml
+
+- include: principal.yml
+  vars: { kerberos_princ_username: hue, kerberos_princ_keytab_path: /etc/hue/conf/hue.keytab, kerberos_princ_keytab_owner: hue }
+  when: kerberos_realm is defined
