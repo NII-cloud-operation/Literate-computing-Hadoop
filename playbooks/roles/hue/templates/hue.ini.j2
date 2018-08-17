@@ -64,7 +64,9 @@
   ## enable_server=yes
 
   # Number of threads used by the CherryPy web server
-  ## cherrypy_server_threads=10
+{% if hue_cherrypy_server_threads is defined %}
+  cherrypy_server_threads={{ hue_cherrypy_server_threads }}
+{% endif %}
 
   # Filename of SSL Certificate
   ## ssl_certificate=
@@ -290,10 +292,13 @@
   [[kerberos]]
 
     # Path to Hue's Kerberos keytab file
-    ## hue_keytab=/etc/security/keytabs/hue.service.keytab
+
+{% if kerberos_realm is defined %}
+    hue_keytab=/etc/hue/conf/hue.keytab
 
     # Kerberos principal name for Hue
-    ## hue_principal=hue/FQDN@REALM
+    hue_principal=hue/{{ hue_server }}@{{ kerberos_realm }}
+{% endif %}
 
     # Path to kinit
     ## kinit_path=/usr/bin/kinit
@@ -323,12 +328,17 @@
       # Use WebHdfs/HttpFs as the communication mechanism. To fallback to
       # using the Thrift plugin (used in Hue 1.x), this must be uncommented
       # and explicitly set to the empty value.
+{% if kerberos_realm is defined %}
+      webhdfs_url=https://{{ webhdfs_host }}:{{ webhdfs_port }}/webhdfs/v1/
+{% else %}
       webhdfs_url=http://{{ webhdfs_host }}:{{ webhdfs_port }}/webhdfs/v1/
+{% endif %}
 
       logical_name={{ dfs_nameservices }}
 
-      ## security_enabled=true
-
+{% if kerberos_realm is defined %}
+      security_enabled=true
+{% endif %}
 
   [[yarn_clusters]]
 
@@ -336,22 +346,40 @@
       # Whether to submit jobs to this cluster
       submit_to=true
 
-      ## security_enabled=false
+{% if kerberos_realm is defined %}
+      security_enabled=true
+{% endif %}
 
       # Resource Manager logical name (required for HA)
       logical_name={{ yarn_rm_cluster_id }}
 
       # URL of the ResourceManager webapp address (yarn.resourcemanager.webapp.address)
+{% if kerberos_realm is defined %}
+      resourcemanager_api_url=https://{{ hadoop_resourcemanager_servers[0] }}:{{ yarn_rm_webapp_port }}
+{% else %}
       resourcemanager_api_url=http://{{ hadoop_resourcemanager_servers[0] }}:{{ yarn_rm_webapp_port }}
+{% endif %}
 
       # URL of Yarn RPC adress (yarn.resourcemanager.address)
+{% if kerberos_realm is defined %}
+      resourcemanager_rpc_url=https://{{ hadoop_resourcemanager_servers[0] }}:8032
+{% else %}
       resourcemanager_rpc_url=http://{{ hadoop_resourcemanager_servers[0] }}:8050
+{% endif %}
 
       # URL of the ProxyServer API
+{% if kerberos_realm is defined %}
+      proxy_api_url=https://{{ hadoop_resourcemanager_servers[0] }}:{{ yarn_rm_webapp_port }}
+{% else %}
       proxy_api_url=http://{{ hadoop_resourcemanager_servers[0] }}:{{ yarn_rm_webapp_port }}
+{% endif %}
 
       # URL of the HistoryServer API
+{% if kerberos_realm is defined %}
+      history_server_api_url=https://{{ mapreduce_historyserver_address }}:19888
+{% else %}
       history_server_api_url=http://{{ mapreduce_historyserver_address }}:19888
+{% endif %}
 
       # URL of the NodeManager API
       #node_manager_api_url=http://localhost:8042
@@ -362,7 +390,11 @@
 {% if hadoop_resourcemanager_servers|length > 1 -%}
     [[[ha]]]
       # Enter the host on which you are running the failover Resource Manager
+{% if kerberos_realm is defined %}
+        resourcemanager_api_url=https://{{ hadoop_resourcemanager_servers[1] }}:{{ yarn_rm_webapp_port }}
+{% else %}
         resourcemanager_api_url=http://{{ hadoop_resourcemanager_servers[1] }}:{{ yarn_rm_webapp_port }}
+{% endif %}
         logical_name={{ yarn_rm_cluster_id }}
         submit_to=True
 {% endif %}
@@ -418,7 +450,7 @@
   hive_server_port={{ hcatalog_port }}
 
   # Hive configuration directory, where hive-site.xml is located
-  ## hive_conf_dir=/etc/hive/conf
+  hive_conf_dir=/etc/hive/conf
 
   # Timeout in seconds for thrift calls to Hive service
   ## server_conn_timeout=120
@@ -444,22 +476,24 @@
 
   [[ssl]]
     # SSL communication enabled for this server.
-    ## enabled=false
+{% if kerberos_realm is defined %}
+    enabled=true
 
     # Path to Certificate Authority certificates.
-    ## cacerts=/etc/hue/cacerts.pem
+    cacerts=/etc/hue/conf/hue_truststore.pem
 
     # Path to the private key file.
-    ## key=/etc/hue/key.pem
+    key=/etc/hue/conf/private_keystore.pem
 
     # Path to the public certificate file.
-    ## cert=/etc/hue/cert.pem
+    cert=/etc/hue/conf/cert.pem
+{% endif %}
 
     # Choose whether Hue should validate certificates received from the server.
     ## validate=true
 
 
-
+{% if hue_jobsub_enabled is defined and hue_jobsub_enabled %}
 ###########################################################################
 # Settings to configure Job Designer
 ###########################################################################
@@ -473,7 +507,7 @@
 
   # Location on local FS where sample data is stored
   ## sample_data_dir=...thirdparty/sample_data
-
+{% endif %}
 
 ###########################################################################
 # Settings to configure Job Browser
@@ -495,13 +529,16 @@
   default_username=hue
   default_user_password=1111
 
-
+{% if hue_hcatalog_enabled is defined and hue_hcatalog_enabled %}
 [hcatalog]
   templeton_url=http://localhost:50111/templeton/v1/
   security_enabled=false
+{% endif %}
 
 [about]
   tutorials_installed=false
 
+{% if hue_pig_enabled is defined and hue_pig_enabled %}
 [pig]
   udf_path="/tmp/udfs"
+{% endif %}
