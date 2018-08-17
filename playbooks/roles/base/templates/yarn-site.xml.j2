@@ -111,7 +111,7 @@
 
 {% for host in hadoop_resourcemanager_servers %}
 <property>
-  <name>yarn.resourcemanager.webapp.address.{{ host }}</name>
+  <name>yarn.resourcemanager.webapp.{% if kerberos_realm is defined %}https.{% endif %}address.{{ host }}</name>
   <value>{{ host }}:{{ yarn_rm_webapp_port }}</value>
 </property>
 {% endfor %}
