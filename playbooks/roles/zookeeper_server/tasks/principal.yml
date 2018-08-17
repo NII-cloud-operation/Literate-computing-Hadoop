@@ -23,4 +23,4 @@
 
 - name: Modify permissions of keytab
   become: yes
-  file: path={{ kerberos_princ_keytab_path }} owner={{ kerberos_princ_keytab_owner }} group=hadoop mode=0400
+  file: path={{ kerberos_princ_keytab_path }} owner={{ kerberos_princ_keytab_owner }} group={{ kerberos_princ_keytab_owner }} mode=0400
