@@ -32,6 +32,10 @@ namenode_https_port: '50470'
 
 datanode_https_port: '50470'
 
+# https://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.6.5/bk_command-line-installation/content/configuring-namenode-heap-size.html
+namenode_total_java_heap: '1126m'
+namenode_young_generation_size: '128m'
+
 dfs_datanode_balance_bandwidthPerSec: '1048576'
 
 dfs_namenode_safemode_extension: '10000'
