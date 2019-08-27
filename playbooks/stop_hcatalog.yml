@@ -7,7 +7,7 @@
       register: check_status_hcatalog
       changed_when: false
       failed_when: check_status_hcatalog.rc not in [0, 1]
-      always_run: true
+      check_mode: no
 
     - name: stop_hcatalog_server
       shell: /usr/hdp/current/hive-webhcat/bin/hcat_server.sh stop

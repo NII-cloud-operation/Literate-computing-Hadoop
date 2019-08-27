@@ -5,7 +5,7 @@
   register: check_exists_hdfs_dir
   changed_when: false
   failed_when: false
-  always_run: true
+  check_mode: no
   with_items:
     - {path: '/var', mode: '1777', owner: 'hdfs', group: 'hadoop'}
     - {path: '/var/log', mode: '1777', owner: 'hdfs', group: 'hadoop'}

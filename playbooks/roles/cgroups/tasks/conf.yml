@@ -18,13 +18,13 @@
   ignore_errors: true
   register: check_chkconfig_cgconfig
   changed_when: false
-  always_run: true
-  
+  check_mode: no
+
 - name: set_on_to_cgconfig_of_chkconfig
   become: yes
   shell: chkconfig cgconfig on
   when: check_chkconfig_cgconfig.rc != 0
-  
+
 - name: started_cgconfig
   become: yes
   service: name=cgconfig state=started
@@ -42,7 +42,7 @@
   wait_for: host={{ inventory_hostname }} port=22 state=started delay=30
   delegate_to: 127.0.0.1
   when: result_install_cgroups.changed
-  
+
 - name: started_cgconfig
   become: yes
   service: name=cgconfig state=started

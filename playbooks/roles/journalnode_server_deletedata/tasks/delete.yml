@@ -4,7 +4,7 @@
   register: check_journalnode_edits_dirs
   ignore_errors: true
   changed_when: false
-  always_run: true
+  check_mode: no
 
 - name: delete_journalnode_edits_dirs
   become: yes
