@@ -5,7 +5,7 @@
   register: check_hdfs_root_permission
   changed_when: false
   failed_when: false
-  always_run: yes
+  check_mode: no
 
 - name: chmod_hdfs_root
   become: yes
@@ -20,7 +20,7 @@
   register: check_exists_hdfs_dir
   changed_when: false
   failed_when: false
-  always_run: true
+  check_mode: no
   with_items:
     - {path: '/tmp', mode: '1777', owner: 'hdfs', group: 'hadoop'}
     - {path: '/user', mode: '1777', owner: 'hdfs', group: 'hadoop'}

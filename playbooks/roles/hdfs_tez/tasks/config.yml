@@ -5,14 +5,14 @@
   register: check_exists_hdfs_dir
   changed_when: false
   failed_when: false
-  always_run: true
-    
+  check_mode: no
+
 - name: create_hdfs_dir
   become: yes
   become_user: hdfs
   shell: hdfs dfs -mkdir -p {{ tez_hdfs_dir }}
   when: check_exists_hdfs_dir.rc != 0
-  
+
 - name: change_owner_and_group_of_hdfs_dir
   become: yes
   become_user: hdfs

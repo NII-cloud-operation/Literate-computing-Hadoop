@@ -9,7 +9,7 @@
       register: check_status_spark_history_server
       changed_when: false
       failed_when: check_status_spark_history_server.rc not in [0, 1]
-      always_run: true
+      check_mode: no
 
     - name: start_spark_history_server
       shell: /usr/hdp/current/spark2-historyserver/sbin/start-history-server.sh

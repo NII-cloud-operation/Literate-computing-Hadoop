@@ -12,7 +12,7 @@
   when: not check_spark_installed.stat.exists
   register: md5sum_spark
   changed_when: false
-  always_run: true
+  check_mode: no
 
 - name: check_spark_md5sum
   fail: "md5 check sum is not match. {{ md5sum_spark.stdout }} should be {{ spark_md5sum }}"

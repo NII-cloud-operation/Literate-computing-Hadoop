@@ -11,24 +11,23 @@
   register: check_tez_installed_on_hdfs
   ignore_errors: yes
   changed_when: false
-  always_run: true
-  
+  check_mode: no
+
 - name: copy_tez_packages_to_HDFS
   become: yes
   become_user: hdfs
   shell: hdfs dfs -copyFromLocal /usr/hdp/current/tez-client/lib/tez.tar.gz {{ tez_hdfs_dir }}
   register: copy_tez_packages_to_HDFS
   when: check_tez_installed_on_hdfs.rc != 0
-  
+
 - name: change_owner_of_tez_packages
   become: yes
   become_user: hdfs
   shell: hdfs dfs -chown -R hdfs:hadoop {{ tez_hdfs_dir }}
   when: check_tez_installed_on_hdfs.rc != 0
-  
+
 - name: change_mode_of_tez_packages
   become: yes
   become_user: hdfs
   shell: hdfs dfs -chmod -R 555 {{ tez_hdfs_dir }}
   when: check_tez_installed_on_hdfs.rc != 0
-  
