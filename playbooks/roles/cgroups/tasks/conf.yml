@@ -12,37 +12,7 @@
   become: yes
   template: src=cgconfig.conf.j2 dest=/etc/cgconfig.conf owner=root group=root mode=644
 
-- name: check_chkconfig_cgconfig
-  become: yes
-  shell: chkconfig --list | grep cgconfig | grep on
-  ignore_errors: true
-  register: check_chkconfig_cgconfig
-  changed_when: false
-  check_mode: no
-
-- name: set_on_to_cgconfig_of_chkconfig
-  become: yes
-  shell: chkconfig cgconfig on
-  when: check_chkconfig_cgconfig.rc != 0
-
-- name: started_cgconfig
-  become: yes
-  service: name=cgconfig state=started
-
 - name: reboot
   become: yes
-  command: shutdown -r now
+  reboot:
   when: result_install_cgroups.changed
-
-- name: wait for SSH port down
-  local_action: wait_for host={{ inventory_hostname }} port=22 state=stopped
-  when: result_install_cgroups.changed
-
-- name: wait for SSH port up
-  wait_for: host={{ inventory_hostname }} port=22 state=started delay=30
-  delegate_to: 127.0.0.1
-  when: result_install_cgroups.changed
-
-- name: started_cgconfig
-  become: yes
-  service: name=cgconfig state=started

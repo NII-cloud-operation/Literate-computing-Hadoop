@@ -1,8 +1,9 @@
 - name: install_cgroups
   become: yes
-  yum: name={{ item }} state=installed
+  apt:
+    name:
+      - cgroup-tools
+      - cgroup-lite
+    state: present
   register: result_install_cgroups
-  with_items:
-    - libcgroup
-    - libcgroup-devel
 
