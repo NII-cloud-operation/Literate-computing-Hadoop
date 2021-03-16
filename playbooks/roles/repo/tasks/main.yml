@@ -1,3 +1,0 @@
-- name: install_hdp_repo
-  become: yes
-  template: src=hdp.repo.j2 dest=/etc/yum.repos.d/hdp.repo

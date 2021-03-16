@@ -1,0 +1,11 @@
+[Unit]
+Description=Apache Hadoop DataNode Service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/hadoop-hdfs-datanode
+User=hdfs
+ExecStart={{ hadoop_dir }}/current/bin/hdfs --config /etc/hadoop/conf datanode
+
+[Install]
+WantedBy=multi-user.target

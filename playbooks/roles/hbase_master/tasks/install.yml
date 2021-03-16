@@ -1,5 +1,0 @@
-- name: install_hbase-master_packages
-  become: yes
-  yum: name={{ item }} state=installed
-  with_items:
-  - hbase-master

@@ -1,10 +1,3 @@
-# Java
-## 依存: jdk8_md5sum
-jdk8_version: '112'
-
-# HDP
-hdp_version: '2.2.0.0-2041'
-
 # Hadoop
 hadoop_conf_dir: '/etc/hadoop/conf'
 
@@ -22,35 +15,9 @@ yarn_rm_webapp_port: '8088'
 # HBase
 hbase_log_dir: '/var/log/hbase'
 hbase_pid_dir: '/var/run/hbase'
-hbase_opts: '-XX:+UseConcMarkSweepGC'
-hbase_server_gc_opts: '-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps'
+hbase_opts: ''
+hbase_server_gc_opts: ''
 hbase_client_gc_opts: ''
-
-# Presto
-presto_cluster_id: 'prestocluster'
-
-presto_data_dir: ''
-
-presto_hive_metastore_port: '9083'
-
-presto_http_port: '9090'
-
-presto_install_path: '/usr/local/lib'
-
-presto_log_dir: '/var/log/presto'
-
-## 依存: presto_version
-presto_md5sum: 'c0bc337c2fc15daa284bd8063cb31738'
-
-presto_pid_dir: '/var/run/presto'
-
-presto_task_max_memory: '1GB'
-
-presto_tmp_path: '/tmp'
-
-## 依存: presto_md5sum
-presto_version: '0.89'
-
 
 # Spark
 spark_event_log_dir: '/var/log/spark'

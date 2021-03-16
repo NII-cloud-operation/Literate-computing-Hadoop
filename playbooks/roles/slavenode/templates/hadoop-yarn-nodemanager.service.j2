@@ -1,0 +1,11 @@
+[Unit]
+Description=Apache Hadoop YARN NodeManager Service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/hadoop-yarn-nodemanager
+User=yarn
+ExecStart={{ hadoop_dir }}/current/bin/yarn --config /etc/hadoop/conf nodemanager
+
+[Install]
+WantedBy=multi-user.target

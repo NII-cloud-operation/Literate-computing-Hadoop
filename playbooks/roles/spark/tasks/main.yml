@@ -1,6 +1,2 @@
-- include: install-tarball.yml
-  when: hdp_version == '2.2.0.0-2041'
 - include: install.yml
-  when: hdp_version != '2.2.0.0-2041'
-
 - include: config.yml

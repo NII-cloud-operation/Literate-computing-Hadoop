@@ -1,1 +1,7 @@
-hive_default_execution_engine: 'tez'
+hive_release_url: 'https://mirrors.ocf.berkeley.edu/apache/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz'
+hive_release_checksum: 'sha512:612101b6fb6f98c3b4b2608a6f744a5052b0edbe2118dcba5a95019486e9bd5393705e058e571138dc909b91ee415f05c47f2912e065042fc5d5615211fcbd37'
+hive_package_filename: 'apache-hive-3.1.2-bin'
+
+hive_dir: '/opt/hive'
+
+hive_default_execution_engine: 'spark'

@@ -22,15 +22,13 @@
 # remote nodes.
 
 # The java implementation to use.
-export JAVA_HOME=/usr/java/jdk1.8.0_{{ jdk8_version }}
+export JAVA_HOME={{ java_home }}
 
 # The jsvc implementation to use. Jsvc is required to run secure datanodes
 # that bind to privileged ports to provide authentication of data transfer
 # protocol.  Jsvc is not required if SASL is configured for authentication of
 # data transfer protocol using non-privileged ports.
 #export JSVC_HOME=${JSVC_HOME}
-
-#export HADOOP_CONF_DIR=${HADOOP_CONF_DIR:-"/etc/hadoop"}
 
 # Extra Java CLASSPATH elements.  Automatically insert capacity-scheduler.
 #for f in $HADOOP_HOME/contrib/capacity-scheduler/*.jar; do
@@ -51,9 +49,8 @@ export JAVA_HOME=/usr/java/jdk1.8.0_{{ jdk8_version }}
 # Command specific options appended to HADOOP_OPTS when specified
 #export HADOOP_NAMENODE_OPTS="-Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender} $HADOOP_NAMENODE_OPTS"
 #export HADOOP_DATANODE_OPTS="-Dhadoop.security.logger=ERROR,RFAS $HADOOP_DATANODE_OPTS"
-# Based on https://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.6.5/bk_command-line-installation/content/configuring-namenode-heap-size.html
-export HADOOP_NAMENODE_OPTS="-server -XX:ParallelGCThreads=8 -XX:+UseConcMarkSweepGC -XX:ErrorFile=/var/log/hadoop-hdfs/hs_err_pid%p.log -XX:NewSize={{ namenode_young_generation_size }} -XX:MaxNewSize={{ namenode_young_generation_size }} -Xms{{ namenode_total_java_heap }} -Xmx{{ namenode_total_java_heap }} -XX:PermSize=128m -XX:MaxPermSize=256m -Xloggc:/var/log/hadoop-hdfs/gc-namenode.log-`date +'%Y%m%d%H%M'` -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender}"
-export HADOOP_JOURNALNODE_OPTS="-server -XX:ParallelGCThreads=4 -XX:+UseConcMarkSweepGC -XX:ErrorFile=/var/log/hadoop-hdfs/hs_err_pid%p.log -XX:PermSize=128m -XX:MaxPermSize=256m -Xloggc:/var/log/hadoop-hdfs/gc-journalnode.log-`date +'%Y%m%d%H%M'` -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender}"
+export HADOOP_NAMENODE_OPTS="-server -XX:ErrorFile=/var/log/hadoop-hdfs/hs_err_pid%p.log -Xms{{ namenode_total_java_heap }} -Xmx{{ namenode_total_java_heap }} -Xlog:gc:/var/log/hadoop-hdfs/gc-namenode.log-`date +'%Y%m%d%H%M'` -Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender}"
+export HADOOP_JOURNALNODE_OPTS="-server -XX:ErrorFile=/var/log/hadoop-hdfs/hs_err_pid%p.log -Xlog:gc:/var/log/hadoop-hdfs/gc-journalnode.log-`date +'%Y%m%d%H%M'` -Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender}"
 
 #export HADOOP_SECONDARYNAMENODE_OPTS="-Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender} $HADOOP_SECONDARYNAMENODE_OPTS"
 
@@ -100,9 +97,10 @@ export HADOOP_JOURNALNODE_OPTS="-server -XX:ParallelGCThreads=4 -XX:+UseConcMark
 # A string representing this instance of hadoop. $USER by default.
 #export HADOOP_IDENT_STRING=$USER
 
-export JAVA_HOME=/usr/java/jdk1.8.0_{{ jdk8_version }}
+export JAVA_HOME={{ java_home }}
 export HADOOP_LOG_DIR={{ hdfs_log_dir }}
 export HADOOP_PID_DIR={{ hdfs_pid_dir }}
+export HADOOP_CONF_DIR=/etc/hadoop/conf
 export HADOOP_IDENT_STRING={{ hdfs_ident_string }}
 export YARN_LOG_DIR={{ yarn_log_dir }}
 export YARN_PID_DIR={{ yarn_pid_dir }}

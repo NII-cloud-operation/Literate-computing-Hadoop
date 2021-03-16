@@ -1,14 +1,15 @@
-- name: fix_init_scripts
+- name: prepare_systemd_service
   become: yes
-  lineinfile: dest=/usr/hdp/{{ hdp_version }}/hadoop-yarn/etc/rc.d/init.d/{{ item }} insertafter='^\.\s+\/lib\/lsb\/init-functions' line='. /etc/default/{{ item }}'
+  template:
+    src: "{{ item }}.service.j2"
+    dest: "/etc/systemd/system/{{ item }}.service"
   with_items:
   - hadoop-yarn-resourcemanager
-  
-- name: create_symbolic_link_to/etc/init.d
+
+- name: reload_systemd_service
   become: yes
-  file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/hadoop-yarn/etc/rc.d/init.d/{{ item }}
-  with_items:
-  - hadoop-yarn-resourcemanager
+  systemd:
+    daemon_reload: yes
 
 - name: create_yarn_pid_dir
   become: yes

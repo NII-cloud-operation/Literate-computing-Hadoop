@@ -27,7 +27,7 @@
 
 # The java implementation to use.  Java 1.6 required.
 # export JAVA_HOME=/usr/java/jdk1.6.0/
-export JAVA_HOME=/usr/java/jdk1.8.0_{{ jdk8_version }}
+export JAVA_HOME={{ java_home }}
 
 # Extra Java CLASSPATH elements.  Optional.
 # export HBASE_CLASSPATH=
@@ -41,7 +41,7 @@ export HBASE_HEAPSIZE={{ hbase_master_heap_size }}
 # see http://wiki.apache.org/hadoop/PerformanceTuning
 export HBASE_OPTS="{{ hbase_opts }}"
 
-export HBASE_HOME=/usr/hdp/current/hbase-master
+export HBASE_HOME={{ hbase_dir }}/current/
 export HBASE_CONF_DIR="/etc/hbase/conf"
 
 # Uncomment one of the below three options to enable java garbage collection logging for the server-side processes.

@@ -1,0 +1,11 @@
+[Unit]
+Description=Apache Hadoop HDFS ZKFC Service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/hadoop-hdfs-zkfc
+User=hdfs
+ExecStart={{ hadoop_dir }}/current/bin/hdfs --config /etc/hadoop/conf zkfc
+
+[Install]
+WantedBy=multi-user.target

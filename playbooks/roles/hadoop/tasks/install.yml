@@ -1,0 +1,59 @@
+- name: prepare_package_dir
+  become: yes
+  file:
+    path: "{{ hadoop_dir }}/package"
+    state: directory
+
+- name: download_hadoop_package
+  become: yes
+  get_url:
+    url: "{{ hadoop_release_url }}"
+    dest: "{{ hadoop_dir }}/package/{{ hadoop_package_filename }}.tar.gz"
+    checksum: "{{ hadoop_release_checksum }}"
+
+- name: extract_hadoop_package
+  become: yes
+  unarchive:
+    src: "{{ hadoop_dir }}/package/{{ hadoop_package_filename }}.tar.gz"
+    dest: "{{ hadoop_dir }}"
+    remote_src: yes
+
+- name: link_latest_package
+  become: yes
+  file:
+    path: "{{ hadoop_dir }}/current"
+    src: "{{ hadoop_dir }}/{{ hadoop_package_filename }}"
+    state: link
+
+- name: ensure_hadoop_group
+  become: yes
+  group:
+    name: hadoop
+
+- name: create_hdfs_user
+  become: yes
+  user:
+    name: "{{ item.name }}"
+    groups:
+      - hadoop
+  with_items:
+    - { name: hdfs }
+    - { name: yarn }
+    - { name: mapred }
+
+- name: prepare_commands
+  become: yes
+  template:
+    src: "command-wrapper.sh.j2"
+    dest: "/usr/local/bin/{{ item }}"
+    mode: '755'
+    owner: root
+    group: root
+  with_items:
+  - container-executor
+  - test-container-executor
+  - hadoop
+  - hdfs
+  - mapred
+  - oom-listener
+  - yarn

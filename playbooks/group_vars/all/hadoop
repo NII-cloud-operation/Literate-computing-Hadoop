@@ -1,0 +1,5 @@
+hadoop_release_url: 'https://ftp.jaist.ac.jp/pub/apache/hadoop/common/hadoop-3.2.2/hadoop-3.2.2.tar.gz'
+hadoop_release_checksum: 'sha512:054753301927d31a69b80be3e754fd330312f0b1047bcfa4ab978cdce18319ed912983e6022744d8f0c8765b98c87256eb1c3017979db1341d583d2cee22d029'
+hadoop_package_filename: 'hadoop-3.2.2'
+
+hadoop_dir: '/opt/hadoop'

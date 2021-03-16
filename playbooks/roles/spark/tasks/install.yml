@@ -1,6 +1,61 @@
-- name: install_spark_packages
+- name: prepare_package_dir
   become: yes
-  yum: name={{ item }} state=installed
+  file:
+    path: "{{ spark_dir }}/package"
+    state: directory
+
+- name: download_spark_package
+  become: yes
+  get_url:
+    url: "{{ spark_release_url }}"
+    dest: "{{ spark_dir }}/package/{{ spark_package_filename }}.tgz"
+    checksum: "{{ spark_release_checksum }}"
+
+- name: extract_spark_package
+  become: yes
+  unarchive:
+    src: "{{ spark_dir }}/package/{{ spark_package_filename }}.tgz"
+    dest: "{{ spark_dir }}"
+    remote_src: yes
+
+- name: link_latest_package
+  become: yes
+  file:
+    path: "{{ spark_dir }}/current"
+    src: "{{ spark_dir }}/{{ spark_package_filename }}"
+    state: link
+
+- name: ensure_spark_group
+  become: yes
+  group:
+    name: spark
+
+- name: create_spark_user
+  become: yes
+  user:
+    name: "{{ item.name }}"
+    groups:
+      - spark
   with_items:
-  - spark2
-  - spark2-python
+    - { name: spark }
+
+- name: prepare_commands
+  become: yes
+  template:
+    src: "command-wrapper.sh.j2"
+    dest: "/usr/local/bin/{{ item }}"
+    mode: '755'
+    owner: root
+    group: root
+  with_items:
+  - beeline
+  - run-example
+  - sparkR
+  - load-spark-env.sh
+  - spark-sql
+  - docker-image-tool.sh
+  - pyspark
+  - spark-class
+  - find-spark-home
+  - spark-shell
+  - spark-submit
