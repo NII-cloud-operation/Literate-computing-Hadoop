@@ -1,0 +1,23 @@
+- name: Install kerberos
+  become: yes
+  apt: name=krb5-user
+
+- name: Modify krb5.conf
+  become: yes
+  template: src=krb5.conf.j2 dest=/etc/krb5.conf
+
+- name: Prepare keytab for admin
+  become: yes
+  copy: src="{{ kerberos_admin_keytab_file }}" dest="{{ kerberos_admin_keytab }}" owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
+
+- include: host_principal.yml
+    
+- name: Change ssh config
+  become: yes
+  lineinfile: dest=/etc/ssh/ssh_config line="GSSAPIDelegateCredentials yes" regexp="^\s+GSSAPIDelegateCredentials"
+  notify: Reload sshd
+
+- name: Change sshd config
+  become: yes
+  lineinfile: dest=/etc/ssh/sshd_config line="GSSAPIAuthentication yes" regexp=^GSSAPIAuthentication
+  notify: Reload sshd

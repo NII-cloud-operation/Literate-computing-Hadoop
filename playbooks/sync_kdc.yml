@@ -1,5 +1,5 @@
-- hosts: kerberos_master
+- hosts: kerberos_server
   become: yes
   tasks:
-    - command: kdb5_util dump /var/kerberos/krb5kdc/slave_datatrans
+    - command: kdb5_util dump /var/lib/krb5kdc/replica_datatrans
     - command: kprop {{ kerberos_kdc_slaves | join(' ') }}

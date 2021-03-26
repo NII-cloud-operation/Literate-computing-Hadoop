@@ -1,0 +1,7 @@
+- hosts: kerberos_server
+  roles:
+    - kerberos-server
+
+- hosts: hadoop_all
+  roles:
+    - kerberos-client

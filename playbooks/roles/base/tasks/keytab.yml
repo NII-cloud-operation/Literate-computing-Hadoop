@@ -5,11 +5,11 @@
 
 - name: prepare_script
   become: yes
-  template: src=merge-keytabs.ktutil.j2 dest=/home/ansible/merge-keytabs.ktutil
+  template: src=merge-keytabs.ktutil.j2 dest=/root/merge-keytabs.ktutil
   when: kerberos_princ_dest_keytab_stat.stat.exists == False
 
 - name: run_script
   become: yes
-  shell: ktutil </home/ansible/merge-keytabs.ktutil
+  shell: ktutil </root/merge-keytabs.ktutil
   when: kerberos_princ_dest_keytab_stat.stat.exists == False
   notify: "Modify keytab permissions for {{ kerberos_princ_keytab_owner }}"

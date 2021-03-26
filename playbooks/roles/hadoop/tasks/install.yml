@@ -10,6 +10,8 @@
     url: "{{ hadoop_release_url }}"
     dest: "{{ hadoop_dir }}/package/{{ hadoop_package_filename }}.tar.gz"
     checksum: "{{ hadoop_release_checksum }}"
+    owner: root
+    group: root
 
 - name: extract_hadoop_package
   become: yes
@@ -17,6 +19,28 @@
     src: "{{ hadoop_dir }}/package/{{ hadoop_package_filename }}.tar.gz"
     dest: "{{ hadoop_dir }}"
     remote_src: yes
+    owner: root
+    group: root
+
+- name: fix_etc
+  become: yes
+  command:
+    cmd: "mv hadoop hadoop.backup"
+    chdir: "{{ hadoop_dir }}/{{ hadoop_package_filename }}/etc"
+    creates: "{{ hadoop_dir }}/{{ hadoop_package_filename }}/etc/hadoop.backup"
+
+- name: fix_etc
+  become: yes
+  file:
+    path: "{{ hadoop_dir }}/{{ hadoop_package_filename }}/etc/hadoop"
+    state: absent
+
+- name: link_etc
+  become: yes
+  file:
+    path: "{{ hadoop_dir }}/{{ hadoop_package_filename }}/etc/hadoop"
+    src: "/etc/hadoop/conf"
+    state: link
 
 - name: link_latest_package
   become: yes
@@ -24,6 +48,56 @@
     path: "{{ hadoop_dir }}/current"
     src: "{{ hadoop_dir }}/{{ hadoop_package_filename }}"
     state: link
+
+- name: fix_permission_of_container_executor
+  become: yes
+  file:
+    path: "{{ hadoop_dir }}/{{ hadoop_package_filename }}/bin/container-executor"
+    owner: root
+    group: yarn
+    mode: "u=rwx,g=r,o=r,u+s"
+
+- name: prepare_package_dir
+  become: yes
+  file:
+    path: "{{ jsvc_dir }}/package"
+    state: directory
+
+- name: download_jsvc_package
+  become: yes
+  get_url:
+    url: "{{ jsvc_release_url }}"
+    dest: "{{ jsvc_dir }}/package/{{ jsvc_package_filename }}.tar.gz"
+    checksum: "{{ jsvc_release_checksum }}"
+
+- name: extract_jsvc_package
+  become: yes
+  unarchive:
+    src: "{{ jsvc_dir }}/package/{{ jsvc_package_filename }}.tar.gz"
+    dest: "{{ jsvc_dir }}"
+    owner: "{{ ansible_ssh_user }}"
+    group: "{{ ansible_ssh_user }}"
+    remote_src: yes
+
+- name: install_build_tools
+  become: yes
+  apt: name=build-essential,autoconf state=latest
+
+- name: build_jsvc_package
+  shell:
+    cmd: "sh support/buildconf.sh && ./configure --with-java={{ java_home }} && make"
+    chdir: "{{ jsvc_dir }}/{{ jsvc_package_filename }}/src/native/unix"
+    creates: "{{ jsvc_dir }}/{{ jsvc_package_filename }}/src/native/unix/jsvc"
+
+- name: copy_jsvc_binary
+  become: yes
+  copy:
+    src: "{{ jsvc_dir }}/{{ jsvc_package_filename }}/src/native/unix/jsvc"
+    dest: /usr/bin/jsvc
+    remote_src: yes
+    owner: root
+    group: root
+    mode: '0755'
 
 - name: ensure_hadoop_group
   become: yes

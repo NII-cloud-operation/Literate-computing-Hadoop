@@ -1,0 +1,22 @@
+- name: Check principal
+  become: yes
+  command: kadmin -q "getprinc host/{{ ansible_fqdn }}" -p {{ kerberos_admin_principal }} -k -t {{ kerberos_admin_keytab }}
+  register: host_principals
+  changed_when: host_principals.stderr.find('Principal does not exist') != -1
+
+- name: Add principal
+  become: yes
+  command: kadmin -q "addprinc -randkey host/{{ ansible_fqdn }}" -p {{ kerberos_admin_principal }} -k -t {{ kerberos_admin_keytab }}
+  when: host_principals is defined and host_principals.stderr.find('Principal does not exist') != -1
+    
+- name: Check keytab
+  become: yes
+  command: klist -k /etc/krb5.keytab
+  register: host_keytabs
+  changed_when: host_keytabs.rc != 0 or host_keytabs.stdout.find('host/' + ansible_fqdn) == -1
+  ignore_errors: yes
+
+- name: Prepare keytabs
+  become: yes
+  command: kadmin -q "ktadd -k /etc/krb5.keytab host/{{ ansible_fqdn }}" -p {{ kerberos_admin_principal }} -k -t {{ kerberos_admin_keytab }}
+  when: host_keytabs is defined and host_keytabs.rc != 0 or host_keytabs.stdout.find('host/' + ansible_fqdn) == -1
