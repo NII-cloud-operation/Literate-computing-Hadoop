@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for slave in "$@"
+do
+    kprop "$slave"
+done

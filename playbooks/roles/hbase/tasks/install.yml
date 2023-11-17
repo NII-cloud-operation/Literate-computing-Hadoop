@@ -1,0 +1,47 @@
+- name: prepare_package_dir
+  file:
+    path: "{{ hbase_dir }}/package"
+    state: directory
+
+- name: download_hbase_package
+  get_url:
+    url: "{{ hbase_release_url }}"
+    dest: "{{ hbase_dir }}/package/{{ hbase_package_filename }}.tar.gz"
+    checksum: "{{ hbase_release_checksum }}"
+
+- name: extract_hbase_package
+  unarchive:
+    src: "{{ hbase_dir }}/package/{{ hbase_package_filename }}.tar.gz"
+    dest: "{{ hbase_dir }}"
+    remote_src: yes
+
+- name: link_latest_package
+  file:
+    path: "{{ hbase_dir }}/current"
+    src: "{{ hbase_dir }}/{{ hbase_package_filename }}"
+    state: link
+
+- name: ensure_hadoop_group
+  group:
+    name: hadoop
+
+- name: create_hbase_user
+  user:
+    name: "{{ item.name }}"
+    groups:
+      - hadoop
+  with_items:
+    - { name: hbase }
+
+
+- name: prepare_commands
+  become: yes
+  template:
+    src: "command-wrapper.sh.j2"
+    dest: "/usr/local/bin/{{ item }}"
+    mode: '755'
+    owner: root
+    group: root
+  with_items:
+  - hbase
+  - hbase-jruby

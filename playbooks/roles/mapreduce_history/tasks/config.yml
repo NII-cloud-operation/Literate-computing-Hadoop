@@ -1,19 +1,15 @@
-- name: fix_init_scripts
+- name: prepare_systemd_service
   become: yes
-  lineinfile: dest=/usr/hdp/{{ hdp_version }}/hadoop-mapreduce/etc/rc.d/init.d/{{ item }} insertafter='^\.\s+\/lib\/lsb\/init-functions' line='. /etc/default/{{ item }}'
-  with_items:
-  - hadoop-mapreduce-historyserver
- 
-- name: create_symbolic_link_to/etc/init.d
-  become: yes
-  file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/hadoop-mapreduce/etc/rc.d/init.d/{{ item }}
+  template:
+    src: "{{ item }}.service.j2"
+    dest: "/etc/systemd/system/{{ item }}.service"
   with_items:
   - hadoop-mapreduce-historyserver
 
-- name: create_symbolic_link_to/usr/hdp/current/hadoop-mapreduce
+- name: reload_systemd_service
   become: yes
-  file: path=/usr/hdp/current/hadoop-mapreduce state=link src=/usr/hdp/{{ hdp_version }}/hadoop-mapreduce
-  when: hdp_version != '2.2.0.0-2041'
+  systemd:
+    daemon_reload: yes
 
 - name: create_pid_dir
   become: yes

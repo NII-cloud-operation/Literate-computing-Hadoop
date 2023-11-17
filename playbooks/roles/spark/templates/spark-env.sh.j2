@@ -49,17 +49,20 @@
 # - SPARK_IDENT_STRING  A string representing this instance of spark. (Default: $USER)
 # - SPARK_NICENESS      The scheduling priority for daemons. (Default: 0)
 
-export JAVA_HOME=/usr/java/jdk1.8.0_{{ jdk8_version }}
+export JAVA_HOME={{ java_home }}
 
 export HADOOP_CONF_DIR={{ hadoop_conf_dir }}
 export YARN_CONF_DIR={{ hadoop_conf_dir }}
-export HADOOP_HOME=/usr/hdp/current/hadoop-client
+export HADOOP_HOME={{ hadoop_dir }}/current/
 export SPARK_CLASSPATH=$SPARK_CLASSPATH:$HADOOP_HOME/lib/jackson-mapper-asl-1.9.13.jar
 export SPARK_PID_DIR={{ spark_pid_dir }}
-export SPARK_YARN_USER_ENV="CLASSPATH=/etc/hadoop/conf:/usr/hdp/current/hadoop-client/:/usr/hdp/current/hadoop-client/lib/:/usr/hdp/current/hadoop-hdfs-client/lib:/usr/hdp/current/hadoop-yarn-client/lib/"
+export SPARK_YARN_USER_ENV="CLASSPATH=/etc/hadoop/conf:{{ hadoop_dir }}/current/:{{ hadoop_dir }}/current/lib/"
+
+export SPARK_CONF_DIR=/etc/spark/conf
+export SPARK_LOG_DIR={{ spark_log_dir }}
 
 {% if kerberos_realm is defined %}
 export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS -Dspark.history.kerberos.enabled=true "
 export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS -Dspark.history.kerberos.principal=spark/{{ ansible_fqdn }}@{{ kerberos_realm }} "
-export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS -Dspark.history.kerberos.keytab=/etc/spark2/conf/spark.keytab "
+export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS -Dspark.history.kerberos.keytab=/etc/spark/conf/spark.keytab "
 {% endif %}

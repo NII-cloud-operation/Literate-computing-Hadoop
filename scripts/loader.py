@@ -8,7 +8,7 @@ def get_row(header, machines):
 def read_machines(path):
     header = None
     machines = []
-    with open(path, 'rb') as f:
+    with open(path, 'r') as f:
         for row in csv.reader(f):
             if not header:
                 header = row

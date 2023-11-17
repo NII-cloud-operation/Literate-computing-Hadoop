@@ -1,0 +1,12 @@
+[Unit]
+Description=Apache Spark HistoryServer Service
+
+[Service]
+Type=forking
+EnvironmentFile=/etc/default/spark-history-server
+User=spark
+ExecStart={{ spark_dir }}/current/sbin/start-history-server.sh
+ExecStop={{ spark_dir }}/current/sbin/stop-history-server.sh
+
+[Install]
+WantedBy=multi-user.target

@@ -1,2 +1,3 @@
-export SPARK_HOME=/usr/hdp/{{ hdp_version }}/spark2
+export SPARK_HOME={{ spark_dir }}/current/
 export SPARK_PID_DIR={{ spark_pid_dir }}
+export PATH={{ spark_dir }}/current/bin:$PATH

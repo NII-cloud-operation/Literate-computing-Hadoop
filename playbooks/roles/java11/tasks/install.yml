@@ -1,0 +1,6 @@
+- name: install_openjdk
+  become: yes
+  apt:
+    name:
+      - openjdk-11-jdk
+    state: present

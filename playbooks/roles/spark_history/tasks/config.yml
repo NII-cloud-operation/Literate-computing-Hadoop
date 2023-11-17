@@ -4,13 +4,32 @@
 
 - name: remove_spark_log_dir
   become: yes
-  file: path=/usr/hdp/{{ hdp_version }}/spark2/logs state=absent
+  file: path={{ spark_dir }}/logs state=absent
 
 - name: create_symbolic_link_to_spark_log_dir
   become: yes
-  file: path=/usr/hdp/{{ hdp_version }}/spark2/logs state=link src={{ spark_log_dir }}
+  file: path={{ spark_dir }}/logs state=link src={{ spark_log_dir }}
   register: md5sum_spark
 
 - name: create_spark_pid_dir
   become: yes
   file: path={{ spark_pid_dir }} state=directory owner=spark group=spark mode=775
+
+- name: prepare_systemd_service
+  become: yes
+  template:
+    src: "{{ item }}.service.j2"
+    dest: "/etc/systemd/system/{{ item }}.service"
+  with_items:
+  - spark-history-server
+
+- name: reload_systemd_service
+  become: yes
+  systemd:
+    daemon_reload: yes
+
+- name: copy_spark_history_defaults_file
+  become: yes
+  template: src=default_{{ item }}.j2 dest=/etc/default/{{ item }} mode=755 owner=spark group=spark
+  with_items:
+  - spark-history-server

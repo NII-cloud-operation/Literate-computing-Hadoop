@@ -1,5 +1,0 @@
-- name: copy_presto_catalog_file
-  become: yes
-  template: src={{ item }}.j2 dest=/etc/presto/conf/catalog/{{ item }} 
-  with_items:
-  - hive.properties

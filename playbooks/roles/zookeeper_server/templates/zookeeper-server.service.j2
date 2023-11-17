@@ -1,0 +1,11 @@
+[Unit]
+Description=Apache Zookeeper Service
+
+[Service]
+Type=forking
+User=zookeeper
+ExecStart={{ zookeeper_dir }}/current/bin/zkServer.sh --config /etc/zookeeper/conf start
+ExecStop={{ zookeeper_dir }}/current/bin/zkServer.sh --config /etc/zookeeper/conf stop
+
+[Install]
+WantedBy=multi-user.target

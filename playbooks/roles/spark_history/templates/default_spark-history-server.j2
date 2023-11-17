@@ -1,0 +1,16 @@
+
+JAVA_HOME={{ java_home }}
+
+HADOOP_CONF_DIR={{ hadoop_conf_dir }}
+YARN_CONF_DIR={{ hadoop_conf_dir }}
+HADOOP_HOME={{ hadoop_dir }}/current/
+SPARK_CLASSPATH=$SPARK_CLASSPATH:$HADOOP_HOME/lib/jackson-mapper-asl-1.9.13.jar
+SPARK_PID_DIR={{ spark_pid_dir }}
+SPARK_YARN_USER_ENV="CLASSPATH=/etc/hadoop/conf:{{ hadoop_dir }}/current/:{{ hadoop_dir }}/current/lib/"
+
+SPARK_CONF_DIR=/etc/spark/conf
+SPARK_LOG_DIR={{ spark_log_dir }}
+
+{% if kerberos_realm is defined %}
+SPARK_HISTORY_OPTS="-Dspark.history.kerberos.enabled=true -Dspark.history.kerberos.principal=spark/{{ ansible_fqdn }}@{{ kerberos_realm }} -Dspark.history.kerberos.keytab=/etc/spark/conf/spark.keytab "
+{% endif %}

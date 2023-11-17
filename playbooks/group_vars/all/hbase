@@ -1,0 +1,5 @@
+hbase_release_url: 'https://ftp.jaist.ac.jp/pub/apache/hbase/2.4.2/hbase-2.4.2-bin.tar.gz'
+hbase_release_checksum: 'sha512:1C3399EC C0F4E6EA B990F5A1 A6B869B0 9850E8BD 94EABE5F CFAB62CC E83B0368 0CC00FE6 D601D5C0 A356A03D 08D56556 E214198E BE6333E8 19CCED57 E2FECD9B'
+hbase_package_filename: 'hbase-2.4.2'
+
+hbase_dir: '/opt/hbase'

@@ -1,3 +1,7 @@
 - name: set_transparent_hugepage
   become: yes
-  lineinfile: dest=/etc/rc.local line="echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag" regexp="echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag"
+  lineinfile: dest=/etc/rc.local line="echo never > /sys/kernel/mm/transparent_hugepage/defrag" regexp="echo .+ > /sys/kernel/mm/transparent_hugepage/defrag" create=yes
+
+- name: ensure_rc_local
+  become: yes
+  service: name=rc-local state=started enabled=yes

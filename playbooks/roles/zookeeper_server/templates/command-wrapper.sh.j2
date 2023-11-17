@@ -1,0 +1,5 @@
+#!/bin/bash
+
+. /etc/zookeeper/conf/zookeeper-env.sh
+
+{{ zookeeper_dir }}/current/bin/{{ item }} $@

@@ -1,0 +1,11 @@
+[Unit]
+Description=Apache Hadoop YARN ResourceManager Service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/hadoop-yarn-resourcemanager
+User=yarn
+ExecStart={{ hadoop_dir }}/current/bin/yarn --config /etc/hadoop/conf resourcemanager
+
+[Install]
+WantedBy=multi-user.target

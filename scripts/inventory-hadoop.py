@@ -2,6 +2,9 @@ import os
 from netaddr import IPAddress
 import yaml
 
+def get_ip(x):
+    return x['Internal IP'] or x['Service IP']
+
 
 def write_kerberos_vars(target_machines, outf):
     kerberos_servers = [m for m in target_machines if m['KDC Master'] or m['KDC Slave']]
@@ -14,7 +17,7 @@ def write_kerberos_vars(target_machines, outf):
     #outf.write('https_truststore_pass: "TBD"\n')
     #outf.write('https_privkey_pass: "TBD"\n')
     kerberos_slaves = [m for m in kerberos_servers if m['KDC Slave']]
-    outf.write('kerberos_kdc_slaves:\n{}\n\n'.format('\n'.join(map(lambda x: '  - ' + x['Service IP'], kerberos_slaves))))    
+    outf.write('kerberos_kdc_slaves:\n{}\n\n'.format('\n'.join(map(lambda x: '  - ' + get_ip(x), kerberos_slaves))))
 
 
 def write_hadoop_group_vars(target_machines, outf, archive_url, hdp_version='2.4.2.0'):
@@ -78,9 +81,9 @@ base_hdp_util_gpgkeyurl: 'http://public-repo-1.hortonworks.com/HDP/centos6/2.x/u
         assert False
         
     outf.write('\n# define servers\n')
-    outf.write("gmond: '%s'\n" % ganglia_masters[0]['Service IP'])
+    outf.write("gmond: '%s'\n" % get_ip(ganglia_masters[0]))
     outf.write("ganglia_cluster: '%s'\n" % ganglia_masters[0]['Cluster'])
-    outf.write("ganglia_master: '%s'\n\n" % ganglia_masters[0]['Service IP'])
+    outf.write("ganglia_master: '%s'\n\n" % get_ip(ganglia_masters[0]))
     
     if kerberos_servers:
         write_kerberos_vars(kerberos_servers, outf)
@@ -239,8 +242,8 @@ def write_hadoop_inventory(target_machines, outf):
                 nodemanagermb = address['YARN Total Memory(MB)']
                 config = 'yarn_nodemanager_resource_cpu_vcores=%d yarn_nodemanager_resource_memory_mb=%d ' % (nodemanagervcpus, nodemanagermb)
 
-            if 'Service IP' in address:
-                outf.write("{} {}\n".format(address['Service IP'], config))
+            if 'Internal IP' in address or 'Service IP' in address:
+                outf.write("{} {}\n".format(get_ip(address), config))
             else:
                 outf.write("{}_{} {}\n".format(address, cluster, config))
         outf.write("\n")    

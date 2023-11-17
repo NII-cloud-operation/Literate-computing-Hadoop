@@ -1,5 +1,55 @@
-- name: install_zookeeper-server_packages
+- name: prepare_package_dir
   become: yes
-  yum: name={{ item }} state=installed
+  file:
+    path: "{{ zookeeper_dir }}/package"
+    state: directory
+
+- name: download_zookeeper_package
+  become: yes
+  get_url:
+    url: "{{ zookeeper_release_url }}"
+    dest: "{{ zookeeper_dir }}/package/{{ zookeeper_package_filename }}.tar.gz"
+    checksum: "{{ zookeeper_release_checksum }}"
+
+- name: extract_zookeeper_package
+  become: yes
+  unarchive:
+    src: "{{ zookeeper_dir }}/package/{{ zookeeper_package_filename }}.tar.gz"
+    dest: "{{ zookeeper_dir }}"
+    remote_src: yes
+
+- name: link_latest_package
+  become: yes
+  file:
+    path: "{{ zookeeper_dir }}/current"
+    src: "{{ zookeeper_dir }}/{{ zookeeper_package_filename }}"
+    state: link
+
+- name: ensure_hadoop_group
+  become: yes
+  group:
+    name: hadoop
+
+- name: create_zookeeper_user
+  become: yes
+  user:
+    name: zookeeper
+    groups:
+      - hadoop
+
+- name: prepare_commands
+  become: yes
+  template:
+    src: "command-wrapper.sh.j2"
+    dest: "/usr/local/bin/{{ item }}"
+    mode: '755'
+    owner: root
+    group: root
   with_items:
-  - zookeeper-server
+  - zkCli.sh
+  - zkTxnLogToolkit.sh
+  - zkCleanup.sh
+  - zkServer-initialize.sh
+  - zkSnapShotToolkit.sh
+  - zkEnv.sh
+  - zkServer.sh

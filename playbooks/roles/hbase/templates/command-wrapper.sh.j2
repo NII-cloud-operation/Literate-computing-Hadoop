@@ -1,0 +1,5 @@
+#!/bin/bash
+
+. /etc/hbase/conf/hbase-env.sh
+
+{{ hbase_dir }}/current/bin/{{ item }} $@

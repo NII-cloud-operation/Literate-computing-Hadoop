@@ -1,5 +1,0 @@
-- name: install_httpfs_packages
-  become: yes
-  yum: name={{ item }} state=installed
-  with_items:
-  - hadoop-httpfs

@@ -57,7 +57,7 @@
   
   <property>
       <name>mapreduce.framework.name</name>
-      <value>yarn-tez</value>
+      <value>yarn</value>
   </property>
   
   <property>
@@ -88,6 +88,21 @@
   <property>
       <name>mapreduce.reduce.java.opts</name>
       <value>{{ mapreduce_reduce_java_opts }}</value>
+  </property>
+
+  <property>
+    <name>yarn.app.mapreduce.am.env</name>
+    <value>HADOOP_MAPRED_HOME={{ hadoop_dir }}/current/</value>
+  </property>
+
+  <property>
+    <name>mapreduce.map.env</name>
+    <value>HADOOP_MAPRED_HOME={{ hadoop_dir }}/current/</value>
+  </property>
+
+  <property>
+    <name>mapreduce.reduce.env</name>
+    <value>HADOOP_MAPRED_HOME={{ hadoop_dir }}/current/</value>
   </property>
 
 </configuration>

@@ -1,0 +1,11 @@
+[Unit]
+Description=Apache Hadoop YARN TimelineServer Service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/hadoop-yarn-timelineserver
+User=yarn
+ExecStart={{ hadoop_dir }}/current/bin/yarn --config /etc/hadoop/conf timelineserver
+
+[Install]
+WantedBy=multi-user.target

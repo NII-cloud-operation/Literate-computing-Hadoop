@@ -3,23 +3,27 @@
   file: path={{ item }} state=directory owner=hdfs group=hadoop mode=700
   with_items: "{{ dfs_datanode_data_dirs }}"
 
-- name: fix_init_scripts
+- name: prepare_systemd_service
   become: yes
-  lineinfile: dest=/usr/hdp/{{ hdp_version }}/{{ item.path }}/etc/rc.d/init.d/{{ item.name }} insertafter='^\.\s+\/lib\/lsb\/init-functions' line='. /etc/default/{{ item.name }}'
+  template:
+    src: "{{ item }}.service.j2"
+    dest: "/etc/systemd/system/{{ item }}.service"
   with_items:
-  - { name: hadoop-hdfs-datanode, path: hadoop-hdfs }
-  - { name: hadoop-yarn-nodemanager, path: hadoop-yarn }
-  
-- name: create_symbolic_link_to/etc/init.d
+  - hadoop-hdfs-datanode
+  - hadoop-yarn-nodemanager
+
+- name: reload_systemd_service
   become: yes
-  file: path=/etc/init.d/{{ item.name }} state=link src=/usr/hdp/{{ hdp_version }}/{{ item.path }}/etc/rc.d/init.d/{{ item.name }}
-  with_items:
-  - { name: hadoop-hdfs-datanode, path: hadoop-hdfs }
-  - { name: hadoop-yarn-nodemanager, path: hadoop-yarn }
+  systemd:
+    daemon_reload: yes
   
 - name: create_holder_directory_for_hadoop_tmp_dir
   become: yes
   file: path={{ hadoop_tmp_dir[0:hadoop_tmp_dir.rfind('/')] }} state=directory mode=755 owner=yarn group=yarn
+
+- name: create_hdfs_pid_dir
+  become: yes
+  file: path={{ hdfs_pid_dir }} state=directory mode=755 owner=hdfs group=hdfs
   
 - name: create_yarn_pid_dir
   become: yes
@@ -39,7 +43,3 @@
   with_items:
   - hadoop-hdfs-datanode
   - hadoop-yarn-nodemanager
-
-- name: ensure_version_link
-  become: yes
-  file: path=/usr/hdp/current/hadoop-yarn state=link src=/usr/hdp/{{ hdp_version }}/hadoop-yarn

@@ -21,26 +21,23 @@
   - regionservers
   - log4j.properties
   - hadoop-metrics2-hbase.properties
-  
+
+- name: prepare_systemd_service
+  become: yes
+  template:
+    src: "{{ item }}.service.j2"
+    dest: "/etc/systemd/system/{{ item }}.service"
+  with_items:
+  - hbase-master
+
+- name: reload_systemd_service
+  become: yes
+  systemd:
+    daemon_reload: yes
+
 - name: copy_hbase_default_file
   become: yes
   template: src={{ item }}.j2 dest=/etc/default/{{ item }} owner=hbase group=hadoop mode=755
-  with_items:
-  - hbase-master
-
-- name: fix_init_scripts
-  become: yes
-  lineinfile: dest=/usr/hdp/{{ hdp_version }}/hbase/etc/rc.d/init.d/{{ item }} insertafter='^\.\s+\/lib\/lsb\/init-functions' line='. /etc/default/{{ item }}'
-  with_items:
-  - hbase-master
-
-- name: remove_template_variable_in_init_scripts
-  become: yes
-  lineinfile: dest=/usr/hdp/{{ hdp_version }}/hbase/etc/rc.d/init.d/hbase-master regexp='^export\s+HBASE_HOME=' state=absent
-
-- name: create_symbolic_link_to/etc/init.d
-  become: yes
-  file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/hbase/etc/rc.d/init.d/{{ item }}
   with_items:
   - hbase-master
   

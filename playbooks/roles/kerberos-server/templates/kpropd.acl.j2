@@ -1,0 +1,3 @@
+{% for kerberos_kdc_host in kerberos_kdc %}
+host/{{ kerberos_kdc_host }}@{{ kerberos_realm }}
+{% endfor %}

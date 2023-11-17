@@ -27,9 +27,9 @@
 
 # The java implementation to use.  Java 1.6 required.
 # export JAVA_HOME=/usr/java/jdk1.6.0/
-export JAVA_HOME=/usr/java/jdk1.8.0_{{ jdk8_version }}
+export JAVA_HOME={{ java_home }}
 
-export HBASE_HOME=/usr/hdp/current/hbase-regionserver
+export HBASE_HOME={{ hbase_dir }}/current/
 export HBASE_CONF_DIR="/etc/hbase/conf"
 
 # Extra Java CLASSPATH elements.  Optional.

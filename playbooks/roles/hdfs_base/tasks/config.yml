@@ -13,7 +13,7 @@
   shell: hdfs dfs -chmod 777 /
   when: check_hdfs_root_permission.rc != 0
 
-- name: check_exists_hfds_dir
+- name: check_exists_hdfs_dir
   become: yes
   become_user: hdfs
   shell: hdfs dfs -ls {{ item.path }}

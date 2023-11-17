@@ -1,0 +1,20 @@
+[logging]
+ default = FILE:/var/log/krb5libs.log
+ kdc = FILE:/var/log/krb5kdc.log
+ admin_server = FILE:/var/log/kadmind.log
+
+[libdefaults]
+ default_realm = {{ kerberos_realm }}
+ dns_lookup_realm = false
+ dns_lookup_kdc = false
+ ticket_lifetime = 30d
+ renew_lifetime = 30d
+ forwardable = true
+
+[realms]
+ {{ kerberos_realm }} = {
+{% for kerberos_kdc_host in kerberos_kdc %}
+  kdc = {{ kerberos_kdc_host }}
+{% endfor %}
+  admin_server = {{ kerberos_kadmin }}
+ }

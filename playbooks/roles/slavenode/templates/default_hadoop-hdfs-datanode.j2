@@ -12,19 +12,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-export HADOOP_PID_DIR={{ hdfs_pid_dir }}
-export HADOOP_LOG_DIR={{ hdfs_log_dir }}
-export HADOOP_NAMENODE_USER=hdfs
-export HADOOP_SECONDARYNAMENODE_USER=hdfs
-export HADOOP_DATANODE_USER=hdfs
-export HADOOP_IDENT_STRING=hdfs
+HADOOP_HOME={{ hadoop_dir }}/current/
+HADOOP_PID_DIR={{ hdfs_pid_dir }}
+HADOOP_LOG_DIR={{ hdfs_log_dir }}
+HADOOP_NAMENODE_USER=hdfs
+HADOOP_SECONDARYNAMENODE_USER=hdfs
+HADOOP_DATANODE_USER=hdfs
+HADOOP_IDENT_STRING=hdfs
 
-export HADOOP_HEAPSIZE='{{ datanode_heap_size }}'
-export HADOOP_DATANODE_OPTS='{{ datanode_java_opts }}'
+HADOOP_HEAPSIZE='{{ datanode_heap_size }}'
+HADOOP_DATANODE_OPTS='{{ datanode_java_opts }}'
 
 {% if kerberos_realm is defined %}
-export HADOOP_SECURE_DN_USER=hdfs
-export HADOOP_SECURE_DN_PID_DIR=/var/run/hadoop-hdfs
-export HADOOP_SECURE_DN_LOG_DIR=/var/log/hadoop-hdfs
-export JSVC_HOME=/usr/lib/bigtop-utils/
+HADOOP_SECURE_DN_USER=hdfs
+HADOOP_SECURE_DN_PID_DIR=/var/run/hadoop-hdfs
+HADOOP_SECURE_DN_LOG_DIR=/var/log/hadoop-hdfs
+JSVC_HOME=/usr/lib/bigtop-utils/
 {% endif %}

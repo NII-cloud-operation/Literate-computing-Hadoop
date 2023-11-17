@@ -1,0 +1,48 @@
+- name: Create master db
+  become: yes
+  command: creates=/var/lib/krb5kdc/principal kdb5_util create -s -P {{ kerberos_master_key_password }}
+
+- name: Check admin principal
+  become: yes
+  command: kadmin.local -q "getprinc {{ kerberos_admin_principal }}"
+  register: admin_principals
+  changed_when: admin_principals.stderr.find('Principal does not exist') != -1
+
+- name: Add admin principal
+  become: yes
+  command: kadmin.local -q "addprinc -randkey {{ kerberos_admin_principal }}"
+  when: admin_principals is defined and admin_principals.stderr.find('Principal does not exist') != -1
+  
+- name: Start kdc
+  become: yes
+  service: name=krb5-kdc state=started enabled=yes
+
+- name: Start kadmin
+  become: yes
+  service: name=krb5-admin-server state=started enabled=yes
+
+- name: Check admin keytab for ansible
+  become: yes
+  command: klist -k {{ kerberos_admin_keytab }}
+  register: admin_keytabs
+  changed_when: admin_keytabs.rc != 0 or admin_keytabs.stdout.find(kerberos_admin_principal) == -1
+  ignore_errors: yes
+
+- name: Prepare admin keytab
+  become: yes
+  command: kadmin.local -q "ktadd -k {{ kerberos_admin_keytab }} {{ kerberos_admin_principal }}"
+  when: admin_keytabs is defined and admin_keytabs.rc != 0 or admin_keytabs.stdout.find(kerberos_admin_principal) == -1
+
+- name: Change owner of admin keytab
+  become: yes
+  file: path={{ kerberos_admin_keytab }} owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }} state=file
+
+- include: host_principal.yml
+
+- name: Download admin keytab
+  become: yes
+  fetch: src="{{ kerberos_admin_keytab }}" dest="{{ kerberos_admin_keytab_file }}" flat=yes
+  
+- name: Download master key
+  become: yes
+  fetch: src="/etc/krb5kdc/.k5.{{ kerberos_realm }}" dest="{{ kerberos_mkey_file }}" flat=yes

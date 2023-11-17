@@ -166,18 +166,6 @@
   <value>org.apache.hadoop.mapred.ShuffleHandler</value>
 </property>
 
-<property>
-  <name>yarn.application.classpath</name>
-  <value>
-     /usr/hdp/current/hadoop-client/*,/usr/hdp/current/hadoop-client/lib/*,
-     /usr/hdp/current/hadoop-hdfs-client/*,/usr/hdp/current/hadoop-hdfs-client/lib/*,
-     /usr/hdp/current/hadoop-mapreduce-client/*,/usr/hdp/current/hadoop-mapreduce-client/lib/*,
-     /usr/hdp/current/hadoop-yarn-client/*,/usr/hdp/current/hadoop-yarn-client/lib/*,
-     /etc/tez/conf,
-     /usr/hdp/current/tez-client/*,user/hdp/current/tez-client/lib/*
-  </value>
-</property>
-
 {% if hadoop_timelineservice_server is defined %}
 {% if kerberos_realm is defined %}
 <property>

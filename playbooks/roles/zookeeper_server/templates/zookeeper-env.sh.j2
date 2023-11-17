@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export JAVA_HOME=/usr/java/jdk1.8.0_{{ jdk8_version }}
+export JAVA_HOME={{ java_home }}
 export SERVER_JVMFLAGS="{{ zookeeper_server_jvm_opt }}"
 export ZOO_LOG_DIR={{zookeeper_log_dir }}
 export ZOOPIDFILE={{ zookeeper_pid_dir }}/zookeeper_server.pid

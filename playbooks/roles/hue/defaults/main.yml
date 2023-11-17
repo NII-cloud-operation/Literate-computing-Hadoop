@@ -1,8 +1,0 @@
-
-#  hue_user: 'hue'
-#  hue_group: 'hadoop'
-# 
-#  time_zone: 'Asia/Tokyo'
-#  http_port: '8000'
-#  webhdfs_port: '14000'
-#  hcatalog_port: '9083'
