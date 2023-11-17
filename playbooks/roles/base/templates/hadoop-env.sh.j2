@@ -108,3 +108,6 @@ export YARN_PID_DIR={{ yarn_pid_dir }}
 export YARN_IDENT_STRING={{ yarn_ident_string }}
 export TEZ_CONF_DIR={{ tez_conf_dir }}
 export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:$TEZ_CONF_DIR:$TEZ_JARS
+{% if kerberos_realm is defined %}
+export HADOOP_OPTS="$HADOOP_OPTS -Djava.security.auth.login.config=/etc/hadoop/conf/jaas-hdfs.conf"
+{% endif %}
