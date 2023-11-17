@@ -3,7 +3,7 @@
 
 Literate Computing for Reproducible Infrastructure: インフラ運用をJupyter + Ansibleでおこなう際のお手本Notebookです。(Hadoop版)
 
-このリポジトリでは、HDP(Hortonworks Data Platform, https://jp.hortonworks.com/products/data-center/hdp/ )を利用してHadoopクラスタを構築し、運用するためのNotebook例を紹介しています。
+このリポジトリでは、Apache Hadoop(https://hadoop.apache.org/)を利用してHadoopクラスタを構築し、運用するためのNotebook例を紹介しています。
 
 **なお、これらのNotebookはNIIクラウドチーム内で行っている作業の考え方を示すためのもので、環境によってはそのままでは動作しないものもあります。**
 
