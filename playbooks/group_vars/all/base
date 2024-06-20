@@ -30,6 +30,7 @@ namenode_http_port: '50070'
 
 namenode_https_port: '50470'
 
+datanode_http_policy: 'HTTPS_ONLY'
 datanode_https_port: '50470'
 
 # https://docs.hortonworks.com/HDPDocuments/HDP2/HDP-2.6.5/bk_command-line-installation/content/configuring-namenode-heap-size.html
@@ -87,6 +88,10 @@ mapreduce_reduce_memory_mb: '1024'
 
 ## 依存: mapreduce_reduce_memory_mb
 mapreduce_reduce_java_opts: '-Xmx768m'
+
+mapreduce_http_policy: 'HTTPS_ONLY'
+
+yarn_http_policy: 'HTTPS_ONLY'
 
 # hadoop-env
 hdfs_ident_string: 'hdfs'
