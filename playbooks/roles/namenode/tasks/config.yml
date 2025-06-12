@@ -3,27 +3,26 @@
   file: path={{ item }} state=directory owner=hdfs group=hadoop mode=700
   with_items: "{{ dfs_namenode_name_dirs }}"
 
-- name: fix_init_scripts
+- name: prepare_systemd_service
   become: yes
-  lineinfile: dest=/usr/hdp/{{ hdp_version }}/hadoop-hdfs/etc/rc.d/init.d/{{ item }} insertafter='^\.\s+\/lib\/lsb\/init-functions' line='. /etc/default/{{ item }}'
+  template:
+    src: "{{ item }}.service.j2"
+    dest: "/etc/systemd/system/{{ item }}.service"
   with_items:
   - hadoop-hdfs-namenode
   - hadoop-hdfs-zkfc
 
-- name: create_symbolic_link_to/etc/init.d
+- name: reload_systemd_service
   become: yes
-  file: path=/etc/init.d/{{ item }} state=link src=/usr/hdp/{{ hdp_version }}/hadoop-hdfs/etc/rc.d/init.d/{{ item }}
-  with_items:
-  - hadoop-hdfs-namenode
-  - hadoop-hdfs-zkfc
+  systemd:
+    daemon_reload: yes
 
-- name: create_symbolic_link_to/usr/hdp/current/hadoop
+- name: prepare_pid_dir
   become: yes
-  file: path=/usr/hdp/current/hadoop state=link src=/etc/hadoop
-
-- name: create_symbolic_link_to/usr/hdp/current/hadoop-hdfs-zkfc
-  become: yes
-  file: path=/usr/hdp/current/hadoop-hdfs-zkfc state=link src=/usr/hdp/{{ hdp_version }}/hadoop-hdfs
+  file:
+    path: "{{ hdfs_pid_dir }}"
+    state: directory
+    owner: hdfs
 
 - name: deploy kick script for balancer.
   become: yes

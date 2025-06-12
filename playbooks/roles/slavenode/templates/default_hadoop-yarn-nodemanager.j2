@@ -12,10 +12,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-export YARN_IDENT_STRING=yarn
-export YARN_PID_DIR={{ yarn_pid_dir }}
-export YARN_LOG_DIR={{ yarn_log_dir }}
-export YARN_CONF_DIR={{ hadoop_conf_dir }}
+YARN_IDENT_STRING=yarn
+YARN_PID_DIR={{ yarn_pid_dir }}
+YARN_LOG_DIR={{ yarn_log_dir }}
+YARN_CONF_DIR={{ hadoop_conf_dir }}
 
-export YARN_NODEMANAGER_HEAPSIZE="{{ nodemanager_heap_size }}"
-export YARN_NODEMANAGER_OPTS="{{ nodemanager_java_opts }}"
+YARN_NODEMANAGER_HEAPSIZE="{{ nodemanager_heap_size }}"
+YARN_NODEMANAGER_OPTS="{{ nodemanager_java_opts }}"

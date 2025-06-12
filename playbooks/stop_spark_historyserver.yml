@@ -1,18 +1,5 @@
 - hosts: hadoop_spark_history
   become: yes
-  become_user: spark
   tasks:
-    - name: check_status_spark_history_server
-      shell: '[ -s ${SPARK_PID_DIR}/spark-spark-org.apache.spark.deploy.history.HistoryServer-1.pid ] && [ -x /proc/$(cat ${SPARK_PID_DIR}/spark-spark-org.apache.spark.deploy.history.HistoryServer-1.pid ) ]'
-      register: check_status_spark_history_server
-      changed_when: false
-      failed_when: check_status_spark_history_server.rc not in [0, 1]
-      check_mode: no
-  
-    - name: stop_spark_history_server
-      shell: \{{ ansible_env['SPARK_HOME'] }}/sbin/stop-history-server.sh
-      when: check_status_spark_history_server.rc == 0
-
-    - name: delete_pid_file
-      file: path={{ ansible_env['SPARK_PID_DIR'] }}/spark-spark-org.apache.spark.deploy.history.HistoryServer-1.pid state=absent
-      # Spark history serverは、停止時にPIDファイルを削除しないので、ここで削除する。
+    - name: stop_spark-history-server
+      service: name=spark-history-server state=stopped

@@ -1,0 +1,11 @@
+[Unit]
+Description=Apache HBase master Service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/hbase-master
+User=hbase
+ExecStart={{ hbase_dir }}/current/bin/hbase --config /etc/hbase/conf master start
+
+[Install]
+WantedBy=multi-user.target

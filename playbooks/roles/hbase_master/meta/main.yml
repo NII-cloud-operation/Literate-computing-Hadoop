@@ -1,4 +1,4 @@
 dependencies:
   - {role: site-defaults}
   - {role: base}
-  - {role: java8}
+  - {role: hbase}

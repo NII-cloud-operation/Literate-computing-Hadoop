@@ -1,0 +1,41 @@
+- name: Install kerberos
+  become: yes
+  apt: name=krb5-kdc,krb5-admin-server,krb5-config,krb5-kpropd state=latest
+
+- name: Modify krb5.conf
+  become: yes
+  template: src=krb5.conf.j2 dest=/etc/krb5.conf
+  notify:
+    - Restart kdc
+    - Restart kadmin
+
+- name: Modify kdc.conf
+  become: yes
+  template: src=kdc.conf.j2 dest=/var/lib/krb5kdc/kdc.conf
+  notify:
+    - Restart kdc
+    - Restart kadmin
+
+- name: Modify kadm5.acl
+  become: yes
+  template: src=kadm5.acl.j2 dest=/etc/krb5kdc/kadm5.acl
+  notify:
+    - Restart kdc
+    - Restart kadmin
+  when: kdc_role == 'master'
+
+- include: config_master.yml
+  when: kdc_role == 'master'
+  
+- include: config_slave.yml
+  when: kdc_role == 'slave'
+
+- name: Prepare script
+  become: yes
+  copy: src=kprop_all dest=/usr/local/bin/kprop_all mode=0755
+  
+- name: Prepare crontab
+  become: yes
+  cron: name="sync kdc" minute=10 hour=3 user=root
+           job="kdb5_util dump /var/lib/krb5kdc/replica_datatrans; /usr/local/bin/kprop_all {{ kerberos_kdc_slaves | join(' ') }}"
+  when: kdc_role == 'master'

@@ -1,0 +1,15 @@
+[Unit]
+Description=Apache Hadoop DataNode Service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/hadoop-hdfs-datanode
+{% if kerberos_realm is defined %}
+User=root
+{% else %}
+User=hdfs
+{% endif %}
+ExecStart={{ hadoop_dir }}/current/bin/hdfs --config /etc/hadoop/conf datanode
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,35 @@
+- name: Prepare keytab for admin
+  become: yes
+  copy: src="{{ kerberos_admin_keytab_file }}" dest="{{ kerberos_admin_keytab }}" owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
+
+- include: host_principal.yml
+
+- name: Modify kpropd.acl
+  become: yes
+  template: src=kpropd.acl.j2 dest=/etc/krb5kdc/kpropd.acl
+  notify: Restart kprop
+  
+- name: Start kprop
+  become: yes
+  service: name=krb5-kpropd state=started enabled=yes
+
+- name: Check admin principal
+  become: yes
+  command: kadmin.local -q "getprinc {{ kerberos_admin_principal }}"
+  register: localadmin_principals
+  changed_when: localadmin_principals.rc != 0 or localadmin_principals.stderr.find('Principal does not exist') != -1
+  ignore_errors: yes
+
+- name: Propagate Master DB
+  become: yes
+  shell: "kdb5_util dump /var/lib/krb5kdc/replica_datatrans; kprop {{ inventory_hostname }}"
+  delegate_to: "{{ kerberos_kdc_master }}"
+  when: localadmin_principals is defined and (localadmin_principals.rc != 0 or localadmin_principals.stderr.find('Principal does not exist') != -1)
+
+- name: Prepare master key
+  become: yes
+  copy: src="{{ kerberos_mkey_file }}" dest="/etc/krb5kdc/.k5.{{ kerberos_realm }}" owner=root group=root mode=0600
+
+- name: Start kdc
+  become: yes
+  service: name=krb5-kdc state=started enabled=yes

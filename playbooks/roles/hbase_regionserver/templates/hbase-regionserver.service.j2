@@ -1,0 +1,11 @@
+[Unit]
+Description=Apache HBase regionserver Service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/hbase-regionserver
+User=hbase
+ExecStart={{ hbase_dir }}/current/bin/hbase --config /etc/hbase/conf regionserver start
+
+[Install]
+WantedBy=multi-user.target

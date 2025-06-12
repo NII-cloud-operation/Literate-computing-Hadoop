@@ -1,4 +1,0 @@
-httpfs_log_dir: '/var/log/hadoop-httpfs'
-
-## 依存: webhdfs_port
-httpfs_port: '14000'

@@ -1,0 +1,11 @@
+[Unit]
+Description=Apache Hadoop MapReduce HistoryServer Service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/hadoop-mapreduce-historyserver
+User=mapred
+ExecStart={{ hadoop_dir }}/current/bin/mapred --config /etc/hadoop/conf historyserver
+
+[Install]
+WantedBy=multi-user.target
