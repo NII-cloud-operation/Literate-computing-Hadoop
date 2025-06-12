@@ -47,7 +47,7 @@
 
 <property>
   <name>yarn.http.policy</name>
-  <value>HTTPS_ONLY</value>
+  <value>{{ yarn_http_policy }}</value>
 </property>
 
 {% for host in hadoop_resourcemanager_servers %}
