@@ -1,3 +1,4 @@
 - name: Reload sshd
   become: yes
   service: name=sshd state=reloaded
+  when: not (ansible_distribution == "Ubuntu" and ansible_distribution_version is version("24.04", ">="))
