@@ -1,3 +1,27 @@
+- name: create_hadoop_groups
+  become: yes
+  group:
+    name: "{{ item.name }}"
+    gid: "{{ item.gid | default(omit) }}"
+  with_items:
+    - { name: hdfs, gid: "{{ hdfs_gid | default(omit) }}" }
+    - { name: yarn, gid: "{{ yarn_gid | default(omit) }}" }
+    - { name: mapred, gid: "{{ mapred_gid | default(omit) }}" }
+    - { name: hadoop, gid: "{{ hadoop_gid | default(omit) }}" }
+
+- name: create_hdfs_user
+  become: yes
+  user:
+    name: "{{ item.name }}"
+    uid: "{{ item.uid | default(omit) }}"
+    group: "{{ item.name }}"
+    groups:
+      - hadoop
+  with_items:
+    - { name: hdfs, uid: "{{ hdfs_uid | default(omit) }}" }
+    - { name: yarn, uid: "{{ yarn_uid | default(omit) }}" }
+    - { name: mapred, uid: "{{ mapred_uid | default(omit) }}" }
+
 - name: prepare_package_dir
   become: yes
   file:
@@ -98,22 +122,6 @@
     owner: root
     group: root
     mode: '0755'
-
-- name: ensure_hadoop_group
-  become: yes
-  group:
-    name: hadoop
-
-- name: create_hdfs_user
-  become: yes
-  user:
-    name: "{{ item.name }}"
-    groups:
-      - hadoop
-  with_items:
-    - { name: hdfs }
-    - { name: yarn }
-    - { name: mapred }
 
 - name: prepare_commands
   become: yes
