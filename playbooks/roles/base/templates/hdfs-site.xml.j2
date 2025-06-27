@@ -249,4 +249,39 @@
   <value>{{ dfs_datanode_balance_bandwidthPerSec }}</value>
 </property>
 
+{% if dfs_datanode_balance_max_concurrent_moves is defined %}
+<property>
+  <name>dfs.datanode.balance.max.concurrent.moves</name>
+  <value>{{ dfs_datanode_balance_max_concurrent_moves }}</value>
+</property>
+{% endif %}
+
+{% if dfs_namenode_replication_max_streams is defined %}
+<property>
+  <name>dfs.namenode.replication.max-streams</name>
+  <value>{{ dfs_namenode_replication_max_streams }}</value>
+</property>
+{% endif %}
+
+{% if dfs_namenode_replication_max_streams_hard_limit is defined %}
+<property>
+  <name>dfs.namenode.replication.max-streams-hard-limit</name>
+  <value>{{ dfs_namenode_replication_max_streams_hard_limit }}</value>
+</property>
+{% endif %}
+
+{% if dfs_namenode_replication_work_multiplier_per_iteration is defined %}
+<property>
+  <name>dfs.namenode.replication.work.multiplier.per.iteration</name>
+  <value>{{ dfs_namenode_replication_work_multiplier_per_iteration }}</value>
+</property>
+{% endif %}
+
+{% if ipc_server_read_threadpool_size is defined %}
+<property>
+  <name>ipc.server.read.threadpool.size</name>
+  <value>{{ ipc_server_read_threadpool_size }}</value>
+</property>
+{% endif %}
+
 </configuration>
