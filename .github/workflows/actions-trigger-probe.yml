@@ -1,0 +1,12 @@
+name: Actions trigger probe
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions: {}
+jobs:
+  probe:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 2
+    steps:
+      - run: echo 'Actions event reached a runner'
