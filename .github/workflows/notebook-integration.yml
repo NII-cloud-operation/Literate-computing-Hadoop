@@ -39,7 +39,8 @@ jobs:
           python -m pip install -r tests/lc4ri/requirements.txt
           python -m playwright install --with-deps chromium
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils cloud-image-utils curl default-jre-headless
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils cloud-image-utils curl default-jre-headless ffmpeg fonts-dejavu-core fonts-noto-cjk
+          install -Dm644 tests/lc4ri/fonts.conf ~/.config/fontconfig/fonts.conf
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
           sudo fallocate -l 8G /swapfile-notebook-ci
           sudo chmod 600 /swapfile-notebook-ci
@@ -54,6 +55,14 @@ jobs:
           restore-keys: notebook-archives-apache-v1-
       - name: Run notebooks through the browser
         run: bash tests/lc4ri/run.sh
+      - name: Render notebook videos
+        if: always()
+        run: |
+          if test -f test-results/notebook-integration/video-manifest.json; then
+            python tests/lc4ri/render_movie.py --result-dir test-results/notebook-integration --variant ${{ matrix.variant }}
+          else
+            echo 'No video manifest; browser execution did not start.'
+          fi
       - name: Check verified package cache
         id: verified
         if: always()
@@ -79,9 +88,75 @@ jobs:
             test-results/notebook-integration/*-working.ipynb
             test-results/notebook-integration/*.png
           retention-days: 14
-      - uses: actions/upload-artifact@v4
+      - name: Upload logs
+        uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: notebook-evidence-${{ matrix.variant }}
-          path: test-results/notebook-integration/
+          name: notebook-logs-${{ matrix.variant }}
+          path: |
+            test-results/notebook-integration/*.log
+            test-results/notebook-integration/*.txt
+            test-results/notebook-integration/*.tar.gz
+            test-results/notebook-integration/lc-logs/
+            test-results/notebook-integration/inventory
+            test-results/notebook-integration/group_vars/
+          retention-days: 14
+      - name: Upload browser trace
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: notebook-trace-${{ matrix.variant }}
+          path: test-results/notebook-integration/browser-trace.zip
+          retention-days: 14
+      - name: Upload D00 video
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: notebook-video-${{ matrix.variant }}-D00
+          path: |
+            test-results/notebook-integration/movies/D00.mp4
+            test-results/notebook-integration/videos/D00/
+          retention-days: 14
+      - name: Upload D10 video
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: notebook-video-${{ matrix.variant }}-D10
+          path: |
+            test-results/notebook-integration/movies/D10.mp4
+            test-results/notebook-integration/videos/D10/
+          retention-days: 14
+      - name: Upload D12 video
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: notebook-video-${{ matrix.variant }}-D12
+          path: |
+            test-results/notebook-integration/movies/D12.mp4
+            test-results/notebook-integration/videos/D12/
+          retention-days: 14
+      - name: Upload T12a video
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: notebook-video-${{ matrix.variant }}-T12a
+          path: |
+            test-results/notebook-integration/movies/T12a.mp4
+            test-results/notebook-integration/videos/T12a/
+          retention-days: 14
+      - name: Upload T12d video
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: notebook-video-${{ matrix.variant }}-T12d
+          path: |
+            test-results/notebook-integration/movies/T12d.mp4
+            test-results/notebook-integration/videos/T12d/
+          retention-days: 14
+      - name: Upload combined movie
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: notebook-video-${{ matrix.variant }}-combined
+          path: test-results/notebook-integration/movies/notebooks-${{ matrix.variant }}.mp4
           retention-days: 14

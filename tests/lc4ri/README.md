@@ -14,22 +14,37 @@ expected by the deployment roles. The security fixture supplies test TLS files;
 Kerberos service and client prerequisites remain part of the deployment procedure.
 
 Run on a disposable x86-64 Linux host with Docker, QEMU, cloud-image-utils,
-SSH and sudo, using the prerequisites in
+SSH, sudo, FFmpeg, DejaVu and Noto CJK fonts, using the prerequisites in
 [the workflow](../../.github/workflows/notebook-integration.yml):
 
 ```bash
 python3 -m pip install -r tests/lc4ri/requirements.txt
 python3 -m playwright install --with-deps chromium
+install -Dm644 tests/lc4ri/fonts.conf ~/.config/fontconfig/fonts.conf
 HADOOP_SECURITY_MODE=simple bash tests/lc4ri/run.sh
 HADOOP_SECURITY_MODE=kerberos bash tests/lc4ri/run.sh
 ```
 
-Results in `test-results/notebook-integration` include working copies, cell
-execution records, input edits, screenshots, browser traces and videos, runtime
-versions and VM logs. Actions uploads full evidence and a smaller copy of the
-JSON, notebooks and screenshots for each variant.
+Results in `test-results/notebook-integration` are uploaded separately for each
+variant:
+
+| Artifact | Contents |
+| --- | --- |
+| `notebook-results-*` | Executed notebooks, JSON reports, screenshots and the video manifest |
+| `notebook-logs-*` | Service logs, runtime diagnostics, inventory and group variables |
+| `notebook-trace-*` | Browser trace |
+| `notebook-video-*-D00` (and other notebook IDs) | Notebook chapter MP4 and its source page recordings |
+| `notebook-video-*-combined` | Combined MP4 in notebook execution order |
+
+Each chapter starts with a two-second notebook title. File-editor operations
+appear where they occurred in the notebook procedure; background page recordings
+are not played simultaneously or appended out of order. Playback is at normal
+speed. Original page recordings remain available in the per-notebook artifacts.
+
 On failure, each guest's `/var/log/hadoop-yarn/userlogs` directory is archived
-before cleanup and saved as `*-yarn-userlogs.tar.gz` with the results.
+before cleanup and included as `*-yarn-userlogs.tar.gz` in the logs artifact.
+Video rendering also runs after a notebook failure, preserving the attempted
+procedure for review.
 
 Browser and QEMU helpers are adapted from
 [CoursewareHub-LC_deploy](https://github.com/yacchin1205/CoursewareHub-LC_deploy/pull/1).

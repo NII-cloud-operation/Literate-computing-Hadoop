@@ -12,7 +12,7 @@ import urllib.request
 
 from playwright.sync_api import sync_playwright, expect
 
-from browser_evidence import recorded_context, finish_recording
+from browser_evidence import recorded_context, NotebookVideos
 from notebook_controls import operations, source
 from scenario import run
 
@@ -20,8 +20,9 @@ BASE = 'http://127.0.0.1:18888'
 
 
 class NotebookSession:
-    def __init__(self, context, repo, results, token):
+    def __init__(self, context, repo, results, token, videos):
         self.context = context
+        self.videos = videos
         self.repo = repo
         self.results = results
         self.token = token
@@ -42,7 +43,7 @@ class NotebookSession:
         return self.api('contents/' + quote(path, safe='/'))['content']
 
     def open_document(self, filename):
-        page = self.context.new_page()
+        page = self.videos.new_page(self.current_notebook, filename)
         workspace = uuid.uuid4().hex
         page.goto(BASE + '/lab/workspaces/' + workspace + '/tree/' + quote(filename, safe='/') + '?token=' + self.token)
         page.wait_for_function('''name => window.jupyterapp && window.jupyterapp.shell.currentWidget &&
@@ -70,9 +71,10 @@ class NotebookSession:
             page.screenshot(path=str(self.results / (path.replace('/', '-') + '.png')), full_page=True)
             self.records.append(dict(action='edit file', path=path, before=before, after=text))
         finally:
-            page.close()
+            self.videos.close_page(page, resume=self.page)
 
     def run_notebook(self, filename, before_cell=None):
+        self.current_notebook = filename
         path = self.repo / filename
         key = path.stem.split('_', 1)[0]
         raw = path.read_bytes()
@@ -130,7 +132,7 @@ class NotebookSession:
                 saved = self.page.evaluate('window.jupyterapp.shell.currentWidget.context.model.toJSON()')
                 (self.results / (key + '-working.ipynb')).write_text(json.dumps(saved, ensure_ascii=False, indent=1) + '\n')
             self.page.screenshot(path=str(self.results / (key + '.png')), full_page=True)
-            self.page.close()
+            self.videos.close_page(self.page)
             self.page = None
 
     def save_report(self, error):
@@ -151,14 +153,13 @@ def main():
         browser = pw.chromium.launch()
         context = recorded_context(browser, results / 'videos', viewport={'width': 1600, 'height': 1000})
         context.tracing.start(screenshots=True, snapshots=True, sources=True)
-        session = NotebookSession(context, repo, results, os.environ['LC4RI_TEST_TOKEN'])
+        videos = NotebookVideos(context, results)
+        session = NotebookSession(context, repo, results, os.environ['LC4RI_TEST_TOKEN'], videos)
         try:
-            workspace = context.new_page()
-            workspace.goto(BASE + '/lab?token=' + session.token)
             run(session)
         finally:
             session.save_report(sys.exc_info()[1])
-            finish_recording(context, results / 'browser-trace.zip', results / 'videos')
+            videos.finish()
             browser.close()
 
 
