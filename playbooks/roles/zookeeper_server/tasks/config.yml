@@ -2,7 +2,7 @@
   become: yes
   file: path=/etc/zookeeper/conf state=directory mode=755
 
-- include: principal.yml
+- include_tasks: principal.yml
   vars: { kerberos_princ_username: zookeeper, kerberos_princ_keytab_path: /etc/zookeeper/conf/zookeeper.keytab, kerberos_princ_keytab_owner: zookeeper }
   when: kerberos_realm is defined
 

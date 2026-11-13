@@ -1,2 +1,2 @@
-- include: delete.yml
+- include_tasks: delete.yml
 

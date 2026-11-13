@@ -99,8 +99,8 @@
   unarchive:
     src: "{{ jsvc_dir }}/package/{{ jsvc_package_filename }}.tar.gz"
     dest: "{{ jsvc_dir }}"
-    owner: "{{ ansible_ssh_user }}"
-    group: "{{ ansible_ssh_user }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
     remote_src: yes
 
 - name: install_build_tools

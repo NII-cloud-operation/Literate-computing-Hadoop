@@ -24,10 +24,10 @@
     - Restart kadmin
   when: kdc_role == 'master'
 
-- include: config_master.yml
+- include_tasks: config_master.yml
   when: kdc_role == 'master'
   
-- include: config_slave.yml
+- include_tasks: config_slave.yml
   when: kdc_role == 'slave'
 
 - name: Prepare script
