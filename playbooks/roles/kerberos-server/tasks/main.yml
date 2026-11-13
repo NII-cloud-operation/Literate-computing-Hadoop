@@ -1,6 +1,11 @@
 - name: Install kerberos
   become: yes
-  apt: name=krb5-kdc,krb5-admin-server,krb5-config,krb5-kpropd state=latest
+  apt: name=krb5-kdc,krb5-admin-server,krb5-config,krb5-kpropd,krb5-user,cron state=latest
+
+- name: Stop replication receiver on master
+  become: yes
+  service: name=krb5-kpropd state=stopped enabled=no
+  when: kdc_role == 'master'
 
 - name: Modify krb5.conf
   become: yes
@@ -11,7 +16,7 @@
 
 - name: Modify kdc.conf
   become: yes
-  template: src=kdc.conf.j2 dest=/var/lib/krb5kdc/kdc.conf
+  template: src=kdc.conf.j2 dest=/etc/krb5kdc/kdc.conf
   notify:
     - Restart kdc
     - Restart kadmin

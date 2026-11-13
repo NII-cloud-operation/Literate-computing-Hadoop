@@ -1,0 +1,87 @@
+name: Hadoop notebook integration
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: notebook-integration-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  notebook-integration:
+    name: Hadoop notebooks (${{ matrix.variant }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - variant: basic
+            authentication: simple
+          - variant: security
+            authentication: kerberos
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+    env:
+      HADOOP_SECURITY_MODE: ${{ matrix.authentication }}
+      HDFS_E2E_PACKAGE_CACHE: ${{ github.workspace }}/.hdfs-package-cache
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+          cache: pip
+          cache-dependency-path: tests/lc4ri/requirements.txt
+      - name: Verify notebook sources
+        run: git diff --exit-code HEAD -- '*.ipynb'
+      - name: Install browser and VM prerequisites
+        run: |
+          python -m pip install -r tests/lc4ri/requirements.txt
+          python -m playwright install --with-deps chromium
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils cloud-image-utils curl default-jre-headless
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          sudo fallocate -l 8G /swapfile-notebook-ci
+          sudo chmod 600 /swapfile-notebook-ci
+          sudo mkswap /swapfile-notebook-ci
+          sudo swapon /swapfile-notebook-ci
+          free -h
+      - uses: actions/cache/restore@v4
+        id: packages
+        with:
+          path: ${{ github.workspace }}/.hdfs-package-cache
+          key: notebook-archives-apache-v1-${{ hashFiles('playbooks/group_vars/all/hadoop', 'playbooks/group_vars/all/zookeeper_server', 'playbooks/group_vars/all/spark', 'playbooks/group_vars/all/hbase') }}
+          restore-keys: notebook-archives-apache-v1-
+      - name: Run notebooks through the browser
+        run: bash tests/lc4ri/run.sh
+      - name: Check verified package cache
+        id: verified
+        if: always()
+        run: |
+          if test -f "$HDFS_E2E_PACKAGE_CACHE/.verified"; then
+            echo 'complete=true' >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/cache/save@v4
+        if: always() && steps.verified.outputs.complete == 'true' && steps.packages.outputs.cache-hit != 'true'
+        with:
+          path: ${{ github.workspace }}/.hdfs-package-cache
+          key: notebook-archives-apache-v1-${{ hashFiles('playbooks/group_vars/all/hadoop', 'playbooks/group_vars/all/zookeeper_server', 'playbooks/group_vars/all/spark', 'playbooks/group_vars/all/hbase') }}
+      - name: Verify notebook sources after execution
+        if: always()
+        run: git diff --exit-code HEAD -- '*.ipynb'
+      - name: Upload notebook results without browser trace or video
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: notebook-results-${{ matrix.variant }}
+          path: |
+            test-results/notebook-integration/*.json
+            test-results/notebook-integration/*-working.ipynb
+            test-results/notebook-integration/*.png
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: notebook-evidence-${{ matrix.variant }}
+          path: test-results/notebook-integration/
+          retention-days: 14

@@ -42,6 +42,7 @@
   unarchive:
     src: "{{ hadoop_dir }}/package/{{ hadoop_package_filename }}.tar.gz"
     dest: "{{ hadoop_dir }}"
+    creates: "{{ hadoop_dir }}/{{ hadoop_package_filename }}/bin/hdfs"
     remote_src: yes
     owner: root
     group: root
@@ -58,6 +59,15 @@
   file:
     path: "{{ hadoop_dir }}/{{ hadoop_package_filename }}/etc/hadoop"
     state: absent
+
+- name: prepare_configuration_dir
+  become: yes
+  file:
+    path: /etc/hadoop/conf
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
 
 - name: link_etc
   become: yes
@@ -79,7 +89,7 @@
     path: "{{ hadoop_dir }}/{{ hadoop_package_filename }}/bin/container-executor"
     owner: root
     group: yarn
-    mode: "u=rwx,g=r,o=r,u+s"
+    mode: "6050"
 
 - name: prepare_package_dir
   become: yes
