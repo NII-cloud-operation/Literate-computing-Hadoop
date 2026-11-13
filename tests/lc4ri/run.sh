@@ -25,6 +25,9 @@ cleanup() {
       > "$result_dir/$address-services.log" 2>&1
     if (( result != 0 )); then
       cat "$result_dir/$address-services.log"
+      timeout 30s ssh -F "$private_dir/ssh_config" "ansible@$address" \
+        'sudo tar -C /var/log/hadoop-yarn -czf - userlogs' \
+        > "$result_dir/$address-yarn-userlogs.tar.gz"
     fi
   done
   docker rm -f "$controller"

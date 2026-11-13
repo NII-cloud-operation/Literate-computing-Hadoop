@@ -28,6 +28,8 @@ Results in `test-results/notebook-integration` include working copies, cell
 execution records, input edits, screenshots, browser traces and videos, runtime
 versions and VM logs. Actions uploads full evidence and a smaller copy of the
 JSON, notebooks and screenshots for each variant.
+On failure, each guest's `/var/log/hadoop-yarn/userlogs` directory is archived
+before cleanup and saved as `*-yarn-userlogs.tar.gz` with the results.
 
 Browser and QEMU helpers are adapted from
 [CoursewareHub-LC_deploy](https://github.com/yacchin1205/CoursewareHub-LC_deploy/pull/1).
