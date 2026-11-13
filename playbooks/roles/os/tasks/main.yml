@@ -1,3 +1,3 @@
-- include: limits.yml
-- include: thp.yml
-- include: kernel.yml
+- include_tasks: limits.yml
+- include_tasks: thp.yml
+- include_tasks: kernel.yml

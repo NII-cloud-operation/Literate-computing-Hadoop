@@ -29,3 +29,18 @@
   - zk-acl.txt
   - container-executor.cfg
   when: kerberos_realm is defined
+
+- name: Protect externally provisioned HTTPS keystore
+  become: yes
+  file: path={{ https_keystore_path }} owner=root group=hadoop mode=0440
+  when: kerberos_realm is defined
+
+- name: Make public HTTPS trust anchors available to clients
+  become: yes
+  file: path={{ https_truststore_path }} owner=root group=root mode=0444
+  when: kerberos_realm is defined
+
+- name: Protect LinuxContainerExecutor configuration
+  become: yes
+  file: path=/etc/hadoop/conf/container-executor.cfg owner=root group=yarn mode=0400
+  when: kerberos_realm is defined

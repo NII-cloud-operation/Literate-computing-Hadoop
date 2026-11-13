@@ -36,3 +36,24 @@
   when: item.rc != 0
   with_items: "{{ check_exists_hdfs_dir.results }}"
 
+- name: create_mapreduce_history_directories
+  become: yes
+  become_user: hdfs
+  command: hdfs dfs -mkdir -p {{ item.path }}
+  register: mapreduce_history_directories
+  with_items:
+    - {path: '/tmp/hadoop-yarn/staging/history', mode: '755'}
+    - {path: '/tmp/hadoop-yarn/staging/history/done', mode: '750'}
+    - {path: '/tmp/hadoop-yarn/staging/history/done_intermediate', mode: '1777'}
+
+- name: set_mapreduce_history_directory_owners
+  become: yes
+  become_user: hdfs
+  command: hdfs dfs -chown mapred:hadoop {{ item.item.path }}
+  with_items: "{{ mapreduce_history_directories.results }}"
+
+- name: set_mapreduce_history_directory_permissions
+  become: yes
+  become_user: hdfs
+  command: hdfs dfs -chmod {{ item.item.mode }} {{ item.item.path }}
+  with_items: "{{ mapreduce_history_directories.results }}"

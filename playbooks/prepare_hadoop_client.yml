@@ -1,0 +1,8 @@
+- hosts: hadoop_client
+  roles:
+    - site-defaults
+    - role: kerberos-principal
+      vars:
+        user_kerberos_princ_name: "{{ ansible_user_id }}"
+        user_kerberos_princ_keytab_path: "{{ ansible_user_dir }}/.hadoop.keytab"
+      when: kerberos_realm is defined
