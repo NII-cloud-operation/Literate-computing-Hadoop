@@ -16,8 +16,15 @@ def write_kerberos_vars(target_machines, outf):
     outf.write('https_truststore_path: /etc/hadoop/conf/truststore.jks\n')
     #outf.write('https_truststore_pass: "TBD"\n')
     #outf.write('https_privkey_pass: "TBD"\n')
-    kerberos_slaves = [m for m in kerberos_servers if m['KDC Slave']]
-    outf.write('kerberos_kdc_slaves:\n{}\n\n'.format('\n'.join(map(lambda x: '  - ' + get_ip(x), kerberos_slaves))))
+    masters = [m for m in kerberos_servers if m['KDC Master']]
+    assert len(masters) == 1, 'Specify exactly one KDC Master per cluster'
+    values = dict(
+        kerberos_kdc=[get_ip(m) for m in kerberos_servers],
+        kerberos_kdc_master=get_ip(masters[0]), kerberos_kadmin=get_ip(masters[0]),
+        kerberos_kdc_slaves=[get_ip(m) for m in kerberos_servers if m['KDC Slave']],
+        kerberos_admin_keytab_file="{{ lookup('env', 'HOME') }}/.kerberos/{{ kerberos_realm }}/admin.keytab",
+        kerberos_mkey_file="{{ lookup('env', 'HOME') }}/.kerberos/{{ kerberos_realm }}/master.key")
+    outf.write(yaml.safe_dump(values, sort_keys=False))
 
 
 def write_hadoop_group_vars(target_machines, outf, archive_url, hdp_version='2.4.2.0'):
@@ -193,6 +200,7 @@ def write_hadoop_inventory(target_machines, outf):
     sparkServers = [m for m in target_machines if m['Spark']]
     sparkHistoryservers = [m for m in target_machines if m['Spark HistoryServer']]
     kerberosMasters = [m for m in target_machines if m['KDC Master']]
+    kerberosSlaves = [m for m in target_machines if m['KDC Slave']]
 
     assert(1 <= len(namenodes) and len(namenodes) <= 2)
     assert(nodemanagers == datanodes)
@@ -217,8 +225,11 @@ def write_hadoop_inventory(target_machines, outf):
                   "hadoop_swimlane": [n for n in clients],
                   "hadoop_spark": [n for n in sparkServers],
                   "hadoop_spark_history": [n for n in sparkHistoryservers],
-                  "kerberos_master": [n for n in kerberosMasters]
+                  "kerberos_master": [n for n in kerberosMasters],
+                  "kerberos_slave": [n for n in kerberosSlaves]
                 }
+    if kerberosMasters:
+        hosts_content['kerberos_server:children'] = ['kerberos_master'] + (['kerberos_slave'] if kerberosSlaves else [])
     if len(namenodes) == 2:
         hosts_content["hadoop_namenode_backup"] = [namenodes[1]]
         hosts_content["hadoop_namenode:children"] = ["hadoop_namenode_primary", "hadoop_namenode_backup"]
@@ -235,6 +246,8 @@ def write_hadoop_inventory(target_machines, outf):
 
         for (index, address) in enumerate(addresses):
             config = ''
+            if key in ('kerberos_master', 'kerberos_slave'):
+                config = 'kdc_role=' + ('master' if key == 'kerberos_master' else 'slave')
             if key == "hadoop_zookeeperserver":
                 config = 'zookeeper_server_id=%d' % (index + 1)
             elif key == "hadoop_slavenode":

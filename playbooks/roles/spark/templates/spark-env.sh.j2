@@ -62,6 +62,16 @@ export SPARK_CONF_DIR=/etc/spark/conf
 export SPARK_LOG_DIR={{ spark_log_dir }}
 
 {% if kerberos_realm is defined %}
+# Spark's Hadoop bundle omits the Jersey 1 client used to obtain YARN
+# Timeline delegation tokens. Reuse the jars from the installed Hadoop.
+for timeline_jar in "$HADOOP_HOME"/share/hadoop/common/lib/jersey-core-*.jar \
+                    "$HADOOP_HOME"/share/hadoop/yarn/lib/jersey-client-*.jar; do
+    if [ -f "$timeline_jar" ]; then
+        export SPARK_DIST_CLASSPATH="${SPARK_DIST_CLASSPATH:+${SPARK_DIST_CLASSPATH}:}${timeline_jar}"
+    fi
+done
+unset timeline_jar
+
 export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS -Dspark.history.kerberos.enabled=true "
 export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS -Dspark.history.kerberos.principal=spark/{{ ansible_fqdn }}@{{ kerberos_realm }} "
 export SPARK_HISTORY_OPTS="$SPARK_HISTORY_OPTS -Dspark.history.kerberos.keytab=/etc/spark/conf/spark.keytab "

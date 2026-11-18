@@ -1,5 +1,5 @@
 spark_release_url: 'https://ftp.jaist.ac.jp/pub/apache/spark/spark-3.1.1/spark-3.1.1-bin-hadoop3.2.tgz'
-spark_release_checksum: 'sha512:E90B31E5 8F6D95A4 2900BA4D 288261D7 1F6C19FA 39C1CB71 862B792D 1B556494 1A320227 F6AB0E09 D946F16B 8C1969ED 2DEA2A36 9EC8F9D2 D7099189 234DE1BE'
+spark_release_checksum: 'sha512:e90b31e58f6d95a42900ba4d288261d71f6c19fa39c1cb71862b792d1b5564941a320227f6ab0e09d946f16b8c1969ed2dea2a369ec8f9d2d7099189234de1be'
 spark_package_filename: 'spark-3.1.1-bin-hadoop3.2'
 
 spark_dir: '/opt/spark'

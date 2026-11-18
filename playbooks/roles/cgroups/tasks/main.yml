@@ -1,2 +1,2 @@
-- include: install.yml
-- include: conf.yml
+- include_tasks: install.yml
+- include_tasks: conf.yml

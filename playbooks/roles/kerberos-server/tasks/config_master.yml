@@ -35,9 +35,9 @@
 
 - name: Change owner of admin keytab
   become: yes
-  file: path={{ kerberos_admin_keytab }} owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }} state=file
+  file: path={{ kerberos_admin_keytab }} owner={{ ansible_user }} group={{ ansible_user }} state=file
 
-- include: host_principal.yml
+- include_tasks: host_principal.yml
 
 - name: Download admin keytab
   become: yes

@@ -1,4 +1,4 @@
-- include: conf.yml
+- include_tasks: conf.yml
 
-- include: kerberos.yml
+- include_tasks: kerberos.yml
   when: kerberos_realm is defined

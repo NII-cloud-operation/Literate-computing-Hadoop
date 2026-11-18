@@ -10,7 +10,7 @@
   become: yes
   file: path=/etc/spark/conf/ state=directory owner=root group=root mode=755
 
-- include: principal.yml
+- include_tasks: principal.yml
   vars: { kerberos_princ_username: spark, kerberos_princ_keytab_path: /etc/spark/conf/spark.keytab, kerberos_princ_keytab_owner: spark }
   when: kerberos_realm is defined
 

@@ -1,9 +1,12 @@
 - name: Restart kdc
-  service: name=krb5kdc state=restarted
+  become: yes
+  service: name=krb5-kdc state=restarted
 
 - name: Restart kadmin
-  service: name=kadmin state=restarted
+  become: yes
+  service: name=krb5-admin-server state=restarted
   when: kdc_role == 'master'
 
 - name: Restart kprop
-  service: name=kprop state=restarted
+  become: yes
+  service: name=krb5-kpropd state=restarted
