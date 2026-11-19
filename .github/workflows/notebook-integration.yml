@@ -40,7 +40,7 @@ jobs:
           python -m pip install -r tests/lc4ri/requirements.txt
           python -m playwright install --with-deps chromium
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils cloud-image-utils curl default-jre-headless ffmpeg fonts-dejavu-core fonts-noto-cjk
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils cloud-image-utils curl aria2 default-jre-headless ffmpeg fonts-dejavu-core fonts-noto-cjk
           install -Dm644 tests/lc4ri/fonts.conf ~/.config/fontconfig/fonts.conf
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
           sudo fallocate -l 8G /swapfile-notebook-ci
@@ -144,6 +144,15 @@ jobs:
           path: |
             test-results/notebook-integration/movies/T12a.mp4
             test-results/notebook-integration/videos/T12a/
+          retention-days: 14
+      - name: Upload T12c video
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: notebook-video-${{ matrix.variant }}-T12c
+          path: |
+            test-results/notebook-integration/movies/T12c.mp4
+            test-results/notebook-integration/videos/T12c/
           retention-days: 14
       - name: Upload T12d video
         uses: actions/upload-artifact@v4

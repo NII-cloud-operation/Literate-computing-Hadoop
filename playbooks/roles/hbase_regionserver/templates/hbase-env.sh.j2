@@ -90,6 +90,7 @@ export CLIENT_GC_OPTS="{{ hbase_client_gc_opts }}"
 
 {% if kerberos_realm is defined %}
 export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -Djava.security.auth.login.config=/etc/hbase/conf/zk-jaas.conf"
+export HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS -Djava.security.auth.login.config=/etc/hbase/conf/zk-jaas.conf"
 {% endif %}
 
 # File naming hosts on which HRegionServers will run.  $HBASE_HOME/conf/regionservers by default.

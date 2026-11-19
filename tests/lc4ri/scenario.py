@@ -87,4 +87,11 @@ pipelining = True
     run_notebook('D10_Hadoop - Set! Inventory.ipynb', before_cell=enter_inventory_inputs)
     run_notebook('D12_Hadoop - Ready! on CentOS6 - ZK,HDFS,YARN,HBase,Hive,Spark.ipynb')
     run_notebook('T12a_Hadoop - Confirm the services are alive - ZK,HDFS,YARN,HBase,Spark.ipynb')
+    run_notebook('T12c_Hadoop - Simple HBase query for Test.ipynb')
+    hbase_book = json.loads((session.results / 'T12c-working.ipynb').read_text())
+    hbase_output = '\n'.join(''.join(output.get('text', []))
+                             for cell in hbase_book['cells']
+                             for output in cell.get('outputs', []))
+    for value in ('data:class', 'value=Iris-setosa', 'data:sepal_length', 'value=5.4'):
+        assert value in hbase_output, hbase_output
     run_notebook('T12d_Hadoop - Simple Spark script for Test.ipynb')

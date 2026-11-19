@@ -113,6 +113,7 @@ export HBASE_LOG_DIR={{ hbase_log_dir }}
 
 {% if kerberos_realm is defined %}
 export HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS -Djava.security.auth.login.config=/etc/hbase/conf/zk-jaas.conf"
+export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -Djava.security.auth.login.config=/etc/hbase/conf/zk-jaas.conf"
 {% endif %}
 
 # A string representing this instance of hbase. $USER by default.

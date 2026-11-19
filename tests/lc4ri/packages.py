@@ -36,8 +36,13 @@ def download(cache, results):
         expected = ''.join(checksum.split()).lower()
         target = cache / filename
         if not target.is_file():
-            subprocess.run(['curl', '--fail', '--location', '--retry', '3', '--connect-timeout', '20',
-                            url, '-o', str(target)], check=True, timeout=900)
+            partial = target.with_suffix(target.suffix + '.part')
+            subprocess.run(['aria2c', '--allow-overwrite=true', '--auto-file-renaming=false',
+                            '--max-connection-per-server=16', '--split=16', '--min-split-size=1M',
+                            '--connect-timeout=20', '--timeout=60', '--max-tries=3',
+                            '--summary-interval=30', '--dir=' + str(cache),
+                            '--out=' + partial.name, url], check=True, timeout=1800)
+            partial.replace(target)
         with target.open('rb') as stream:
             actual = hashlib.file_digest(stream, 'sha512').hexdigest()
         assert actual == expected, f'{filename}: expected {expected}, got {actual}'
