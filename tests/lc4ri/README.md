@@ -4,11 +4,14 @@ The `basic` and `security` jobs operate the scenario in [scenario.py](scenario.p
 on disposable QEMU VMs. The scenario lists the notebooks in execution order and
 supplies operator inputs. Each notebook runs all nonempty code cells. Cell errors
 fail the job, and service validation follows the notebook procedures.
+T12c creates an HBase table, writes the Iris dataset, reads it back, and deletes
+the table. The security variant performs these operations as the HBase administrator.
 
 The controller uses `niicloudoperation/notebook:feature-lab` and each notebook's declared
 kernel. Its image digest and installed package versions are saved with the
 results. Software archives and checksums come from the repository's deployment
 defaults and are served through a local mirror backed by Apache Archive.
+Archived packages use parallel range downloads followed by SHA-512 verification.
 The [guest image](guests/guest-image.env) supplies the cgroups v1 environment
 expected by the deployment roles. The security fixture supplies test TLS files;
 Kerberos service and client prerequisites remain part of the deployment procedure.
