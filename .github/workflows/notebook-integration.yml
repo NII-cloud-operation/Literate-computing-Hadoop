@@ -19,10 +19,28 @@ jobs:
             authentication: simple
           - variant: security
             authentication: kerberos
+          - variant: upgrade-3.2.2-3.3.6-basic
+            authentication: simple
+            scenario: upgrade
+            hadoop_from_version: '3.2.2'
+            hadoop_from_checksum: 'sha512:054753301927d31a69b80be3e754fd330312f0b1047bcfa4ab978cdce18319ed912983e6022744d8f0c8765b98c87256eb1c3017979db1341d583d2cee22d029'
+            hadoop_to_version: '3.3.6'
+            cache_suffix: -upgrade-hadoop322-336-zk364-hbase2510-spark334-jsvc134
+          - variant: upgrade-3.2.2-3.3.6-security
+            authentication: kerberos
+            scenario: upgrade
+            hadoop_from_version: '3.2.2'
+            hadoop_from_checksum: 'sha512:054753301927d31a69b80be3e754fd330312f0b1047bcfa4ab978cdce18319ed912983e6022744d8f0c8765b98c87256eb1c3017979db1341d583d2cee22d029'
+            hadoop_to_version: '3.3.6'
+            cache_suffix: -upgrade-hadoop322-336-zk364-hbase2510-spark334-jsvc134
     runs-on: ubuntu-22.04
-    timeout-minutes: 90
+    timeout-minutes: 180
     env:
       HADOOP_SECURITY_MODE: ${{ matrix.authentication }}
+      HADOOP_TEST_SCENARIO: ${{ matrix.scenario }}
+      HADOOP_UPGRADE_FROM_VERSION: ${{ matrix.hadoop_from_version }}
+      HADOOP_UPGRADE_FROM_CHECKSUM: ${{ matrix.hadoop_from_checksum }}
+      HADOOP_UPGRADE_TO_VERSION: ${{ matrix.hadoop_to_version }}
       HDFS_E2E_PACKAGE_CACHE: ${{ github.workspace }}/.hdfs-package-cache
     steps:
       - uses: actions/checkout@v4
@@ -52,13 +70,14 @@ jobs:
         id: packages
         with:
           path: ${{ github.workspace }}/.hdfs-package-cache
-          key: notebook-archives-apache-v1-${{ hashFiles('playbooks/group_vars/all/hadoop', 'playbooks/group_vars/all/zookeeper_server', 'playbooks/group_vars/all/spark', 'playbooks/group_vars/all/hbase') }}
+          key: notebook-archives-apache-v1-${{ hashFiles('playbooks/group_vars/all/hadoop', 'playbooks/group_vars/all/zookeeper_server', 'playbooks/group_vars/all/spark', 'playbooks/group_vars/all/hbase') }}${{ matrix.cache_suffix }}
           restore-keys: notebook-archives-apache-v1-
       - name: Run notebooks through the browser
         run: bash tests/lc4ri/run.sh
       - name: Render notebook videos
         if: always()
         run: |
+          python -m unittest discover -s tests/lc4ri -p 'test_*.py'
           if test -f test-results/notebook-integration/video-manifest.json; then
             python tests/lc4ri/render_movie.py --result-dir test-results/notebook-integration --variant ${{ matrix.variant }}
           else
@@ -75,7 +94,7 @@ jobs:
         if: always() && steps.verified.outputs.complete == 'true' && steps.packages.outputs.cache-hit != 'true'
         with:
           path: ${{ github.workspace }}/.hdfs-package-cache
-          key: notebook-archives-apache-v1-${{ hashFiles('playbooks/group_vars/all/hadoop', 'playbooks/group_vars/all/zookeeper_server', 'playbooks/group_vars/all/spark', 'playbooks/group_vars/all/hbase') }}
+          key: notebook-archives-apache-v1-${{ hashFiles('playbooks/group_vars/all/hadoop', 'playbooks/group_vars/all/zookeeper_server', 'playbooks/group_vars/all/spark', 'playbooks/group_vars/all/hbase') }}${{ matrix.cache_suffix }}
       - name: Verify notebook sources after execution
         if: always()
         run: git diff --exit-code HEAD -- '*.ipynb'
@@ -162,6 +181,69 @@ jobs:
           path: |
             test-results/notebook-integration/movies/T12d.mp4
             test-results/notebook-integration/videos/T12d/
+          retention-days: 14
+      - name: Upload O12e video
+        uses: actions/upload-artifact@v4
+        if: always() && matrix.scenario == 'upgrade'
+        with:
+          name: notebook-video-${{ matrix.variant }}-O12e
+          path: |
+            test-results/notebook-integration/movies/O12e.mp4
+            test-results/notebook-integration/videos/O12e/
+          retention-days: 14
+      - name: Upload O12f video
+        uses: actions/upload-artifact@v4
+        if: always() && matrix.scenario == 'upgrade'
+        with:
+          name: notebook-video-${{ matrix.variant }}-O12f
+          path: |
+            test-results/notebook-integration/movies/O12f.mp4
+            test-results/notebook-integration/videos/O12f/
+          retention-days: 14
+      - name: Upload O12g video
+        uses: actions/upload-artifact@v4
+        if: always() && matrix.scenario == 'upgrade'
+        with:
+          name: notebook-video-${{ matrix.variant }}-O12g
+          path: |
+            test-results/notebook-integration/movies/O12g.mp4
+            test-results/notebook-integration/videos/O12g/
+          retention-days: 14
+      - name: Upload O12h video
+        uses: actions/upload-artifact@v4
+        if: always() && matrix.scenario == 'upgrade'
+        with:
+          name: notebook-video-${{ matrix.variant }}-O12h
+          path: |
+            test-results/notebook-integration/movies/O12h.mp4
+            test-results/notebook-integration/videos/O12h/
+          retention-days: 14
+      - name: Upload O12i video
+        uses: actions/upload-artifact@v4
+        if: always() && matrix.scenario == 'upgrade'
+        with:
+          name: notebook-video-${{ matrix.variant }}-O12i
+          path: |
+            test-results/notebook-integration/movies/O12i.mp4
+            test-results/notebook-integration/videos/O12i/
+          retention-days: 14
+      - name: Upload O12j video
+        uses: actions/upload-artifact@v4
+        if: always() && matrix.scenario == 'upgrade'
+        with:
+          name: notebook-video-${{ matrix.variant }}-O12j
+          path: |
+            test-results/notebook-integration/movies/O12j.mp4
+            test-results/notebook-integration/videos/O12j/
+          retention-days: 14
+      - name: Upload O12k video
+        uses: actions/upload-artifact@v4
+        if: always() && matrix.scenario == 'upgrade'
+        with:
+          name: notebook-video-${{ matrix.variant }}-O12k
+          path: |
+            test-results/notebook-integration/movies/O12k.mp4
+            test-results/notebook-integration/videos/O12k/
           retention-days: 14
       - name: Upload combined movie
         uses: actions/upload-artifact@v4

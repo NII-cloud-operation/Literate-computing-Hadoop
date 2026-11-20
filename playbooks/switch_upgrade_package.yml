@@ -1,0 +1,58 @@
+- name: Switch hadoop after stopping its consumers
+  hosts: hadoop_all
+  become: true
+  tags:
+  - hadoop
+  tasks:
+  - name: switch_hadoop_current
+    file:
+      path: '{{ hadoop_dir }}/current'
+      src: '{{ hadoop_dir }}/{{ hadoop_package_filename }}'
+      state: link
+- name: Switch zookeeper after stopping its consumers
+  hosts: hadoop_zookeeperserver
+  become: true
+  tags:
+  - zookeeper
+  tasks:
+  - name: switch_zookeeper_current
+    file:
+      path: '{{ zookeeper_dir }}/current'
+      src: '{{ zookeeper_dir }}/{{ zookeeper_package_filename }}'
+      state: link
+- name: Switch hbase after stopping its consumers
+  hosts: hadoop_hbase_master:hadoop_hbase_regionserver
+  become: true
+  tags:
+  - hbase
+  tasks:
+  - name: switch_hbase_current
+    file:
+      path: '{{ hbase_dir }}/current'
+      src: '{{ hbase_dir }}/{{ hbase_package_filename }}'
+      state: link
+- name: Switch spark after stopping its consumers
+  hosts: hadoop_spark:hadoop_spark_history
+  become: true
+  tags:
+  - spark
+  tasks:
+  - name: switch_spark_current
+    file:
+      path: '{{ spark_dir }}/current'
+      src: '{{ spark_dir }}/{{ spark_package_filename }}'
+      state: link
+- name: Switch jsvc after stopping its consumers
+  hosts: hadoop_all
+  become: true
+  tags:
+  - jsvc
+  tasks:
+  - name: install_built_jsvc
+    copy:
+      src: '{{ jsvc_dir }}/{{ jsvc_package_filename }}/src/native/unix/jsvc'
+      dest: /usr/bin/jsvc
+      remote_src: true
+      owner: root
+      group: root
+      mode: '0755'

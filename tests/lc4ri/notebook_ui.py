@@ -73,10 +73,14 @@ class NotebookSession:
         finally:
             self.videos.close_page(page, resume=self.page)
 
-    def run_notebook(self, filename, before_cell=None):
+    def run_notebook(self, filename, before_cell=None, execution_label=None, after_cell=None):
+        """Supply inputs before cells, wait for readiness after cells, and return the executed notebook."""
         self.current_notebook = filename
         path = self.repo / filename
         key = path.stem.split('_', 1)[0]
+        if execution_label:
+            key += '-' + execution_label
+        execution = filename + (' [' + execution_label + ']' if execution_label else '')
         raw = path.read_bytes()
         reference = json.loads(raw)
         self.hashes[filename] = hashlib.sha256(raw).hexdigest()
@@ -109,16 +113,18 @@ class NotebookSession:
             self.menu_command(self.page, 'Edit', 'editmenu:clear-all')
             assert self.page.evaluate("window.jupyterapp.shell.currentWidget.context.model.toJSON().cells.filter(c => c.cell_type === 'code').every(c => c.outputs.length === 0)")
             controls = operations(self.page, key, reference, self.records, timeout=1200000)
-            self.coverage[filename] = dict(attempted=[], completed=[])
+            self.coverage[execution] = dict(attempted=[], completed=[])
             for index, cell in enumerate(reference['cells']):
                 text = source(cell)
                 if cell['cell_type'] != 'code' or not text.strip():
                     continue
                 if before_cell is not None:
                     before_cell(self, controls, index, text)
-                self.coverage[filename]['attempted'].append(index)
-                controls.run(index)
-                self.coverage[filename]['completed'].append(index)
+                self.coverage[execution]['attempted'].append(index)
+                observed = controls.run(index)
+                if after_cell is not None:
+                    after_cell(self, controls, index, text, observed)
+                self.coverage[execution]['completed'].append(index)
             self.page.keyboard.press('Control+s')
             self.page.wait_for_function('!window.jupyterapp.shell.currentWidget.context.model.dirty')
             saved = self.read_file(document)
@@ -126,7 +132,8 @@ class NotebookSession:
                 expected = controls.edits[index] if index in controls.edits else source(cell)
                 assert source(saved['cells'][index]) == expected, (filename, index)
             assert path.read_bytes() == raw, filename
-            self.completed.append(filename)
+            self.completed.append(execution)
+            return saved
         finally:
             if self.page.evaluate('window.jupyterapp.shell.currentWidget !== null'):
                 saved = self.page.evaluate('window.jupyterapp.shell.currentWidget.context.model.toJSON()')

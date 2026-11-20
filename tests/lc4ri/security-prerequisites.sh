@@ -8,7 +8,9 @@ for name in nn1 nn2 dn1; do
     -storepass "$KERBEROS_TEST_PASSWORD" -keypass "$KERBEROS_TEST_PASSWORD"
   keytool -exportcert -alias server -keystore "$private_dir/$name-keystore.jks" \
     -storepass "$KERBEROS_TEST_PASSWORD" -file "$private_dir/$name.crt"
+  openssl x509 -inform DER -in "$private_dir/$name.crt" -out "$private_dir/$name-ca.crt"
 done
+cat "$private_dir/nn1-ca.crt" "$private_dir/nn2-ca.crt" "$private_dir/dn1-ca.crt" > "$private_dir/ca-certificates.pem"
 for name in nn1 nn2 dn1; do
   keytool -importcert -noprompt -alias "$name" -file "$private_dir/$name.crt" \
     -keystore "$private_dir/truststore.jks" -storetype JKS -storepass "$KERBEROS_TEST_PASSWORD"
@@ -18,6 +20,7 @@ for index in "${!qemu_names[@]}"; do
   address="${qemu_addresses[$index]}"
   scp -F "$private_dir/ssh_config" "$private_dir/$name-keystore.jks" "ansible@$address:/tmp/ci-keystore.jks"
   scp -F "$private_dir/ssh_config" "$private_dir/truststore.jks" "ansible@$address:/tmp/ci-truststore.jks"
+  scp -F "$private_dir/ssh_config" "$private_dir/ca-certificates.pem" "ansible@$address:/tmp/ci-ca-certificates.pem"
   ssh -F "$private_dir/ssh_config" "ansible@$address" \
-    'sudo mkdir -p /etc/hadoop/conf; sudo install -m 0600 /tmp/ci-keystore.jks /etc/hadoop/conf/keystore.jks; sudo install -m 0644 /tmp/ci-truststore.jks /etc/hadoop/conf/truststore.jks; rm /tmp/ci-keystore.jks /tmp/ci-truststore.jks'
+    'sudo mkdir -p /etc/hadoop/conf; sudo install -m 0600 /tmp/ci-keystore.jks /etc/hadoop/conf/keystore.jks; sudo install -m 0644 /tmp/ci-truststore.jks /etc/hadoop/conf/truststore.jks; sudo install -m 0644 /tmp/ci-ca-certificates.pem /etc/hadoop/conf/ca-certificates.pem; rm /tmp/ci-keystore.jks /tmp/ci-truststore.jks /tmp/ci-ca-certificates.pem'
 done

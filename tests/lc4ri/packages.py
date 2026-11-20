@@ -1,5 +1,7 @@
 """Serve the repository's Apache packages from the runner-local mirror."""
 import argparse
+import ast
+import os
 import hashlib
 import json
 from pathlib import Path
@@ -24,8 +26,24 @@ def download(cache, results):
     if marker.exists():
         marker.unlink()
     manifest = []
-    for package, (defaults, project) in PACKAGES.items():
+    packages = dict(PACKAGES)
+    if os.environ.get('HADOOP_TEST_SCENARIO') == 'upgrade':
+        packages.update({name + '_upgrade': value for name, value in PACKAGES.items()})
+    for package, (defaults, project) in packages.items():
         values = yaml.safe_load(Path('playbooks/group_vars/all', defaults).read_text())
+        if package == 'hadoop' and os.environ.get('HADOOP_TEST_SCENARIO') == 'upgrade':
+            version = os.environ['HADOOP_UPGRADE_FROM_VERSION']
+            values = {'hadoop_release_url': f'https://archive.apache.org/dist/hadoop/common/hadoop-{version}/hadoop-{version}.tar.gz',
+                      'hadoop_release_checksum': os.environ['HADOOP_UPGRADE_FROM_CHECKSUM']}
+        if package.endswith('_upgrade'):
+            component = package.removesuffix('_upgrade')
+            notebook = json.loads(Path('O12e_Hadoop - Plan and prepare upgrade.ipynb').read_text())
+            text = next(''.join(c['source']) for c in notebook['cells'] if c['cell_type'] == 'code'
+                        and ''.join(c['source']).startswith(component + '_version ='))
+            inputs = {n.targets[0].id: ast.literal_eval(n.value) for n in ast.parse(text).body
+                      if isinstance(n, ast.Assign)}
+            values = {package + '_release_url': inputs[component + '_release_url'],
+                      package + '_release_checksum': inputs[component + '_release_checksum']}
         path = urlparse(values[package + '_release_url']).path
         _, separator, relative = path.partition('/' + project)
         assert separator, f'Expected an Apache {project} path in {path}'
