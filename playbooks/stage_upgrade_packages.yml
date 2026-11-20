@@ -1,0 +1,150 @@
+- name: Stage hadoop without changing current
+  hosts: hadoop_all
+  become: true
+  tags:
+  - hadoop
+  tasks:
+  - name: prepare_upgrade_package_directory
+    file:
+      path: '{{ hadoop_dir }}/package'
+      state: directory
+  - name: download_verified_upgrade_package
+    get_url:
+      url: '{{ hadoop_release_url }}'
+      dest: '{{ hadoop_dir }}/package/{{ hadoop_package_filename }}.tar.gz'
+      checksum: '{{ hadoop_release_checksum }}'
+      owner: root
+      group: root
+  - name: extract_upgrade_package
+    unarchive:
+      src: '{{ hadoop_dir }}/package/{{ hadoop_package_filename }}.tar.gz'
+      dest: '{{ hadoop_dir }}'
+      remote_src: true
+      owner: root
+      group: root
+      creates: '{{ hadoop_dir }}/{{ hadoop_package_filename }}/bin'
+  - name: preserve_distribution_configuration
+    command:
+      cmd: mv hadoop hadoop.backup
+      chdir: '{{ hadoop_dir }}/{{ hadoop_package_filename }}/etc'
+      creates: '{{ hadoop_dir }}/{{ hadoop_package_filename }}/etc/hadoop.backup'
+  - name: remove_distribution_configuration
+    file:
+      path: '{{ hadoop_dir }}/{{ hadoop_package_filename }}/etc/hadoop'
+      state: absent
+  - name: use_existing_hadoop_configuration
+    file:
+      path: '{{ hadoop_dir }}/{{ hadoop_package_filename }}/etc/hadoop'
+      src: /etc/hadoop/conf
+      state: link
+  - name: set_container_executor_permissions
+    file:
+      path: '{{ hadoop_dir }}/{{ hadoop_package_filename }}/bin/container-executor'
+      owner: root
+      group: yarn
+      mode: '6050'
+- name: Stage zookeeper without changing current
+  hosts: hadoop_zookeeperserver
+  become: true
+  tags:
+  - zookeeper
+  tasks:
+  - name: prepare_upgrade_package_directory
+    file:
+      path: '{{ zookeeper_dir }}/package'
+      state: directory
+  - name: download_verified_upgrade_package
+    get_url:
+      url: '{{ zookeeper_release_url }}'
+      dest: '{{ zookeeper_dir }}/package/{{ zookeeper_package_filename }}.tar.gz'
+      checksum: '{{ zookeeper_release_checksum }}'
+      owner: root
+      group: root
+  - name: extract_upgrade_package
+    unarchive:
+      src: '{{ zookeeper_dir }}/package/{{ zookeeper_package_filename }}.tar.gz'
+      dest: '{{ zookeeper_dir }}'
+      remote_src: true
+      owner: root
+      group: root
+      creates: '{{ zookeeper_dir }}/{{ zookeeper_package_filename }}/bin'
+- name: Stage hbase without changing current
+  hosts: hadoop_hbase_master:hadoop_hbase_regionserver
+  become: true
+  tags:
+  - hbase
+  tasks:
+  - name: prepare_upgrade_package_directory
+    file:
+      path: '{{ hbase_dir }}/package'
+      state: directory
+  - name: download_verified_upgrade_package
+    get_url:
+      url: '{{ hbase_release_url }}'
+      dest: '{{ hbase_dir }}/package/{{ hbase_package_filename }}.tar.gz'
+      checksum: '{{ hbase_release_checksum }}'
+      owner: root
+      group: root
+  - name: extract_upgrade_package
+    unarchive:
+      src: '{{ hbase_dir }}/package/{{ hbase_package_filename }}.tar.gz'
+      dest: '{{ hbase_dir }}'
+      remote_src: true
+      owner: root
+      group: root
+      creates: '{{ hbase_dir }}/{{ hbase_package_filename }}/bin'
+- name: Stage spark without changing current
+  hosts: hadoop_spark:hadoop_spark_history
+  become: true
+  tags:
+  - spark
+  tasks:
+  - name: prepare_upgrade_package_directory
+    file:
+      path: '{{ spark_dir }}/package'
+      state: directory
+  - name: download_verified_upgrade_package
+    get_url:
+      url: '{{ spark_release_url }}'
+      dest: '{{ spark_dir }}/package/{{ spark_package_filename }}.tgz'
+      checksum: '{{ spark_release_checksum }}'
+      owner: root
+      group: root
+  - name: extract_upgrade_package
+    unarchive:
+      src: '{{ spark_dir }}/package/{{ spark_package_filename }}.tgz'
+      dest: '{{ spark_dir }}'
+      remote_src: true
+      owner: root
+      group: root
+      creates: '{{ spark_dir }}/{{ spark_package_filename }}/bin'
+- name: Stage jsvc without changing current
+  hosts: hadoop_all
+  become: true
+  tags:
+  - jsvc
+  tasks:
+  - name: prepare_upgrade_package_directory
+    file:
+      path: '{{ jsvc_dir }}/package'
+      state: directory
+  - name: download_verified_upgrade_package
+    get_url:
+      url: '{{ jsvc_release_url }}'
+      dest: '{{ jsvc_dir }}/package/{{ jsvc_package_filename }}.tar.gz'
+      checksum: '{{ jsvc_release_checksum }}'
+      owner: root
+      group: root
+  - name: extract_upgrade_package
+    unarchive:
+      src: '{{ jsvc_dir }}/package/{{ jsvc_package_filename }}.tar.gz'
+      dest: '{{ jsvc_dir }}'
+      remote_src: true
+      owner: root
+      group: root
+      creates: '{{ jsvc_dir }}/{{ jsvc_package_filename }}/src/native/unix/support/buildconf.sh'
+  - name: build_upgrade_jsvc
+    shell:
+      cmd: sh support/buildconf.sh && ./configure --with-java={{ java_home }} && make
+      chdir: '{{ jsvc_dir }}/{{ jsvc_package_filename }}/src/native/unix'
+      creates: '{{ jsvc_dir }}/{{ jsvc_package_filename }}/src/native/unix/jsvc'

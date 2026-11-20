@@ -51,3 +51,32 @@ procedure for review.
 
 Browser and QEMU helpers are adapted from
 [CoursewareHub-LC_deploy](https://github.com/yacchin1205/CoursewareHub-LC_deploy/pull/1).
+
+
+The `upgrade-3.2.2-3.3.6-basic` and `upgrade-3.2.2-3.3.6-security` matrices explicitly
+select the initial Hadoop version and checksum, deploy it with D12,
+then execute the O12e–O12k procedures: prepare and pause application use, upgrade
+ZooKeeper one peer at a time, roll the NameNodes, switch each host's shared Hadoop
+release, upgrade HBase/Spark, verify data and finalize, then update OS-provided
+Java/cgroups/Kerberos packages and restart their consumers one host at a time. jsvc is rebuilt and switched
+with each Hadoop host. OS packages whose candidate equals the installed version
+remain unchanged; this does not test an OS distribution migration.
+
+`HADOOP_UPGRADE_FROM_VERSION` and `HADOOP_UPGRADE_FROM_CHECKSUM` select the initial
+Hadoop release independently of the playbook defaults. `HADOOP_UPGRADE_TO_VERSION`
+must match the target version in O12e. The matrix names and artifact names identify
+both versions.
+
+Each repeated host procedure has its own working notebook and coverage. The test
+enters operator inputs and edits group_vars through the notebook UI. Every nonempty
+code cell runs. Existing service definitions and shared release pointers are retained.
+New playbooks stage packages and switch the existing release pointers.
+
+The scenario checks HDFS writes and reads with the old-version client before the
+upgrade and after each notebook execution. Each check must succeed before the
+next notebook runs. Readiness queries may be repeated while following the notebook
+procedure. Output assertions run after notebook completion and require the matching
+code cells to exist.
+HBase is tested for pre-upgrade data retention and new writes. MapReduce and Spark
+run real YARN jobs after the shared Hadoop release changes; T12a and T12d run again
+after platform service restarts. Full outputs, working notebooks and source hashes are saved.

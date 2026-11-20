@@ -21,6 +21,9 @@ cleanup() {
   docker cp "$controller:/home/jovyan/work/group_vars" "$result_dir/"
   for address in "${qemu_addresses[@]}"; do
     timeout 20s ssh -F "$private_dir/ssh_config" "ansible@$address" \
+      'date -Is; sudo ss -tanop; ps -eo pid,ppid,user,stat,wchan:32,etimes,comm; sysctl net.ipv4.ip_local_port_range net.ipv4.ip_local_reserved_ports; df -h; free -m' \
+      > "$result_dir/$address-system.log" 2>&1
+    timeout 20s ssh -F "$private_dir/ssh_config" "ansible@$address" \
       'sudo journalctl --no-pager; sudo cat /var/log/hadoop-hdfs/*.log /var/log/zookeeper/* /var/log/hadoop-yarn/*.log /var/log/hadoop-mapreduce/*.log /var/log/hbase/* /var/log/spark/*; sudo systemctl --no-pager --full status hadoop-yarn-resourcemanager hadoop-yarn-nodemanager hbase-master hbase-regionserver spark-history-server; free -m' \
       > "$result_dir/$address-services.log" 2>&1
     if (( result != 0 )); then

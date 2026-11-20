@@ -1,5 +1,6 @@
 """Render notebook chapters and a title-separated movie in operator order."""
 import argparse
+from itertools import groupby
 import json
 from pathlib import Path
 import subprocess
@@ -35,10 +36,12 @@ def render(results, variant):
     encoding = ['-an', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23',
                 '-pix_fmt', 'yuv420p', '-r', '25', '-video_track_timescale', '12800']
     chapters = []
+    notebook_chapters = {}
     with tempfile.TemporaryDirectory(dir=movies) as directory:
         work = Path(directory)
-        notebooks = list(dict.fromkeys(item['notebook'] for item in manifest['recordings']))
-        for chapter_index, notebook in enumerate(notebooks):
+        groups = groupby(enumerate(manifest['segments']),
+                         key=lambda item: manifest['recordings'][item[1]['recording']]['notebook'])
+        for chapter_index, (notebook, segments) in enumerate(groups):
             title = work / 'title.txt'
             title.write_text(textwrap.fill(notebook.removesuffix('.ipynb'), width=65))
             card = work / f'{chapter_index:02d}-title.mp4'
@@ -48,10 +51,8 @@ def render(results, variant):
                    'line_spacing=12:x=(w-text_w)/2:y=(h-text_h)/2',
                    *encoding, str(card), cwd=work)
             clips = [card]
-            for index, segment in enumerate(manifest['segments']):
+            for index, segment in segments:
                 recording = manifest['recordings'][segment['recording']]
-                if recording['notebook'] != notebook:
-                    continue
                 duration = segment['end'] - segment['start']
                 assert duration > 0, segment
                 clip = work / f'{chapter_index:02d}-{index:03d}.mp4'
@@ -59,9 +60,12 @@ def render(results, variant):
                        '-t', f'{duration:.6f}', '-vf', 'fps=25,setpts=PTS-STARTPTS',
                        *encoding, str(clip), cwd=work)
                 clips.append(clip)
-            chapter = movies / (notebook.split('_', 1)[0] + '.mp4')
+            chapter = work / f'{chapter_index:02d}-chapter.mp4'
             concat(clips, chapter, work)
             chapters.append(chapter)
+            notebook_chapters.setdefault(notebook.split('_', 1)[0], []).append(chapter)
+        for key, parts in notebook_chapters.items():
+            concat(parts, movies / (key + '.mp4'), work)
         concat(chapters, movies / f'notebooks-{variant}.mp4', work)
     print(f'Rendered {len(chapters)} notebook chapters and notebooks-{variant}.mp4')
 
@@ -69,6 +73,6 @@ def render(results, variant):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--result-dir', type=Path, required=True)
-    parser.add_argument('--variant', required=True, choices=['basic', 'security'])
+    parser.add_argument('--variant', required=True)
     args = parser.parse_args()
     render(args.result_dir, args.variant)
