@@ -45,7 +45,6 @@ qemu_boot_guests 'nn1:172.29.88.10:6144:20G' 'nn2:172.29.88.11:6144:20G' 'dn1:17
 if [[ "${HADOOP_SECURITY_MODE:-simple}" == kerberos ]]; then
   export KERBEROS_TEST_PASSWORD
   KERBEROS_TEST_PASSWORD=$(python3 -c 'import secrets; print(secrets.token_hex(16))')
-  source tests/lc4ri/security-prerequisites.sh
 fi
 # Supply D12's documented OS/network/storage prerequisites, never install Hadoop here.
 for address in "${qemu_addresses[@]}"; do

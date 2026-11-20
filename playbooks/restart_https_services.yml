@@ -1,0 +1,114 @@
+- hosts: hadoop_journalnode
+  serial: 1
+  become: yes
+  tasks:
+    - name: Restart JournalNode
+      service: name=hadoop-hdfs-journalnode state=restarted
+
+    - name: Wait for JournalNode RPC
+      wait_for:
+        host: "{{ ansible_fqdn }}"
+        port: 8485
+        timeout: 120
+
+    - name: Wait for JournalNode HTTPS
+      wait_for:
+        host: "{{ ansible_fqdn }}"
+        port: 8481
+        timeout: 120
+
+    - name: Resume journal writes in a new segment
+      become_user: hdfs
+      command: hdfs dfsadmin -rollEdits
+
+- hosts: hadoop_namenode
+  serial: 1
+  become: yes
+  tasks:
+    - name: Stop failover controller
+      service: name=hadoop-hdfs-zkfc state=stopped
+      when: hadoop_namenode_servers|length > 1
+
+    - name: Restart NameNode
+      service: name=hadoop-hdfs-namenode state=restarted
+
+    - name: Wait for NameNode RPC
+      wait_for:
+        host: "{{ ansible_fqdn }}"
+        port: "{{ namenode_rpc_port }}"
+        timeout: 120
+
+    - name: Start failover controller
+      service: name=hadoop-hdfs-zkfc state=started
+      when: hadoop_namenode_servers|length > 1
+
+    - name: Wait for NameNode HTTPS
+      wait_for:
+        host: "{{ ansible_fqdn }}"
+        port: "{{ namenode_https_port }}"
+        timeout: 120
+
+- hosts: hadoop_slavenode
+  serial: 1
+  become: yes
+  tasks:
+    - name: Restart DataNode
+      service: name=hadoop-hdfs-datanode state=restarted
+
+    - name: Wait for DataNode HTTPS
+      wait_for:
+        host: "{{ ansible_fqdn }}"
+        port: "{{ datanode_https_port }}"
+        timeout: 120
+
+- hosts: hadoop_resourcemanager
+  serial: 1
+  become: yes
+  tasks:
+    - name: Restart ResourceManager
+      service: name=hadoop-yarn-resourcemanager state=restarted
+
+    - name: Wait for ResourceManager HTTPS
+      wait_for:
+        host: "{{ ansible_fqdn }}"
+        port: "{{ yarn_rm_webapp_port }}"
+        timeout: 120
+
+- hosts: hadoop_slavenode
+  serial: 1
+  become: yes
+  tasks:
+    - name: Restart NodeManager
+      service: name=hadoop-yarn-nodemanager state=restarted
+
+    - name: Wait for NodeManager HTTPS
+      wait_for:
+        host: "{{ ansible_fqdn }}"
+        port: 8044
+        timeout: 120
+
+- hosts: hadoop_mapreduce_historyserver
+  serial: 1
+  become: yes
+  tasks:
+    - name: Restart MapReduce History Server
+      service: name=hadoop-mapreduce-historyserver state=restarted
+
+    - name: Wait for MapReduce History Server HTTPS
+      wait_for:
+        host: "{{ ansible_fqdn }}"
+        port: 19890
+        timeout: 120
+
+- hosts: hadoop_timelineservice
+  serial: 1
+  become: yes
+  tasks:
+    - name: Restart Timeline Server
+      service: name=hadoop-yarn-timelineserver state=restarted
+
+    - name: Wait for Timeline Server HTTPS
+      wait_for:
+        host: "{{ ansible_fqdn }}"
+        port: 8190
+        timeout: 120

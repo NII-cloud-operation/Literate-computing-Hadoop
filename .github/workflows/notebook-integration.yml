@@ -19,6 +19,9 @@ jobs:
             authentication: simple
           - variant: security
             authentication: kerberos
+          - variant: ca-renewal
+            authentication: kerberos
+            scenario: ca-renewal
           - variant: upgrade-3.2.2-3.3.6-basic
             authentication: simple
             scenario: upgrade
